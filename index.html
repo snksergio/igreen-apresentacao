@@ -37,10 +37,7 @@
   .nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:center;background:linear-gradient(180deg,rgba(3,6,3,.94) 0%,rgba(3,6,3,.55) 52%,rgba(3,6,3,0) 100%);padding-bottom:30px;transition:transform .35s cubic-bezier(.16,1.1,.3,1)}
   .nav-shell{width:100%;max-width:1320px;padding:22px 28px;display:flex;align-items:center;justify-content:space-between}
   .logo{display:flex;align-items:center;gap:11px;font-weight:500;font-size:18px;letter-spacing:-.01em}
-  .logo .mark{height:26px;width:calc(26px * 295/94);
-    background:var(--green);
-    -webkit-mask:url(assets/logos/igreen-logomarca.svg) center/contain no-repeat;
-    mask:url(assets/logos/igreen-logomarca.svg) center/contain no-repeat;
+  .logo .mark{display:block;height:26px;width:auto;flex:none;
     filter:drop-shadow(0 0 12px rgba(24,255,0,.4))}
   .nav-links{display:flex;gap:36px;font-size:15px;color:var(--ink-dim)}
   .nav-links a{transition:color .2s} .nav-links a:hover{color:var(--ink)}
@@ -1793,7 +1790,7 @@
 <body>
 <nav class="nav">
   <div class="nav-shell">
-    <a class="logo" href="#" aria-label="iGreen"><span class="mark"></span></a>
+    <a class="logo" href="#" aria-label="iGreen"><img class="mark" src="assets/logos/igreen-logomarca-neon.svg" alt=""></a>
     <div class="nav-menu" id="navMenu">
       <div class="nav-links">
         <a href="#ecossistema">O Ecossistema</a>
@@ -5004,7 +5001,7 @@ if(window.gsap&&window.ScrollTrigger){
   #rodape .ft-globe img{ position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:min(86vw,1560px); display:block; mix-blend-mode:screen; }
   #rodape .ft-inner{ position:relative; z-index:2; margin:0; padding:clamp(80px,11vh,140px) max(28px,calc((100vw - 1320px)/2)) 60px; display:grid; grid-template-columns:1.15fr .85fr; gap:clamp(36px,5vw,84px); align-items:start; box-sizing:border-box; min-height:min(53vw,920px); }
   #rodape .ft-logo{ display:flex; align-items:center; gap:12px; font-size:27px; font-weight:600; letter-spacing:-.01em; }
-  #rodape .ft-mark{ height:40px; width:calc(40px * 295/94); background:var(--green); -webkit-mask:url(assets/logos/igreen-logomarca.svg) center/contain no-repeat; mask:url(assets/logos/igreen-logomarca.svg) center/contain no-repeat; filter:drop-shadow(0 0 14px rgba(24,255,0,.4)); flex:none; }
+  #rodape .ft-mark{ display:block; height:40px; width:auto; filter:drop-shadow(0 0 14px rgba(24,255,0,.4)); flex:none; }
   #rodape .ft-desc{ margin-top:18px; font-size:15px; color:var(--ink-dim); line-height:1.65; max-width:44ch; }
   #rodape .ft-kicker{ font-size:12px; font-weight:600; letter-spacing:.3em; text-transform:uppercase; color:var(--ink-dim); }
   #rodape .ft-soc{ list-style:none; margin:14px 0 0; padding:0; }
@@ -5044,7 +5041,7 @@ if(window.gsap&&window.ScrollTrigger){
   <div class="ft-globe" aria-hidden="true"><img src="assets/img/map-2.png" alt=""></div>
   <div class="ft-inner">
     <div class="ft-brand">
-      <div class="ft-logo" aria-label="iGreen"><span class="ft-mark"></span></div>
+      <div class="ft-logo" aria-label="iGreen"><img class="ft-mark" src="assets/logos/igreen-logomarca-neon.svg" alt=""></div>
       <p class="ft-desc">O maior ecossistema de energia e serviços sustentáveis do Brasil — energia, telecom, seguros, pay e expansão em uma única plataforma, para quem quer empreender e crescer.</p>
     </div>
     <div>
