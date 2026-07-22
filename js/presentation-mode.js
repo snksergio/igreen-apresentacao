@@ -121,7 +121,17 @@
          entrar. Pelo dot (teleporte) o reveal once pode não disparar, então damos
          play na mão; ao terminar, o próprio site revela as abas de carro. */
       frameOff:-72,   /* 162px mais para baixo que o padrão (90) → seção sobe um pouco */
-      onEnter:function(){ var v=document.querySelector('.carvid'); if (v){ var p=v.play(); if (p&&p.catch) p.catch(function(){}); } } },
+      onEnter:function(){ var v=document.querySelector('.carvid'); if (v){ var p=v.play(); if (p&&p.catch) p.catch(function(){}); } },
+      /* 2 passos na mesma posição: (1) enquadra (BYD Royal 5K é o padrão); (2) troca
+         para o Porsche Taycan (Embaixador 12K). Volta ao passo 1 reverte pro BYD. */
+      buildStops:function(st, node){
+        var off = (this.frameOff != null) ? this.frameOff : 90;
+        var y = curY() + node.getBoundingClientRect().top - off;
+        return [
+          { y:y, action:function(){ if (document.body.classList.contains('cars-ready')) carSelectRaw(0); } },
+          { y:y, action:function(){ carSelect(1); } }
+        ];
+      } },
     { label:'Simulador',    sel:'#simulador',    subs:[], on:true, frame:true },
     { label:'Graduações',   sel:'#graduacoes',   subs:[], on:true, trig:'#gradSection', dur:2.8,
       onLeave:gradClear,
@@ -192,6 +202,16 @@
   function gradBarEls(){ var r = document.getElementById('gradBars'); return r ? [].slice.call(r.querySelectorAll('.bar-group')) : []; }
   function gradClear(){ gradBarEls().forEach(function(g){ try{ g.dispatchEvent(new PointerEvent('pointerleave', {bubbles:true})); }catch(e){} }); }
   function gradHover(i){ var bs = gradBarEls(); if (!bs.length) return; gradClear(); if (bs[i]){ try{ bs[i].dispatchEvent(new PointerEvent('pointerenter', {bubbles:true})); }catch(e){} } }
+
+  /* bonificação: seleciona o carro/aba (clicar no .carbtn dispara o setCar do site) */
+  function carSelectRaw(i){ var b = document.querySelector('.carbtn[data-car="' + i + '"]'); if (b) try{ b.click(); }catch(e){} }
+  function carSelect(i){
+    // se o vídeo ainda estiver rodando, força o estado final (abas de carro visíveis)
+    if (!document.body.classList.contains('cars-ready')){
+      var v = document.querySelector('.carvid'); if (v) try{ v.dispatchEvent(new Event('ended')); }catch(e){}
+    }
+    carSelectRaw(i);
+  }
 
   /* ==========================================================================
      UI
