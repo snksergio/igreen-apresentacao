@@ -47,19 +47,31 @@
   .nav{ position:fixed; top:0; left:0; right:0; z-index:200; display:flex; justify-content:center;
     background:linear-gradient(180deg,rgba(3,6,3,.94) 0%,rgba(3,6,3,.55) 52%,rgba(3,6,3,0) 100%);
     padding-bottom:30px; pointer-events:none; }
-  .nav-shell{ width:100%; max-width:1320px; padding:22px 28px; display:flex; align-items:center;
-    justify-content:space-between; pointer-events:auto; }
-  .nav .logo img{ display:block; height:26px; width:auto; filter:drop-shadow(0 0 12px rgba(24,255,0,.4)); }
-  .nav .right{ display:flex; align-items:center; gap:22px; }
-  .nav .back{ display:inline-flex; align-items:center; gap:8px; font-size:15px; color:var(--ink-dim);
-    text-decoration:none; transition:color .2s; }
+  /* blur graduado sob o gradiente: funde o grid/glow do hero e dá densidade, sem linha de corte */
+  .nav::before{ content:''; position:absolute; inset:0; pointer-events:none;
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 34%,transparent 92%);
+    mask-image:linear-gradient(180deg,#000 0%,#000 34%,transparent 92%); }
+  .nav-shell{ position:relative; z-index:1; }
+  /* [voltar]  ·  [marca centrada]  ·  [identidade da página] */
+  .nav-shell{ width:100%; max-width:1320px; padding:22px 28px; display:grid;
+    grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; pointer-events:auto; }
+  .nav .back{ justify-self:start; display:inline-flex; align-items:center; gap:8px; font-size:15px;
+    color:var(--ink-dim); text-decoration:none; transition:color .2s; white-space:nowrap; }
   .nav .back:hover{ color:var(--ink); }
   .nav .back svg{ transition:transform .25s; }
   .nav .back:hover svg{ transform:translateX(-4px); }
-  .nav-cta{ border:1px solid var(--line); border-radius:999px; padding:10px 22px; font-size:14.5px;
-    font-weight:500; background:rgba(255,255,255,.04); color:var(--ink); text-decoration:none;
-    transition:background .2s, transform .2s; }
-  .nav-cta:hover{ background:rgba(255,255,255,.09); transform:translateY(-1px); }
+  .nav .logo{ justify-self:center; }
+  .nav .logo img{ display:block; height:26px; width:auto; filter:drop-shadow(0 0 12px rgba(24,255,0,.4)); }
+  .nav .pgtag{ justify-self:end; display:inline-flex; align-items:center; gap:9px;
+    font-size:13.5px; font-weight:500; letter-spacing:.02em; color:var(--ink); }
+  .nav .pgtag svg{ width:16px; height:16px; color:var(--green); filter:drop-shadow(0 0 8px rgba(24,255,0,.5)); }
+  @media (max-width:640px){
+    .nav .pgtag span{ display:none; }
+    .nav-shell{ padding:18px 20px; }
+    .nav .back .bkfull{ display:none; }
+    .nav .back{ font-size:14px; }
+  }
 
   /* ===== 01 · HERO — texto à esquerda, vídeo à direita (sticky + parallax) ===== */
   @keyframes rise{ from{ opacity:0; transform:translateY(26px); } to{ opacity:1; transform:none; } }
@@ -120,9 +132,43 @@
   .ministats .ms{ font-size:13.5px; color:var(--ink-dim); }
   .ministats .ms b{ font-weight:600; color:var(--ink); }
   .ministats .ms b.g{ color:var(--green); text-shadow:0 0 18px rgba(24,255,0,.35); }
-  @media (max-width:1024px){
-    .hero .shell{ display:flex; flex-direction:column; align-items:flex-start; max-width:560px; }
-    .bolt{ align-self:center; width:100%; height:min(44vh,380px); margin:-20px 0; }
+  /* selo giratório — atuação nacional (da v3) */
+  .seal{ position:absolute; z-index:2; right:clamp(24px,4.4vw,60px); bottom:clamp(24px,5vh,48px);
+    width:138px; height:138px; pointer-events:none; }
+  .seal svg{ width:100%; height:100%; animation:sealspin 24s linear infinite; }
+  .seal svg text{ font-size:10.4px; font-weight:600; letter-spacing:.3em; fill:rgba(232,255,228,.85); text-transform:uppercase; }
+  .seal .mark{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .seal .mark img{ width:34px; height:auto; filter:drop-shadow(0 0 12px rgba(24,255,0,.55)); }
+  @keyframes sealspin{ to{ transform:rotate(360deg); } }
+  @media (prefers-reduced-motion:reduce){ .seal svg{ animation:none; } }
+  @media (max-width:1024px){ .seal{ display:none; } }
+  /* laptops menores / tablet landscape: aperta as colunas antes de empilhar */
+  @media (max-width:1024px) and (min-width:901px){
+    .hero{ padding:104px 24px 40px; }
+    .hero .shell{ grid-template-columns:1.06fr .94fr; column-gap:16px; }
+    .hero h1{ font-size:clamp(44px,5.4vw,72px); }
+    .bolt{ width:calc(100% + 100px); margin-left:-50px; height:min(72vh,620px); }
+  }
+  /* ≤900: empilha — texto centralizado em cima, vídeo abaixo */
+  @media (max-width:900px){
+    .hero{ padding:108px 24px 48px; }
+    .hero .shell{ display:flex; flex-direction:column; align-items:center; max-width:600px; row-gap:8px; }
+    .hero .content{ align-items:center; text-align:center; }
+    .hero .sub{ max-width:52ch; }
+    .hero .ctas{ justify-content:center; }
+    .ministats{ justify-content:center; }
+    .bolt{ order:-1; align-self:center; width:min(64vw,340px); margin:0 0 -4px; height:min(46vh,420px); }
+    .bolt video{ -webkit-mask-image:radial-gradient(58% 60% at 50% 50%, #000 46%, transparent 96%);
+      mask-image:radial-gradient(58% 60% at 50% 50%, #000 46%, transparent 96%); }
+  }
+  @media (max-width:560px){
+    .hero{ padding-top:96px; }
+    .hero h1{ font-size:clamp(40px,12vw,54px); }
+    .hero .sub{ font-size:15px; }
+    .hero .ctas{ width:100%; flex-direction:column; }
+    .hero .ctas .btn-primary, .hero .ctas .btn-ghost{ width:100%; justify-content:center; }
+    .ministats{ gap:10px 22px; }
+    .bolt{ width:min(72vw,300px); height:min(42vh,380px); }
   }
 
   /* ===== 02 · O QUE É ===== */
@@ -209,6 +255,9 @@
     font-size:clamp(27px,3.1vw,42px); max-width:15ch; }
   .virada .side h2 .dim{ color:var(--green); text-shadow:0 0 30px rgba(24,255,0,.25); }
   .virada .side .note{ margin-top:auto; padding-top:24px; font-size:11.5px; color:rgba(232,255,228,.42); line-height:1.5; position:relative; }
+  .virada .side .note a{ color:var(--green); text-decoration:underline; text-underline-offset:3px;
+    text-decoration-color:rgba(24,255,0,.5); transition:text-decoration-color .2s; }
+  .virada .side .note a:hover{ text-decoration-color:var(--green); }
   /* ornamento: moedas (financeiro) esmaecendo suave a partir do canto */
   .virada .orn{ position:absolute; right:-60px; bottom:-130px; width:min(440px,76%); aspect-ratio:1;
     pointer-events:none; background:url('../assets/img/plans-coins.jpg') center/cover no-repeat;
@@ -286,6 +335,9 @@
     box-shadow:0 0 34px rgba(24,255,0,.35); transition:transform .25s, box-shadow .25s; }
   .simcard .res .btn-dark:hover{ transform:translateY(-2px); box-shadow:0 0 52px rgba(24,255,0,.55); }
   .sim .simdisc{ margin-top:14px; font-size:11px; color:rgba(232,255,228,.42); line-height:1.5; }
+  .sim .simdisc a{ color:var(--green); text-decoration:underline; text-underline-offset:3px;
+    text-decoration-color:rgba(24,255,0,.5); transition:text-decoration-color .2s; }
+  .sim .simdisc a:hover{ text-decoration-color:var(--green); }
   @media (max-width:900px){ .sim .grid{ grid-template-columns:1fr; } }
 
   /* ===== 06 · NA PRÁTICA ===== */
@@ -408,21 +460,29 @@
 <!-- NAV (padrão index) -->
 <nav class="nav">
   <div class="nav-shell">
+    <a class="back" href="../index.html" data-pt-href="../index.html">
+      <svg class="arrow-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span class="bktxt">Voltar<span class="bkfull"> para Home</span></span>
+    </a>
     <a class="logo" href="../index.html" data-pt-href="../index.html" aria-label="iGreen">
       <img src="../assets/logos/igreen-logomarca-neon.svg" alt="iGreen">
     </a>
-    <div class="right">
-      <a class="back" href="../index.html" data-pt-href="../index.html">
-        <svg class="arrow-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-        Voltar para Home
-      </a>
-      <a class="nav-cta" href="#ganhos">Simular ganhos</a>
-    </div>
+    <span class="pgtag" aria-label="Você está em Conexão Livre">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+      <span>Conexão Livre</span>
+    </span>
   </div>
 </nav>
 
 <!-- 01 · HERO — centralizada -->
 <header class="hero">
+  <div class="seal" aria-hidden="true">
+    <svg viewBox="0 0 120 120">
+      <defs><path id="sealcirc" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
+      <text><textPath href="#sealcirc">Atuação nacional · Conexão Livre · iGreen ·</textPath></text>
+    </svg>
+    <span class="mark"><img src="../assets/logos/igreen-isotipo-neon.svg" alt=""></span>
+  </div>
   <div class="shell">
     <div class="content">
       <span class="badge"><span class="dot"></span>Energia · Ecossistema iGreen</span>
@@ -547,7 +607,7 @@
         <div class="orn" aria-hidden="true"></div>
         <span class="kicker">Venda uma vez, receba todo mês</span>
         <h2>Produto que o cliente ama pagar menos. <span class="dim">Renda que continua chegando.</span></h2>
-        <p class="note">Consulte regras e condições no Manual de Negócio.</p>
+        <p class="note">Consulte regras e condições no <a href="#">Manual de Negócio</a>.</p>
       </div>
       <div class="cells">
         <div class="vcell rv">
@@ -624,7 +684,7 @@
           </div>
         </div>
       </div>
-      <p class="simdisc">*Projeção ilustrativa — percentuais máximos; consulte regras e condições no Manual de Negócio.</p>
+      <p class="simdisc">*Projeção ilustrativa — percentuais máximos; consulte regras e condições no <a href="#">Manual de Negócio</a>.</p>
       </div>
     </div>
   </div>
@@ -827,7 +887,7 @@
 (function(){
   var hero=document.querySelector('.hero');
   if(!hero || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var inner=hero.querySelector('.content'), bg=hero.querySelector('.bolt');
+  var inner=hero.querySelector('.content'), bg=hero.querySelector('.bolt'), seal=hero.querySelector('.seal');
   var dim=document.createElement('div'); dim.className='hero-dim'; dim.setAttribute('aria-hidden','true');
   hero.appendChild(dim);
   var cur={ ty:0, by:0, dim:0, op:1 };
@@ -846,6 +906,7 @@
     inner.style.transform='translateY('+cur.ty.toFixed(2)+'px)';
     if(bg) bg.style.transform='translateY('+cur.by.toFixed(2)+'px)';
     inner.style.opacity=cur.op.toFixed(3);
+    if(seal) seal.style.opacity=cur.op.toFixed(3);
     dim.style.opacity=cur.dim.toFixed(3);
     requestAnimationFrame(loop);
   }
