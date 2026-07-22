@@ -1785,6 +1785,33 @@
       text-shadow:0 0 20px rgba(24,255,0,.4);white-space:nowrap}
   }
 
+  /* ===================================================================
+     Desktop pequeno/curto (notebooks ~1360x700 – 1366x768): ajustes finos
+     por ALTURA, acima do mobile (>1024px). Não afeta telas altas nem o mobile.
+     =================================================================== */
+  @media (min-width:1025px) and (max-height:900px){
+    /* Ecossistema (deck desktop): compacta o cabeçalho e encolhe os cards p/
+       caberem em notebooks (viewport ~630–860) e não cobrirem a descrição */
+    #ecossistema2 .ehead{ padding-bottom:12px; }
+    #ecossistema2 .etitle{ font-size:34px; margin-top:6px; }
+    #ecossistema2 .ehsub{ font-size:13px; margin-top:6px; line-height:1.4; }
+    .eco2 .ecard{ padding:15px 18px 16px; }
+    .eco2 .eimg{ aspect-ratio:auto; height:110px; margin-top:10px; }
+    .eco2 .ecard h3{ margin-top:12px; font-size:17px; }
+    .eco2 .ecard p{ margin-top:4px; font-size:12px; line-height:1.4; }
+    .eco2 .emods{ margin-top:8px; }
+    .eco2 .emods li{ padding:6px 2px; font-size:11.5px; }
+    .eco2 .etrack{ top:62%; }
+
+    /* Resultados / Recorrência: títulos centrais gigantes em telas curtas —
+       compacta p/ densidade e menos colisão com os cards flutuantes ao redor */
+    #resultados .stitle{ font-size:56px; }
+    #resultados .ssub{ font-size:15px; margin-top:14px; }
+    /* tira o "+500 colaboradores" de cima do subtítulo central (empurra p/ a lateral esquerda-baixa) */
+    #resultados .sf-team{ left:22% !important; bottom:6% !important; }
+    #recorrencia .rectitle{ font-size:42px; }
+    #recorrencia .recsub{ font-size:14px; margin-top:12px; }
+  }
 </style>
 <link rel="stylesheet" href="css/page-transition.css">
 <link rel="stylesheet" href="css/presentation-mode.css">
@@ -1865,7 +1892,7 @@
     <div class="sfloat" style="top:44%;left:8%"><div class="sfnum"><i>+</i><b data-target="35">0</b><i>mil</i></div><span class="sflbl">licenciados ativos</span></div>
     <div class="sfloat sr" style="top:44%;right:8%"><div class="sfnum"><i>+</i><b data-target="11">0</b></div><span class="sflbl">milionários formados</span></div>
     <div class="sfloat" style="bottom:15%;left:12%"><div class="sfnum"><b data-target="3000">0</b><i>m²</i></div><span class="sflbl">de sede própria no Brasil<small>R. Marfim, 265 · Jaraguá, Uberlândia/MG</small></span></div>
-    <div class="sfloat" style="bottom:8%;left:42%"><div class="sfnum"><i>+</i><b data-target="500">0</b></div><span class="sflbl">colaboradores na equipe interna</span></div>
+    <div class="sfloat sf-team" style="bottom:8%;left:42%"><div class="sfnum"><i>+</i><b data-target="500">0</b></div><span class="sflbl">colaboradores na equipe interna</span></div>
     <div class="sfloat sr" style="top:24%;right:26%"><div class="sfnum"><i>+</i><b data-target="500">0</b></div><span class="sflbl">usinas solares em operação</span></div>
     <div class="sfloat sr" style="bottom:20%;right:10%"><div class="sfnum"><b data-target="21">0</b></div><span class="sflbl">estados atendidos pela Conexão Green</span></div>
   </div>
