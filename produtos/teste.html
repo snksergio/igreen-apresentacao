@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Página interna — iGreen</title>
+<link rel="icon" type="image/svg+xml" href="../assets/logos/igreen-isotipo-neon.svg">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/page-transition.css">
+<script>try{if(sessionStorage.getItem('pt')){sessionStorage.removeItem('pt');document.documentElement.setAttribute('data-pt-state','cover');}}catch(e){}</script>
+<style>
+  .interna{ min-height:100vh; min-height:100svh; display:grid; place-items:center; text-align:center; padding:24px; }
+  .interna h1{ font-size:clamp(30px,6vw,60px); font-weight:500; letter-spacing:-.02em; line-height:1.1; }
+  .interna h1 .hl{ color:var(--green); text-shadow:0 0 42px rgba(24,255,0,.4); }
+  .interna .back{ margin-top:26px; display:inline-flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-dim); transition:color .2s; }
+  .interna .back:hover{ color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="pt-curtain" aria-hidden="true"></div>
+<main class="interna">
+  <div>
+    <h1 class="pt-intro">Hello <span class="hl">Página interna</span> atoa</h1>
+    <a class="back pt-intro" style="--pt-delay:.12s" href="../index.html" data-pt-href="../index.html">← voltar para a home</a>
+  </div>
+</main>
+<script src="../js/page-transition.js"></script>
+</body>
+</html>
