@@ -26,7 +26,7 @@
      - subs: valores de progress (0..1) dos sub-stops dentro do pin.
              [] = seção "tocável" simples (descansa no fim) ou sem pin (topo).
      - on: habilitada nesta etapa? (rollout section-by-section) */
-  var SECTIONS = [
+  var INDEX_SECTIONS = [
     { label:'Início',       sel:'.hero',         subs:[], on:true  },
     { label:'Resultados',   sel:'#resultados',   subs:[], on:true  },
     { label:'Trajetória',   sel:'#trajetoria',   subs:[], on:true,  trig:'.jwrap',
@@ -120,32 +120,42 @@
       /* seção de enquadramento (sem scrub): o vídeo dos carros toca sozinho ao
          entrar. Pelo dot (teleporte) o reveal once pode não disparar, então damos
          play na mão; ao terminar, o próprio site revela as abas de carro. */
-      frameOff:-72,   /* 162px mais para baixo que o padrão (90) → seção sobe um pouco */
+      /* telas altas: sobe um pouco (-72). telas baixas (notebook ~700-768px): 0,
+         senão o título encavala na navbar. */
+      frameOff:function(){ return window.innerHeight < 900 ? 0 : -72; },
       onEnter:function(){ var v=document.querySelector('.carvid'); if (v){ var p=v.play(); if (p&&p.catch) p.catch(function(){}); } },
       /* 2 passos na mesma posição: (1) enquadra (BYD Royal 5K é o padrão); (2) troca
          para o Porsche Taycan (Embaixador 12K). Volta ao passo 1 reverte pro BYD. */
       buildStops:function(st, node){
-        var off = (this.frameOff != null) ? this.frameOff : 90;
+        var off = (typeof this.frameOff === 'function') ? this.frameOff() : (this.frameOff != null ? this.frameOff : 90);
         var y = curY() + node.getBoundingClientRect().top - off;
         return [
           { y:y, action:function(){ if (document.body.classList.contains('cars-ready')) carSelectRaw(0); } },
           { y:y, action:function(){ carSelect(1); } }
         ];
       } },
-    { label:'Simulador',    sel:'#simulador',    subs:[], on:true, frame:true },
+    { label:'Simulador',    sel:'#simulador',    subs:[], on:true, frame:true,
+      /* enquadra o cabeçalho do simulador (evita o vazio grande no topo) */
+      buildStops:function(st, node){
+        var head = node.querySelector('.sim-head') || node;
+        return [ curY() + head.getBoundingClientRect().top - 88 ];
+      } },
     { label:'Graduações',   sel:'#graduacoes',   subs:[], on:true, trig:'#gradSection', dur:2.8,
-      onLeave:gradClear,
-      /* 1º passo: gráfico completo (barras crescidas, ponto de snap 0.9). Depois um
-         passo por barra, dando "hover" em cada uma (tooltip do nível), na mesma
-         posição de scroll — como passar o mouse em cada barra. */
+      onLeave:function(){ gradEventsClose(); gradClear(); },
+      /* 1º passo: gráfico completo. Depois um passo por barra (hover do nível).
+         Por fim, abre o modal "Nossos Eventos" e navega os slides — tudo na mesma
+         posição de scroll, com as mesmas setas; fecha ao sair da seção. */
       buildStops:function(st, node){
         if (!st) return null;   // reduced-motion: sem trigger → enquadramento simples
         var y = st.start + (st.end - st.start) * 0.9;
         var bs = document.querySelectorAll('#gradBars .bar-group');
-        var out = [{ y:y, action:gradClear }];
-        // DOM vem do maior→menor; percorre invertido: Sênior → ... → Acionista
-        for (var i = bs.length - 1; i >= 0; i--){
-          (function(idx){ out.push({ y:y, action:function(){ gradHover(idx); } }); })(i);
+        var out = [{ y:y, action:function(){ gradEventsClose(); gradClear(); } }];   // gráfico completo
+        for (var i = bs.length - 1; i >= 0; i--){                                    // Sênior → ... → Acionista
+          (function(idx){ out.push({ y:y, action:function(){ gradEventsClose(); gradHover(idx); } }); })(i);
+        }
+        var dots = document.querySelectorAll('#gradEventsModal .gm-dot');            // "Nossos Eventos": 1 passo por slide
+        for (var j = 0; j < dots.length; j++){
+          (function(slide){ out.push({ y:y, action:function(){ gradClear(); gradEventsOpen(); gradEventGo(slide); } }); })(j);
         }
         return out;
       } },
@@ -158,7 +168,8 @@
         var footer = document.getElementById('rodape');
         var vh = window.innerHeight, base = curY(), out = [];
         var ref1 = head || plans[0];
-        if (ref1) out.push(base + ref1.getBoundingClientRect().top - 240);         // título + plano 1 (160px mais p/ baixo)
+        var off1 = (window.innerHeight < 900) ? 60 : 240;                          // telas baixas: menos offset (sem vazio)
+        if (ref1) out.push(base + ref1.getBoundingClientRect().top - off1);         // título + plano 1
         if (plans[1]){
           var r2 = plans[1].getBoundingClientRect();
           out.push(base + r2.top - Math.max(80, (vh - r2.height) / 2));            // plano 2
@@ -170,6 +181,30 @@
         return out.length ? out : null;
       } }
   ];
+
+  /* ----- config por página -----
+     index.html: sem window.PMODE → usa INDEX_SECTIONS (mapa rico, com pin/scrub).
+     páginas de produto: definem window.PMODE = { auto:true, backHref:'../index.html' }
+     antes deste script; as seções são auto-detectadas (header.hero + <section>),
+     cada uma vira um stop simples de enquadramento (scroll nativo, sem GSAP). */
+  var PM   = window.PMODE || {};
+  var AUTO = !!PM.auto;
+  /* produto em apresentação: limpa o restore de scroll da visita anterior ANTES do
+     page-transition rodar (este script carrega antes dele) — assim a página não é
+     deslocada na chegada; a apresentação sempre começa no hero. */
+  if (AUTO){ try{ if (sessionStorage.getItem('pm') === '1') sessionStorage.removeItem('pt-scroll:' + location.pathname); }catch(e){} }
+  function buildAutoSections(){
+    var sel = PM.screens || 'header.hero, section';
+    var seen = [];
+    [].slice.call(document.querySelectorAll(sel)).forEach(function(s){ if (seen.indexOf(s) === -1) seen.push(s); });
+    return seen.map(function(s, i){
+      var lbl = s.getAttribute('data-pm-label');
+      if (!lbl){ var h = s.querySelector('h1, h2, .kicker'); lbl = h ? h.textContent : (s.id || ('Seção ' + (i + 1))); }
+      lbl = (lbl || '').replace(/\s+/g, ' ').trim().slice(0, 22) || ('Seção ' + (i + 1));
+      return { label: lbl, el: s, subs: [], on: true, frame: true, frameOff: (PM.frameOff != null ? PM.frameOff : 80) };
+    });
+  }
+  var SECTIONS = AUTO ? buildAutoSections() : INDEX_SECTIONS;
 
   /* ---- ícones (SVG inline) ---- */
   var ICON_PRESENT =
@@ -203,6 +238,13 @@
   function gradClear(){ gradBarEls().forEach(function(g){ try{ g.dispatchEvent(new PointerEvent('pointerleave', {bubbles:true})); }catch(e){} }); }
   function gradHover(i){ var bs = gradBarEls(); if (!bs.length) return; gradClear(); if (bs[i]){ try{ bs[i].dispatchEvent(new PointerEvent('pointerenter', {bubbles:true})); }catch(e){} } }
 
+  /* modal "Nossos Eventos" das graduações: abrir/fechar e navegar os slides pelos
+     próprios controles do site (o modal já tem navegação horizontal). */
+  function gradModalEl(){ return document.getElementById('gradEventsModal'); }
+  function gradEventsOpen(){ var m = gradModalEl(); if (m && m.classList.contains('open')) return; var b = document.getElementById('gradEventsBtn'); if (b) try{ b.click(); }catch(e){} }
+  function gradEventsClose(){ var m = gradModalEl(); if (m && m.classList.contains('open')){ var c = m.querySelector('.gm-close'); if (c) try{ c.click(); }catch(e){} } }
+  function gradEventGo(i){ var d = document.querySelector('#gradEventsModal .gm-dot[data-i="' + i + '"]'); if (d) try{ d.click(); }catch(e){} }
+
   /* bonificação: seleciona o carro/aba (clicar no .carbtn dispara o setCar do site) */
   function carSelectRaw(i){ var b = document.querySelector('.carbtn[data-car="' + i + '"]'); if (b) try{ b.click(); }catch(e){} }
   function carSelect(i){
@@ -224,16 +266,20 @@
   toggle.setAttribute('aria-label', 'Ativar modo apresentação');
   toggle.title = 'Modo apresentação';
 
-  // agrupa o toggle + "Fale conosco" (toggle ANTES do CTA, juntinhos)
-  var navCta = document.querySelector('.nav .nav-cta');
-  if (navCta && navCta.parentNode){
-    var ctaGroup = el('div', 'pmode-cta-group');
-    navCta.parentNode.insertBefore(ctaGroup, navCta);
-    ctaGroup.appendChild(toggle);
-    ctaGroup.appendChild(navCta);
-  } else {
-    var navShell = document.querySelector('.nav .nav-shell');
-    if (navShell) navShell.appendChild(toggle);
+  // index: agrupa o toggle + "Fale conosco" (toggle ANTES do CTA, juntinhos).
+  // produtos (AUTO): não injeta toggle na navbar — a página entra em apresentação
+  // sozinha (auto-enter) e o "sair" do rail volta pro index.
+  if (!AUTO){
+    var navCta = document.querySelector('.nav .nav-cta');
+    if (navCta && navCta.parentNode){
+      var ctaGroup = el('div', 'pmode-cta-group');
+      navCta.parentNode.insertBefore(ctaGroup, navCta);
+      ctaGroup.appendChild(toggle);
+      ctaGroup.appendChild(navCta);
+    } else {
+      var navShell = document.querySelector('.nav .nav-shell');
+      if (navShell) navShell.appendChild(toggle);
+    }
   }
 
   /* 2) rail à esquerda (irmão da <nav>, fora do #smooth-content) */
@@ -275,6 +321,20 @@
   rail.appendChild(btnPlay);
   document.body.appendChild(rail);
 
+  /* telas menores: rail recolhido que abre ao aproximar o mouse da lateral (ou foco).
+     Em telas grandes o CSS mantém o rail completo, então isto é inócuo lá. */
+  var railZone = el('div', 'pmode-railzone');
+  document.body.appendChild(railZone);
+  var railCloseT = null;
+  function railOpen(){ if (railCloseT){ clearTimeout(railCloseT); railCloseT = null; } rail.classList.add('pmode-rail-open'); }
+  function railClose(){ if (railCloseT) clearTimeout(railCloseT); railCloseT = setTimeout(function(){ rail.classList.remove('pmode-rail-open'); }, 280); }
+  railZone.addEventListener('mouseenter', railOpen);
+  rail.addEventListener('mouseenter', railOpen);
+  railZone.addEventListener('mouseleave', railClose);
+  rail.addEventListener('mouseleave', railClose);
+  rail.addEventListener('focusin', railOpen);
+  rail.addEventListener('focusout', railClose);
+
   /* ==========================================================================
      Motor de waypoints
      ========================================================================== */
@@ -315,7 +375,7 @@
     activeStops = [];
 
     SECTIONS.forEach(function(sc, si){
-      var node = document.querySelector(sc.sel);
+      var node = sc.el || document.querySelector(sc.sel);
       var entry = { si:si, el:node, on: !!(sc.on && node), startY:0, stops:[] };
       if (entry.on){
         // sc.frame força enquadramento (ignora pin/scrub) — p/ seções interativas
@@ -343,7 +403,7 @@
         } else {
           // sem pin → enquadra o topo. frameOff = quanto o topo da seção fica abaixo
           // do topo da viewport (menor/negativo = rola mais para baixo).
-          var foff = (sc.frameOff != null) ? sc.frameOff : 90;
+          var foff = (sc.frameOff != null) ? (typeof sc.frameOff === 'function' ? sc.frameOff() : sc.frameOff) : 90;
           var top = curY() + node.getBoundingClientRect().top - foff;
           entry.startY = clamp(0, maxY(), top);
           entry.stops = [ entry.startY ];
@@ -371,12 +431,31 @@
     return best;
   }
 
+  /* tween nativo (rAF) p/ páginas sem GSAP (produtos) — mantém suavidade + onComplete */
+  function sweepNative(fromY, targetY, dur){
+    return new Promise(function(res){
+      var start = null, cancelled = false;
+      var ease = function(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }; // ~power3.inOut
+      activeTween = { kill:function(){ cancelled = true; activeTween = null; } };
+      function step(ts){
+        if (cancelled) return;
+        if (start == null) start = ts;
+        var t = Math.min(1, (ts - start) / (dur * 1000));
+        setY(fromY + (targetY - fromY) * ease(t));
+        if (t < 1) requestAnimationFrame(step);
+        else { activeTween = null; res(); }
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
   function sweepTo(targetY, durOverride, easeOverride){
     targetY = clamp(0, maxY(), targetY);
-    if (REDUCE || !GSAP){ setY(targetY); return Promise.resolve(); }
+    if (REDUCE){ setY(targetY); return Promise.resolve(); }
     var fromY = curY();
     var dist = Math.abs(targetY - fromY);
     if (dist < 2){ setY(targetY); return Promise.resolve(); }
+    if (!GSAP) return sweepNative(fromY, targetY, durOverride ? Math.max(0.4, durOverride) : clamp(0.6, 1.4, dist / 2200));
     /* piso alto de duração + ease forte: trechos curtos ficam gentis (não bruscos);
        trechos longos não passam de ~1.7s. durOverride (ex.: sede) força um tempo
        próprio; easeOverride (ex.: entrada da órbita) deixa o ritmo mais uniforme. */
@@ -499,6 +578,7 @@
   function enter(){
     if (active) return;
     active = true;
+    if (AUTO) root.style.scrollBehavior = 'auto';   // rAF controla o scroll (sem CSS smooth brigando)
     root.classList.add('pmode-active');
     toggle.setAttribute('aria-pressed', 'true');
     toggle.setAttribute('aria-label', 'Sair do modo apresentação');
@@ -511,11 +591,20 @@
     if (!active) return;
     active = false;
     stopAuto();
+    gradEventsClose();   // se saiu com o modal "Nossos Eventos" aberto, fecha (despausa o smoother)
     if (activeTween){ activeTween.kill(); activeTween = null; }
     root.classList.remove('pmode-active');
+    if (AUTO) root.style.scrollBehavior = '';
     toggle.setAttribute('aria-pressed', 'false');
     toggle.setAttribute('aria-label', 'Ativar modo apresentação');
     try { toggle.focus(); } catch(e){}
+  }
+  /* produto: "sair" = voltar pro index (reusa o link .back / data-pt-href → cortina) */
+  function goBack(){
+    var back = document.querySelector('.nav .back, [data-pt-href$="index.html"]');
+    if (back){ back.click(); return; }
+    try{ sessionStorage.setItem('pt', '1'); }catch(e){}
+    location.href = PM.backHref || '../index.html';
   }
 
   /* ---- controles ---- */
@@ -526,13 +615,13 @@
   btnDown.addEventListener('click', function(){ manualIndex(curIdx < 0 ? 0 : curIdx + 1); });
   btnPlay.addEventListener('click', function(){ autoOn ? stopAuto() : startAuto(); });
   toggle.addEventListener('click', function(){ active ? exit() : enter(); });
-  btnExit.addEventListener('click', exit);
+  btnExit.addEventListener('click', function(){ AUTO ? goBack() : exit(); });
 
   /* ---- teclado (só no modo ativo) ---- */
   document.addEventListener('keydown', function(e){
     if (!active) return;
     var k = e.key;
-    if (k === 'Escape' || e.keyCode === 27){ e.preventDefault(); exit(); }
+    if (k === 'Escape' || e.keyCode === 27){ e.preventDefault(); AUTO ? goBack() : exit(); }
     else if (k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Spacebar'){ e.preventDefault(); manualIndex(curIdx < 0 ? 0 : curIdx + 1); }
     else if (k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); manualIndex(curIdx <= 0 ? 0 : curIdx - 1); }
     else if (k === 'Home'){ e.preventDefault(); manualIndex(0); }
@@ -548,6 +637,35 @@
     wheelLock = true; setTimeout(function(){ wheelLock = false; }, 320);
     manualIndex(e.deltaY > 0 ? (curIdx < 0 ? 0 : curIdx + 1) : (curIdx <= 0 ? 0 : curIdx - 1));
   }, { passive:false, capture:true });
+
+  /* ---- handoff index <-> páginas de produto (Opção B do backlog) ---- */
+  if (!AUTO){
+    // saindo da index em apresentação ao clicar num card → lembra o modo e o card
+    document.addEventListener('click', function(e){
+      if (!active) return;
+      var link = e.target.closest && e.target.closest('[data-pt-href]');
+      if (!link) return;
+      try{ sessionStorage.setItem('pm', '1'); sessionStorage.setItem('pm-stop', String(curIdx)); }catch(err){}
+      // não previne: o page-transition faz a navegação (cortina)
+    }, true);
+  }
+  function autoEnterIfNeeded(){
+    var pm = null, ps = null;
+    try{ pm = sessionStorage.getItem('pm'); ps = sessionStorage.getItem('pm-stop'); }catch(e){}
+    if (pm !== '1') return;
+    if (AUTO){
+      enter();                                    // produto entra em apresentação sozinho
+      // sempre começa no topo (hero), à prova de restore/layout não assentado
+      curIdx = 0; setY(0); renderDotsState();
+    } else {
+      enter();                                    // index re-entra e volta ao card salvo
+      var idx = parseInt(ps, 10); if (isNaN(idx)) idx = 0;
+      setTimeout(function(){ goToIndex(idx, true); }, 80);
+      try{ sessionStorage.removeItem('pm'); sessionStorage.removeItem('pm-stop'); }catch(e){}
+    }
+  }
+  if (document.readyState === 'complete') setTimeout(autoEnterIfNeeded, 140);
+  else window.addEventListener('load', function(){ setTimeout(autoEnterIfNeeded, 140); });
 
   /* handle p/ depuração */
   window.__pmode = {
