@@ -3314,7 +3314,7 @@
             if(on!==b.__on){ b.__on=on;
               gsap.to(b,{autoAlpha:on?1:0,y:on?0:18,duration:.45,ease:'power2.out',overwrite:'auto'}); }
           });
-          if(hqw){ var won=self.progress>=.45&&self.progress<=.93;
+          if(hqw){ var won=self.progress>=.45;   /* permanece até o fim (nao some no final) */
             if(won!==hqw.__on){ hqw.__on=won;
               gsap.to(hqw,{autoAlpha:won?1:0,y:won?0:26,duration:.5,ease:'power2.out',overwrite:'auto'}); } }
         }});
