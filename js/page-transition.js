@@ -25,6 +25,14 @@
   var IS_PRODUTO = /\/produtos\//.test(location.pathname);
 
   try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch(e){}
+  /* F5/reload sempre reinicia no TOPO. Sem isto, o navegador restaura o scroll no meio
+     da pagina ANTES do ScrollSmoother/ScrollTrigger recalcularem, dessincronizando as
+     secoes pinadas (o deck clonado do ecossistema quebrava). O retorno-a-secao pos-transicao
+     nao e afetado (ele e feito por JS na chegada, via sessionStorage, nao pelo scroll nativo). */
+  window.addEventListener('beforeunload', function(){
+    try { var s = smoother(); if (s) s.scrollTop(0); } catch(e){}
+    try { window.scrollTo(0, 0); } catch(e){}
+  });
 
   function smoother(){ return (window.ScrollSmoother && ScrollSmoother.get) ? ScrollSmoother.get() : null; }
   function getScroll(){ var s = smoother(); return s ? s.scrollTop() : (window.pageYOffset || document.documentElement.scrollTop || 0); }
