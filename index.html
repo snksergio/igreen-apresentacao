@@ -3071,11 +3071,13 @@
   var statsMM = gsap.matchMedia();
 
   /* DESKTOP (>1024px): pin + dispersao com parallax (original, intocado) */
-  statsMM.add({ stAll:'(min-width:1025px)', stShort:'(min-width:1025px) and (max-height:900px)' }, function(ctx){
-    /* Em telas curtas (altura <=900px, ex.: notebooks/monitores com escala do Windows)
-       o parallax vertical dos números é ZERADO: com 100vh de altura os cards drift-avam
-       ate 145px p/ cima e invadiam o titulo/descricao central. Sem drift eles descansam
-       nas ancoras CSS (o layout "orbitando" do design). Telas altas: drift normal. */
+  statsMM.add({ stAll:'(min-width:1025px)', stShort:'(min-width:1025px) and (max-height:1100px)' }, function(ctx){
+    /* Em telas com altura <=1100px (a maioria: notebooks e monitores grandes com escala
+       do Windows, que dao 864/960/1000/1080px de altura CSS) o parallax vertical dos
+       numeros e ZERADO: com 100vh de altura os cards drift-avam ate ~145px p/ cima e
+       invadiam o titulo/descricao central (colisao confirmada ate ~1080px). Sem drift
+       eles descansam nas ancoras CSS (o layout "orbitando" do design). Somente telas
+       realmente altas (>1100px, ex.: 1440p a 100%) mantem o parallax completo. */
     var DRIFTK = (ctx && ctx.conditions && ctx.conditions.stShort) ? 0 : 1;
     gsap.to('.stitle .line>span',{y:0,duration:1.15,ease:'power4.out',stagger:.13,
       scrollTrigger:{trigger:'.stats',start:'top 65%',once:true}});
