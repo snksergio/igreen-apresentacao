@@ -123,8 +123,8 @@
   .bolt video,.bolt img{
     position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
     mix-blend-mode:screen;
-    -webkit-mask-image:radial-gradient(90% 80% at 50% 50%,#000 32%,transparent 68%);
-    mask-image:radial-gradient(90% 80% at 50% 50%,#000 32%,transparent 68%);
+    -webkit-mask-image:radial-gradient(78% 66% at 50% 52%,#000 16%,transparent 70%);
+    mask-image:radial-gradient(78% 66% at 50% 52%,#000 16%,transparent 70%);
     opacity:0;transform:scale(.9);
     transition:opacity .9s cubic-bezier(.16,1.1,.3,1),transform .9s cubic-bezier(.16,1.1,.3,1);
   }
@@ -716,6 +716,9 @@
   .cl-logo{flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;
     justify-content:center;font-style:normal;font-size:12.5px;font-weight:700;color:#052008;
     background:var(--green)}
+  /* quando a linha usa a logo real do parceiro: fundo escuro p/ a logo monocromatica aparecer */
+  .cl-logo.hasimg{background:rgba(232,255,228,.06);border:1px solid rgba(232,255,228,.12)}
+  .cl-logo img{width:74%;height:74%;object-fit:contain;display:block}
   .cl-row>div{flex:1}
   .cl-row>div b{display:block;font-size:13px;font-weight:600}
   .cl-row>div span{display:block;margin-top:2px;font-size:10.5px;color:var(--ink-dim)}
@@ -816,6 +819,11 @@
   .tile.timg img{width:100%;height:100%;object-fit:cover;display:block}
   .tile.tpart .tmono{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;
     justify-content:center;font-size:14px;font-weight:700;color:#052008;background:var(--green)}
+  /* card de LOGO do parceiro: logo maior + fundo (placas) MUITO fraco e borrado */
+  .tile.tlogo{padding:18px;position:relative}
+  .tile.tlogo::before{content:'';position:absolute;inset:0;z-index:0;
+    background:url(assets/img/rec-solar.jpg) center/cover;filter:blur(7px);opacity:.10}
+  .tile.tlogo img{position:relative;z-index:1;max-width:100%;max-height:101px;width:auto;height:auto;object-fit:contain;opacity:.95}
 
   /* ===== secao orbita (separada) ===== */
   .orb{position:relative;height:100vh;min-height:900px;overflow:hidden}
@@ -1682,7 +1690,7 @@
     .dlR{display:none!important}
 
     /* ---- Recorrência: header no topo, colagem compacta quase aberta, blocos em 1 coluna ---- */
-    .recstage{height:auto;overflow:hidden;padding:96px 0 10px}
+    .recstage{height:auto;overflow:hidden;padding:96px 0 48px}
     .recglow{width:130vw;height:420px}
     /* header FORA do zoom (movido via JS): tamanho padrão, centralizado sobre a colagem */
     .rechead{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);z-index:4;
@@ -1693,7 +1701,7 @@
     .rectitle{font-size:clamp(30px,7.4vw,42px);line-height:1.14;margin-top:16px}
     .recsub{font-size:14px;margin-top:16px;line-height:1.6;text-shadow:0 2px 18px rgba(3,6,3,.95)}
     /* colagem: cards menores e MAIS espalhados (altura reduzida p/ menos vazio embaixo) */
-    .recwrap{height:1400px;zoom:.48;max-width:none}
+    .recwrap{height:1680px;zoom:.52;max-width:none}
     /* animação de foco: toda a colagem nasce no centro (escala mínima + fade) e EXPANDE
        até as posições finais — disparo único via .inview (IntersectionObserver, não scroll) */
     #recorrencia .recwrap{ transform-origin:50% 44%; transform:scale(.14); opacity:0;
@@ -1701,24 +1709,24 @@
     #recorrencia .recwrap.inview{ transform:scale(1); opacity:1; }
     .rfloat{opacity:1}   /* cada card visível; a expansão é feita pelo container */
     /* topo (0-34%) e base (62%+) ocupados, escalonados p/ não sobrepor; centro livre p/ o título */
-    .g1{left:-8%;top:-2%}
-    .g2{left:42%;top:12%}
-    .g3{right:-8%;top:1%}
-    .g4{right:-5%;top:59%}
-    .g5{left:-8%;top:62%}
-    .g6{left:34%;top:84%}
-    .g7{right:30%;top:73%}
+    .g1{left:-11%;top:-1%}
+    .g2{left:40%;top:7%}
+    .g3{right:-11%;top:0%}
+    .g4{right:-8%;top:65%}
+    .g5{left:-11%;top:68%}
+    .g6{left:2%;top:94%}
+    .g7{right:3%;top:83%}
     /* grade: linha já crescida (JS não zera no mobile), blocos 1 por linha */
-    .recgrid{padding:6px 20px 64px}
+    .recgrid{padding:40px 20px 64px}
     /* linha conectora: curta e ACIMA do título (sem sobrepor), visível de cara */
     .rlink{height:78px}
     #recorrencia .rl-v{height:52px;transform:scaleY(1)!important;opacity:1!important}
     #recorrencia .rl-dot{top:52px;opacity:1!important}
-    #recorrencia .rectitle2{margin-top:6px}
+    #recorrencia .rectitle2{margin-top:22px}
     .rectitle2{font-size:clamp(24px,6vw,30px);line-height:1.16;margin-bottom:30px;
       opacity:0;translate:0 20px;transition:opacity .5s ease,translate .6s cubic-bezier(.16,1.1,.3,1)}
     .rectitle2.inview{opacity:1;translate:0 0}
-    .recblocks{grid-template-columns:1fr;gap:12px}
+    .recblocks{grid-template-columns:1fr;gap:16px}
     .rblock{padding:15px 16px;gap:13px;
       opacity:0;translate:0 20px;transition:opacity .5s ease,translate .6s cubic-bezier(.16,1.1,.3,1)}
     .rblock.inview{opacity:1;translate:0 0}
@@ -1758,10 +1766,12 @@
     #simulador .sidelbl{font-size:14px;margin-bottom:12px}
     /* grads: card horizontal (medalha à esquerda, nome+% à direita), 2 por linha
        (.sel .grads = mesma especificidade da regra desktop que força 4 colunas) */
-    #simulador .sel .grads{grid-template-columns:1fr 1fr;gap:9px}
+    /* grid-auto-rows:1fr iguala TODAS as linhas à mais alta (nomes longos ex. "Embaixador 12K"
+       nao deixam mais os cards com alturas diferentes); min-height garante um piso uniforme */
+    #simulador .sel .grads{grid-template-columns:1fr 1fr;gap:9px;grid-auto-rows:1fr}
     /* .sel .grad / .sel .grad .gn = mesma especificidade das regras desktop (1184/1187) que venciam */
     #simulador .sel .grad{display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;
-      column-gap:12px;text-align:left;padding:9px 14px 9px 16px;transform:none}
+      column-gap:12px;text-align:left;padding:9px 14px 9px 16px;transform:none;min-height:58px}
     #simulador .sel .grad img,#simulador .sel .grad.base .gicon{grid-row:1/3;grid-column:1;
       width:38px;height:38px;margin:0;align-self:center}
     /* remove o min-height (era 22px, criava o afastamento); gn no fim da linha 1 e gp no início da 2 → colados */
@@ -1775,13 +1785,13 @@
     /* barra fixa no rodapé: valor da recorrência ao vivo enquanto ajusta (some no card de resultado) */
     .sim-stickybar{position:fixed;left:0;right:0;bottom:0;z-index:30;
       display:flex;align-items:center;justify-content:space-between;gap:14px;
-      padding:11px 20px calc(11px + env(safe-area-inset-bottom));
+      padding:16px 20px calc(16px + env(safe-area-inset-bottom));
       background:rgba(5,14,8,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
       border-top:1px solid rgba(24,255,0,.32);box-shadow:0 -10px 30px rgba(0,0,0,.5);
       transform:translateY(110%);transition:transform .38s cubic-bezier(.16,1.1,.3,1)}
     .sim-stickybar.show{transform:none}
     .sim-stickybar .sb-l{font-size:11px;letter-spacing:.08em;color:var(--ink-dim);line-height:1.3}
-    .sim-stickybar .sb-v{font-size:21px;font-weight:600;color:var(--green);
+    .sim-stickybar .sb-v{font-size:23px;font-weight:600;color:var(--green);
       text-shadow:0 0 20px rgba(24,255,0,.4);white-space:nowrap}
   }
 
@@ -1823,9 +1833,9 @@
     <div class="nav-menu" id="navMenu">
       <div class="nav-links">
         <a href="#ecossistema">O Ecossistema</a>
-        <a href="#visao">Visão de Negócio</a>
-        <a href="#cashback">Cashback Green</a>
-        <a href="#faq">FAQ</a>
+        <a href="#simulador">Simulador</a>
+        <a href="#planos">Planos</a>
+        <a href="#orbita">App</a>
       </div>
       <a class="nav-cta" href="#contato">Fale conosco →</a>
     </div>
@@ -1853,9 +1863,9 @@
       <span class="ptxt"><b>+ R$ 4,2 milhões</b><span>em recorrência já distribuídos aos licenciados da rede</span></span>
     </div>
     <div class="bolt" aria-hidden="true">
-    <video class="segv is-on" autoplay muted loop playsinline preload="auto" poster="assets/img/bolt-glass-poster.jpg">
-      <source src="assets/video/bolt-glass.mp4" type="video/mp4">
-    </video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/signal-glass.mp4" type="video/mp4"></video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/shield-glass.mp4" type="video/mp4"></video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/tech-glass.mp4" type="video/mp4"></video>
+    <video class="segv is-on" autoplay muted loop playsinline preload="auto">
+      <source src="assets/video/conexao-green.mp4" type="video/mp4">
+    </video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/conexao-telecom.mp4" type="video/mp4"></video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/conexao-seguros.mp4" type="video/mp4"></video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/conexao-expansao.mp4" type="video/mp4"></video>
 </div>
     <div class="kpis" id="kpis" role="tablist">
       <button class="kpi active" type="button" data-i="0" aria-label="Energia">
@@ -1960,13 +1970,13 @@
       <div class="eprog" aria-hidden="true"><i></i></div>
     </div>
     <div class="etrack">
-      <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaolivre.html"><span class="etag">[ Livre ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-pay.jpg"><source src="assets/video/pay-glass.mp4" type="video/mp4"></video></div><h3>Conexão Livre</h3><p>A porta de entrada do ecossistema: conecte-se à iGreen e comece a empreender sem barreiras.</p><ul class="emods"><li>Acesso completo à rede</li><li>Comece sem investimento</li><li>Todas as conexões num app</li></ul></article>
+      <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaolivre.html"><span class="etag">[ Livre ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-pay.jpg"><source src="assets/video/conexao-green.mp4" type="video/mp4"></video></div><h3>Conexão Livre</h3><p>A porta de entrada do ecossistema: conecte-se à iGreen e comece a empreender sem barreiras.</p><ul class="emods"><li>Acesso completo à rede</li><li>Comece sem investimento</li><li>Todas as conexões num app</li></ul></article>
       <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaogreen.html"><span class="etag">[ Green ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-energia.jpg" data-herovid="0"></video></div><h3>Conexão Green</h3><p>Economia real na conta de luz, sem obra e sem burocracia — energia limpa para todo o Brasil.</p><ul class="emods"><li>Assinatura de energia</li><li>Energia 100% limpa</li><li>Economia na conta de luz</li></ul></article>
-      <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaoplacas.html"><span class="etag">[ Placas ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-energia.jpg"><source src="assets/video/signal-glass.mp4" type="video/mp4"></video></div><h3>Conexão Placas</h3><p>Instalação de placas solares com projeto, homologação e geração própria de energia.</p><ul class="emods"><li>Projeto e instalação</li><li>Homologação inclusa</li><li>Geração própria</li></ul></article>
-      <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaosolar.html"><span class="etag">[ Solar ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-energia.jpg"><source src="assets/video/bolt-glass.mp4" type="video/mp4"></video></div><h3>Conexão Solar</h3><p>Assinatura solar por fazendas próprias: créditos de energia sem instalar nada.</p><ul class="emods"><li>Fazendas solares próprias</li><li>Créditos de energia</li><li>Sem instalação</li></ul></article>
+      <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaoplacas.html"><span class="etag">[ Placas ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-energia.jpg"><source src="assets/video/conexao-placas.mp4" type="video/mp4"></video></div><h3>Conexão Placas</h3><p>Instalação de placas solares com projeto, homologação e geração própria de energia.</p><ul class="emods"><li>Projeto e instalação</li><li>Homologação inclusa</li><li>Geração própria</li></ul></article>
+      <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaosolar.html"><span class="etag">[ Solar ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-energia.jpg"><source src="assets/video/conexao-solar.mp4" type="video/mp4"></video></div><h3>Conexão Solar</h3><p>Assinatura solar por fazendas próprias: créditos de energia sem instalar nada.</p><ul class="emods"><li>Fazendas solares próprias</li><li>Créditos de energia</li><li>Sem instalação</li></ul></article>
       <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaotelecom.html"><span class="etag">[ Telecom ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-telecom.jpg" data-herovid="1"></video></div><h3>Conexão Telecom</h3><p>Planos móveis com qualidade de grande operadora, mantendo o cliente conectado dentro da rede.</p><ul class="emods"><li>Planos móveis</li><li>Portabilidade sem fricção</li><li>Benefícios da rede</li></ul></article>
       <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaoseguros.html"><span class="etag">[ Seguros ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-seguros.jpg" data-herovid="2"></video></div><h3>Conexão Seguros</h3><p>Proteção simples e acessível que aumenta o valor por cliente e fideliza a base.</p><ul class="emods"><li>Proteção residencial</li><li>Vida e acidentes</li><li>Assistências 24h</li></ul></article>
-      <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaoexpansao.html"><span class="etag">[ Expansão ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-expansao.jpg"><source src="assets/video/globe-glass.mp4" type="video/mp4"></video></div><h3>Conexão Expansão</h3><p>Estrutura, mentoria e ferramentas para o licenciado escalar a operação em todo o Brasil.</p><ul class="emods"><li>Licenciamento</li><li>Mentoria e treinamento</li><li>Expansão internacional</li></ul></article>
+      <article class="ecard" role="link" tabindex="0" data-pt-href="produtos/conexaoexpansao.html"><span class="etag">[ Expansão ]</span><div class="eimg"><video class="evid" muted loop playsinline preload="none" poster="assets/img/eco-expansao.jpg"><source src="assets/video/conexao-expansao.mp4" type="video/mp4"></video></div><h3>Conexão Expansão</h3><p>Estrutura, mentoria e ferramentas para o licenciado escalar a operação em todo o Brasil.</p><ul class="emods"><li>Licenciamento</li><li>Mentoria e treinamento</li><li>Expansão internacional</li></ul></article>
     </div>
   </div>
 </section>
@@ -2057,32 +2067,58 @@
     <div class="rows" aria-hidden="true">
       <div class="rowline r1">
         <div class="rtrackx">
-          <div class="tile"><span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="#052008" stroke-width="2.2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span><b>Green</b><span>-32% na conta de luz</span></div>
-          <div class="tile timg"><img src="assets/img/rec-wind.jpg" alt=""></div>
-          <div class="tile"><span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="#052008" stroke-width="2.2" stroke-linecap="round"><path d="M5 19v-4M10 19v-7M15 19v-10M20 19V5"/></svg></span><b>Telecom</b><span>25 GB · portabilidade</span></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/dominos.png" alt="Domino's"></div>
           <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
-          <div class="tile"><span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="#052008" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3Z"/></svg></span><b>Seguros</b><span>proteção sem burocracia</span></div>
-          <div class="tile timg"><img src="assets/img/rec-grow.jpg" alt=""></div>
-          <div class="tile"><span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="#052008" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3.5c2.5 2.5 2.5 14.5 0 17-2.5-2.5-2.5-14.5 0-17Z"/></svg></span><b>Expansão</b><span>rede em 21 estados</span></div>
-          <div class="tile timg"><img src="assets/img/rec-coins.jpg" alt=""></div>
-          <div class="tile"><span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="#052008" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18"/></svg></span><b>iGreen Pay</b><span>cashback recorrente</span></div>
-          <div class="tile timg"><img src="assets/img/rec-lock.jpg" alt=""></div>
-          <div class="tile"><span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="#052008" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><b>Tudo em dia</b><span>boletos e faturas no app</span></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/burgerking.png" alt="Burger King"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/CocoBambu.png" alt="Coco Bambu"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/ze-delivery.png" alt="Zé Delivery"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/cinemark.png" alt="Cinemark"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/cinepolis.png" alt="Cinépolis"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/petz.png" alt="Petz"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/drogasil.png" alt="Drogasil"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/CasasBahia.png" alt="Casas Bahia"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/Polishop.png" alt="Polishop"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/Riachuelo.png" alt="Riachuelo"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/Vivara.png" alt="Vivara"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
         </div>
       </div>
       <div class="rowline r2">
         <div class="rtrackx">
-          <div class="tile tpart"><span class="tmono">BP</span><b>BP Seguradora</b><span>Susep 01546</span></div>
-          <div class="tile timg"><img src="assets/img/rec-coins.jpg" alt=""></div>
-          <div class="tile tpart"><span class="tmono">iC</span><b>iGreen Club</b><span>resgates e benefícios</span></div>
-          <div class="tile timg"><img src="assets/img/rec-grow.jpg" alt=""></div>
-          <div class="tile tpart"><span class="tmono">GL</span><b>Gusttavo Lima</b><span>embaixador oficial</span></div>
-          <div class="tile timg"><img src="assets/img/rec-lock.jpg" alt=""></div>
-          <div class="tile tpart"><span class="tmono">P1</span><b>Parceiro Energia</b><span>usinas próprias</span></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/Vivara.png" alt="Vivara"></div>
           <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
-          <div class="tile tpart"><span class="tmono">P2</span><b>Parceiro Telecom</b><span>cobertura nacional</span></div>
-          <div class="tile timg"><img src="assets/img/rec-wind.jpg" alt=""></div>
-          <div class="tile tpart"><span class="tmono">P3</span><b>Parceiro Pay</b><span>pagamentos digitais</span></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/Riachuelo.png" alt="Riachuelo"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/Polishop.png" alt="Polishop"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/CasasBahia.png" alt="Casas Bahia"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/drogasil.png" alt="Drogasil"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/petz.png" alt="Petz"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/cinepolis.png" alt="Cinépolis"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/cinemark.png" alt="Cinemark"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/ze-delivery.png" alt="Zé Delivery"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/CocoBambu.png" alt="Coco Bambu"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/burgerking.png" alt="Burger King"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
+          <div class="tile tlogo"><img src="assets/img/parceiros/dominos.png" alt="Domino's"></div>
+          <div class="tile timg"><img src="assets/img/rec-solar.jpg" alt=""></div>
         </div>
       </div>
     </div>
@@ -2203,12 +2239,12 @@
           <span>Parceiro Pizza · válido em todo o cardápio</span>
         </div>
         <div class="club-list">
-          <div class="cl-row"><i class="cl-logo">PZ</i><div><b>Pizzaria Parceira</b><span>alimentação</span></div><span class="cl-off">-30%</span></div>
-          <div class="cl-row"><i class="cl-logo">CN</i><div><b>Cinema Parceiro</b><span>entretenimento</span></div><span class="cl-off">2x1</span></div>
-          <div class="cl-row"><i class="cl-logo">FM</i><div><b>Farmácia Parceira</b><span>saúde</span></div><span class="cl-off">-25%</span></div>
-          <div class="cl-row"><i class="cl-logo">AC</i><div><b>Academia Parceira</b><span>bem-estar</span></div><span class="cl-off">-20%</span></div>
-          <div class="cl-row"><i class="cl-logo">ST</i><div><b>Streaming Parceiro</b><span>assinaturas</span></div><span class="cl-off">3 meses</span></div>
-          <div class="cl-row"><i class="cl-logo">PS</i><div><b>Posto Parceiro</b><span>combustível</span></div><span class="cl-off">-10%</span></div>
+          <div class="cl-row"><i class="cl-logo hasimg"><img src="assets/img/parceiros/dominos.png" alt=""></i><div><b>Domino's</b><span>Alimentação</span></div><span class="cl-off">-30%</span></div>
+          <div class="cl-row"><i class="cl-logo hasimg"><img src="assets/img/parceiros/cinemark.png" alt=""></i><div><b>Cinemark</b><span>Cinema</span></div><span class="cl-off">2x1</span></div>
+          <div class="cl-row"><i class="cl-logo hasimg"><img src="assets/img/parceiros/drogasil.png" alt=""></i><div><b>Drogasil</b><span>Farmácia</span></div><span class="cl-off">-25%</span></div>
+          <div class="cl-row"><i class="cl-logo hasimg"><img src="assets/img/parceiros/petz.png" alt=""></i><div><b>Petz</b><span>Ração · Veterinário</span></div><span class="cl-off">-20%</span></div>
+          <div class="cl-row"><i class="cl-logo hasimg"><img src="assets/img/parceiros/ze-delivery.png" alt=""></i><div><b>Zé Delivery</b><span>Bebidas</span></div><span class="cl-off">-15%</span></div>
+          <div class="cl-row"><i class="cl-logo hasimg"><img src="assets/img/parceiros/CasasBahia.png" alt=""></i><div><b>Casas Bahia</b><span>Varejo</span></div><span class="cl-off">-10%</span></div>
         </div>
       </div>
     </div>
@@ -2853,6 +2889,15 @@
       if(on){ k.style.animation='none'; void k.offsetWidth; k.style.animation=''; }
     });
   }
+  /* velocidade por video: <video data-rate="0.7"> (1 = normal). Ajuste fino sem reexportar. */
+  function rateOf(v){ var r=parseFloat(v.getAttribute('data-rate')); return (r>0)?r:1; }
+  function playVid(v){ if(!v) return; try{ v.playbackRate=rateOf(v); var p=v.play(); if(p&&p.catch)p.catch(function(){}); }catch(e){} }
+  function pauseVid(v){ if(!v) return; try{ v.pause(); }catch(e){} }
+  /* PERFORMANCE: toca SO o video ativo; os outros ficam pausados (nao decodificam por tras).
+     Tira o autoplay p/ nao concorrer com o controle do carrossel (autoplay reativava os pausados). */
+  var heroVisible=true;
+  vids.forEach(function(v){ try{ v.removeAttribute('autoplay'); }catch(e){} });
+  vids.forEach(function(v,i){ if(i===idx) playVid(v); else pauseVid(v); });
   function typeSwap(nextWord,done){
     caret.classList.add('on');
     var cur=word.textContent, i=cur.length;
@@ -2872,11 +2917,14 @@
   function goTo(next){
     if(busy||next===idx) return;
     busy=true;
-    vids[idx].classList.remove('is-on');
+    var prev=idx;
+    if(heroVisible) playVid(vids[next]);               /* novo entra tocando; fade-in via .is-on (opacity) */
+    vids[prev].classList.remove('is-on');
     vids[next].classList.add('is-on');
     activate(next);
     typeSwap(segs[next],function(){ busy=false; });
     idx=next;
+    setTimeout(function(){ if(idx!==prev) pauseVid(vids[prev]); },1000); /* pausa o anterior so DEPOIS do fade */
     schedule();
   }
   function schedule(){
@@ -2886,6 +2934,15 @@
   kpis.forEach(function(k){
     k.addEventListener('click',function(){ goTo(parseInt(k.getAttribute('data-i'),10)); });
   });
+  /* pausa TUDO quando o hero sai da tela; retoma so o ativo ao voltar */
+  var boltEl=document.querySelector('.bolt');
+  if(boltEl && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){ heroVisible=e.isIntersecting;
+        if(e.isIntersecting) playVid(vids[idx]); else vids.forEach(pauseVid);
+      });
+    },{threshold:0.05}).observe(boltEl);
+  }
   schedule();
 })();
 </script>
@@ -3313,7 +3370,8 @@
       ScrollTrigger.create({trigger:'.hqvideo',start:'top top',end:'+=340%',pin:true,
         onUpdate:function(self){
           var hp=self.progress;
-          if(hqDur){ try{ hqbg.currentTime=hp*(hqDur-.06); }catch(e){} }
+          /* modo apresentacao pode segurar a sede tocando em loop: nao scrubar o currentTime */
+          if(hqDur && !window.__sedePMHold){ try{ hqbg.currentTime=hp*(hqDur-.06); }catch(e){} }
           hqBadges.forEach(function(b,i){
             var on=self.progress>=(.12+i*.11);
             if(on!==b.__on){ b.__on=on;
@@ -4950,16 +5008,23 @@ if(window.gsap&&window.ScrollTrigger){
     ScrollTrigger.refresh();
   }
 
-  /* ===== modal "Nossos Eventos": bento paginado por qualificacao (Gestor + Executivo) ===== */
+  /* ===== modal "Nossos Eventos": bento paginado por qualificacao
+     (Sênior → Gestor → Executivo → Diretor → Acionista; mesma ordem da escada) ===== */
   (function buildEventsModal(){
     if(document.getElementById("gradEventsModal")) return;
     var PHOTO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.7"/><path d="M21 15l-5-5L5 20"/></svg>';
     var QR='<svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M20 14v.01M14 20h.01M17 17v.01M20 17v3M17 20h3"/></svg>';
     var EVENTS=[
+      { name:"Sênior", color:"#22c55e", rgb:"34,197,94", pin:"assets/pins/S%C3%8ANIOR.png",
+        logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">TREINAMENTOS</span><span class="ev-tag">& Eventos</span>' },
       { name:"Gestor", color:"#f97316", rgb:"249,115,22", pin:"assets/pins/GESTOR.png",
         logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">EXPERIENCE</span>' },
       { name:"Executivo", color:"#38bdf8", rgb:"56,189,248", pin:"assets/pins/EXECUTIVO.png",
-        logo:'<span class="ev-sm">LET’S GO</span><span class="ev-lg">CRUZEIRO</span><span class="ev-tag">iGreen</span>' }
+        logo:'<span class="ev-sm">LET’S GO</span><span class="ev-lg">CRUZEIRO</span><span class="ev-tag">iGreen</span>' },
+      { name:"Diretor", color:"#cbd5e1", rgb:"203,213,225", pin:"assets/pins/DIRETOR.png",
+        logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">VIAGEM</span><span class="ev-tag">Internacional</span>' },
+      { name:"Acionista", color:"#f5c542", rgb:"245,197,66", pin:"assets/pins/ACIONISTA.png",
+        logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">VIAGEM</span><span class="ev-tag">Internacional</span>' }
     ];
     function photos(n){ var s=""; for(var i=0;i<n;i++) s+='<div class="gm-photo">'+PHOTO+'</div>'; return s; }
     var slides=EVENTS.map(function(ev){
@@ -5400,6 +5465,7 @@ if(window.gsap&&window.ScrollTrigger){
   })();
 })();
 </script>
+<script src="js/video-inview.js"></script>
 <script src="js/presentation-mode.js"></script>
 <script src="js/page-transition.js"></script>
 </body>

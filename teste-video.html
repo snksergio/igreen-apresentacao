@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teste — vídeo hero (glow + screen)</title>
+<style>
+  :root{ --bg:#030603; --green:#18FF00; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:var(--bg); color:#e8ffe4; font-family:system-ui,Segoe UI,Roboto,sans-serif; min-height:100vh; }
+  header.top{ padding:20px 28px; display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+    border-bottom:1px solid rgba(232,255,228,.08); }
+  header.top h1{ font-size:15px; font-weight:600; letter-spacing:.02em; }
+  header.top .hint{ font-size:12px; color:#8aa; }
+
+  .controls{ padding:14px 28px; display:flex; gap:22px; flex-wrap:wrap; align-items:center;
+    border-bottom:1px solid rgba(232,255,228,.08); font-size:12px; }
+  .controls label{ display:flex; flex-direction:column; gap:4px; min-width:150px; }
+  .controls input[type=range]{ width:180px; }
+  .controls .val{ color:var(--green); font-variant-numeric:tabular-nums; }
+  .controls .row{ display:flex; gap:10px; align-items:center; }
+  .controls button{ background:rgba(24,255,0,.1); color:#e8ffe4; border:1px solid rgba(24,255,0,.35);
+    border-radius:8px; padding:7px 12px; cursor:pointer; font-size:12px; }
+
+  /* PALCO: replica o contexto da hero — fundo #030603, glow radial atrás, vídeo por cima com screen.
+     Sem NENHUMA camada com cor entre o vídeo e o fundo. */
+  .stage{ position:relative; height:78vh; display:grid; place-items:center; overflow:hidden; }
+  .stage::before{ content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:min(56vw,760px); height:min(56vw,760px); border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle, rgba(24,255,0,.13) 0%, rgba(24,255,0,.05) 45%, transparent 72%); }
+  .glowoff .stage::before{ display:none; }
+
+  /* mesma geometria do .bolt da hero (grid col ~622 x min(82vh,780px)) p/ o ajuste bater 1:1 */
+  .boltbox{ position:relative; width:min(48vw,622px); height:min(82vh,780px); }
+  .boltbox video{ position:absolute; inset:0; width:100%; height:100%;
+    object-fit:contain; background:transparent;
+    mix-blend-mode:screen;
+    -webkit-mask-image:radial-gradient(90% 80% at 50% 50%, #000 32%, transparent 68%);
+    mask-image:radial-gradient(90% 80% at 50% 50%, #000 32%, transparent 68%);
+  }
+  /* toggle: ver o retângulo cru (sem máscara) */
+  .nomask .boltbox video{ -webkit-mask-image:none !important; mask-image:none !important; }
+
+  /* moldura de referência: mostra exatamente onde está o quadrado do vídeo */
+  .boltbox .frame{ position:absolute; inset:0; border:1px dashed rgba(255,0,0,.5); display:none; pointer-events:none; }
+  .showframe .boltbox .frame{ display:block; }
+</style>
+</head>
+<body>
+  <header class="top">
+    <h1>Teste — vídeo do hero (glow + <code>mix-blend-mode: screen</code>)</h1>
+    <span class="hint">fundo #030603 · sem camada intermediária · igual à hero</span>
+  </header>
+
+  <div class="controls">
+    <label>Máscara — raio X <span class="val" id="vMX">90</span>%
+      <input type="range" id="mx" min="30" max="100" value="90"></label>
+    <label>Máscara — raio Y <span class="val" id="vMY">80</span>%
+      <input type="range" id="my" min="30" max="100" value="80"></label>
+    <label>Início do fade <span class="val" id="vMS">32</span>%
+      <input type="range" id="ms" min="0" max="60" value="32"></label>
+    <label>Fim do fade <span class="val" id="vME">68</span>%
+      <input type="range" id="me" min="40" max="100" value="68"></label>
+    <label>Centro Y <span class="val" id="vCY">50</span>%
+      <input type="range" id="cy" min="30" max="70" value="50"></label>
+    <label>Contraste <span class="val" id="vCT">1.00</span>
+      <input type="range" id="ct" min="100" max="180" value="100"></label>
+    <label>Brilho <span class="val" id="vBR">1.00</span>
+      <input type="range" id="br" min="70" max="130" value="100"></label>
+    <div class="row">
+      <button id="tNomask">alternar máscara</button>
+      <button id="tGlow">alternar glow</button>
+      <button id="tFrame">mostrar quadrado</button>
+      <button id="copy">copiar CSS</button>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="boltbox">
+      <video id="vid" src="assets/video/conexao-green.mp4" autoplay muted loop playsinline></video>
+      <div class="frame"></div>
+    </div>
+  </div>
+
+  <script>
+    var vid = document.getElementById('vid');
+    var S = { mx:78, my:66, ms:16, me:70, cy:52, ct:100, br:100 };  /* = valor aplicado na hero */
+    function applyMask(){
+      var m = 'radial-gradient('+S.mx+'% '+S.my+'% at 50% '+S.cy+'%, #000 '+S.ms+'%, transparent '+S.me+'%)';
+      vid.style.webkitMaskImage = m; vid.style.maskImage = m;
+      vid.style.filter = 'contrast('+(S.ct/100)+') brightness('+(S.br/100)+')';
+    }
+    function bind(id, key, fmt){
+      var el = document.getElementById(id), out = document.getElementById('v'+id.toUpperCase());
+      el.addEventListener('input', function(){ S[key] = +el.value; out.textContent = fmt?fmt(S[key]):S[key]; applyMask(); });
+    }
+    bind('mx','mx'); bind('my','my'); bind('ms','ms'); bind('me','me'); bind('cy','cy');
+    bind('ct','ct', function(v){return (v/100).toFixed(2);});
+    bind('br','br', function(v){return (v/100).toFixed(2);});
+    document.getElementById('tNomask').onclick=function(){ document.body.classList.toggle('nomask'); };
+    document.getElementById('tGlow').onclick=function(){ document.body.classList.toggle('glowoff'); };
+    document.getElementById('tFrame').onclick=function(){ document.body.classList.toggle('showframe'); };
+    document.getElementById('copy').onclick=function(){
+      var css = '.bolt video{\n  -webkit-mask-image:radial-gradient('+S.mx+'% '+S.my+'% at 50% '+S.cy+'%,#000 '+S.ms+'%,transparent '+S.me+'%);\n  mask-image:radial-gradient('+S.mx+'% '+S.my+'% at 50% '+S.cy+'%,#000 '+S.ms+'%,transparent '+S.me+'%);\n  filter:contrast('+(S.ct/100).toFixed(2)+') brightness('+(S.br/100).toFixed(2)+');\n}';
+      navigator.clipboard && navigator.clipboard.writeText(css); alert(css);
+    };
+    // sincroniza os sliders com os defaults (valores bons encontrados no teste)
+    [['mx','MX'],['my','MY'],['ms','MS'],['me','ME'],['cy','CY']].forEach(function(p){
+      document.getElementById(p[0]).value = S[p[0]];
+      document.getElementById('v'+p[1]).textContent = S[p[0]];
+    });
+    applyMask();
+  </script>
+</body>
+</html>

@@ -63,8 +63,13 @@
         return out.length ? out : null;
       } },
     { label:'Sede',         sel:'#sede',         subs:[], on:true,
-      /* vídeo scrubado: varre no tempo real do vídeo (ritmo ~normal), suave. */
-      dur:function(){ var v=document.querySelector('.hqbg'); var d=(v&&v.duration)?v.duration:9; return clamp(5,16,d); } },
+      /* modo apresentacao: a sede toca o video em LOOP sozinho enquanto em foco (nao
+         depende do scroll). window.__sedePMHold suspende o scrub do currentTime no index. */
+      dur:function(){ var v=document.querySelector('.hqbg'); var d=(v&&v.duration)?v.duration:9; return clamp(5,16,d); },
+      onEnter:function(){ var v=document.querySelector('.hqbg');
+        if(v){ window.__sedePMHold=true; try{ v.loop=true; v.currentTime=0; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} } },
+      onLeave:function(){ var v=document.querySelector('.hqbg');
+        window.__sedePMHold=false; if(v){ try{ v.loop=false; v.pause(); }catch(e){} } } },
     { label:'Ecossistema',  sel:'#ecossistema2', subs:[], on:true,
       /* baralho: um passo por card em foco (como a trajetória). O card i fica em
          foco quando cp = i/(N-1); e cp = (progress*D)/CARO_DUR, com CARO_DUR=5 e
