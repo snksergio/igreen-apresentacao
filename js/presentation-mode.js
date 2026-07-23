@@ -648,6 +648,17 @@
   }
   function goPrev(){ stopAuto(); goToIndex(curIdx <= 0 ? 0 : curIdx - 1, false); }
 
+  /* passo "puro" (setas < >): NUNCA abre produto — no ecossistema troca de card e,
+     no último, segue pra próxima seção (órbita). Fora do ecossistema = passo normal. */
+  function goStepNext(){ stopAuto(); if (activeTween) return; goToIndex(curIdx < 0 ? 0 : curIdx + 1, false); }
+
+  /* produto: fechar E PULAR pro próximo card (no tour); fora do tour só volta */
+  function skipProduct(){
+    if (tourOn()) tourSet(true, tourCard() + 1);
+    try{ sessionStorage.setItem('pm', '1'); }catch(e){}
+    goBack();
+  }
+
   /* ---- controles ---- */
   dots.forEach(function(d, i){
     d.addEventListener('click', function(){ if (SECTIONS[i].on) manualSection(i); });
@@ -656,15 +667,17 @@
   btnDown.addEventListener('click', function(){ goNext(); });
   btnPlay.addEventListener('click', function(){ autoOn ? stopAuto() : startAuto(); });
   toggle.addEventListener('click', function(){ active ? exit() : enter(); });
-  btnExit.addEventListener('click', function(){ AUTO ? goBack() : exit(); });
+  btnExit.addEventListener('click', function(){ AUTO ? skipProduct() : exit(); });
 
   /* ---- teclado (só no modo ativo) ---- */
   document.addEventListener('keydown', function(e){
     if (!active) return;
     var k = e.key;
-    if (k === 'Escape' || e.keyCode === 27){ e.preventDefault(); AUTO ? goBack() : exit(); }
+    if (k === 'Escape' || e.keyCode === 27){ e.preventDefault(); AUTO ? skipProduct() : exit(); }
     else if (k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Spacebar'){ e.preventDefault(); goNext(); }
     else if (k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); goPrev(); }
+    else if (k === 'ArrowRight'){ e.preventDefault(); goStepNext(); }   // troca card sem abrir; no último → próxima seção
+    else if (k === 'ArrowLeft'){ e.preventDefault(); goPrev(); }        // card anterior sem abrir
     else if (k === 'Home'){ e.preventDefault(); manualIndex(0); }
     else if (k === 'End'){ e.preventDefault(); manualIndex(activeStops.length - 1); }
   }, true);
