@@ -55,6 +55,20 @@ graduações, planos com beats).
 seções `frame` (hoje `head.top - 88`). Provavelmente criar `buildStops` por página/seção quando fugir do padrão.
 **Custo:** médio; incremental por seção. Casa com o item de "tratar imagens" (conteúdo real ajuda a medir alturas).
 
+## 5. Menu de navegação da index — âncoras que não existem
+Vários links do menu/hero apontam para `#ids` que **não existem** como seção → clicar não faz nada
+(o handler usa `querySelector(sel)` e sai se não achar). Mapa atual (`index.html`, `.nav-links`/`.nav-cta` e botões do hero):
+- `#ecossistema` "O Ecossistema" → **OK** (um script reescreve `a[href="#ecossistema"]`→`#ecossistema2` em runtime).
+- `#visao` "Visão de Negócio" → **quebrado** (não há `#visao`). Sugestão: apontar p/ `#trajetoria` ou `#resultados`, ou remover.
+- `#cashback` "Cashback Green" → **quebrado** (não há `#cashback`). Sugestão: `#recorrencia`, ou remover.
+- `#faq` "FAQ" → **quebrado** (a index não tem FAQ — só as páginas de produto têm). Remover do menu da index ou criar uma seção FAQ.
+- `#contato` "Fale conosco" (CTA) → **quebrado** (não há `#contato`). Sugestão: apontar p/ `#rodape` (footer tem contato).
+- `#plano` "Iniciar jornada" (hero) → **quebrado**; a seção é `#planos` (com "s"). Corrigir p/ `#planos`.
+- `#simulacao` "Simular minha recorrência" (hero) → **quebrado**; a seção é `#simulador`. Corrigir p/ `#simulador`.
+**Ação:** revisar os rótulos vs seções reais (`resultados, trajetoria, sede, ecossistema2, orbita, recorrencia,
+bonificacao, simulador, graduacoes, planos, rodape`), corrigir os `href` (ou remover itens sem destino),
+e conferir também o menu mobile (overlay `.nav.open`). **Risco:** baixo (só markup + âncoras).
+
 ## D2. Extrair CSS custom → `css/styles.css`
 **Risco:** médio. O `<style>` do footer é movido por JS para dentro de `#smooth-content`;
 CSS é interligado por seção (cuidado com especificidade).
