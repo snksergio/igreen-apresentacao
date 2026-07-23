@@ -18,7 +18,11 @@
 (function(){
   var html = document.documentElement;
   var REVEAL = 620, COVER = 500;
-  var KEY = 'pt-scroll:' + location.pathname;
+  /* normaliza o pathname p/ a chave: '/index.html' e '/' viram a mesma chave
+     (a Vercel serve a home nas duas URLs; o link "voltar" vai p/ ../index.html,
+     e sem isto a seção de origem não era restaurada — voltava pro topo). */
+  var KEY = 'pt-scroll:' + location.pathname.replace(/index\.html$/, '');
+  var IS_PRODUTO = /\/produtos\//.test(location.pathname);
 
   try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch(e){}
 
@@ -43,7 +47,11 @@
   if (html.getAttribute('data-pt-state') === 'cover') {
     var hasTarget = false;
     try { hasTarget = !!sessionStorage.getItem(KEY); } catch(e){}
-    if (hasTarget) {
+    if (IS_PRODUTO) {
+      /* páginas internas são páginas-destino: sempre no topo (não "retomam" a
+         última posição, que causava o scroll pro final ao reentrar). */
+      try { sessionStorage.removeItem(KEY); } catch(e){}
+    } else if (hasTarget) {
       var apply = function(){ var y = resolveTarget(); if (y != null) setScroll(y); };
       apply();                                             // enquanto coberto (invisível)
       requestAnimationFrame(apply);                        // após 1º frame do ScrollSmoother/pins
