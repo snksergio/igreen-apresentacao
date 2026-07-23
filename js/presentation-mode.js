@@ -591,6 +591,8 @@
     if (!active) return;
     active = false;
     stopAuto();
+    tourSet(false);      // sair encerra o tour do ecossistema
+    try{ sessionStorage.removeItem('pm'); }catch(e){}
     gradEventsClose();   // se saiu com o modal "Nossos Eventos" aberto, fecha (despausa o smoother)
     if (activeTween){ activeTween.kill(); activeTween = null; }
     root.classList.remove('pmode-active');
@@ -607,12 +609,51 @@
     location.href = PM.backHref || '../index.html';
   }
 
+  /* ===== Tour do ecossistema =====
+     No ecossistema (index), ↓ ABRE o produto do card atual (sem clique). Ao terminar
+     de percorrer o produto (↓ no último passo dele), ele volta pra home focando o
+     PRÓXIMO card; após o último card, segue pra órbita. Estado em sessionStorage
+     (pmtour/pmcard) sobrevive à navegação. */
+  function isEcoCardStop(idx){ var s=activeStops[idx]; return !!(s && SECTIONS[s.si] && SECTIONS[s.si].sel==='#ecossistema2'); }
+  function ecoCards(){ return document.querySelectorAll('#ecossistema2 .ecard'); }
+  function ecoStopIndexFor(k){ for (var i=0;i<activeStops.length;i++){ var s=activeStops[i]; if (SECTIONS[s.si] && SECTIONS[s.si].sel==='#ecossistema2' && s.sub===k) return i; } return -1; }
+  function tourOn(){ try{ return sessionStorage.getItem('pmtour')==='1'; }catch(e){ return false; } }
+  function tourCard(){ try{ return parseInt(sessionStorage.getItem('pmcard')||'-1',10); }catch(e){ return -1; } }
+  function tourSet(on, card){ try{ if(on){ sessionStorage.setItem('pmtour','1'); sessionStorage.setItem('pmcard',String(card)); } else { sessionStorage.removeItem('pmtour'); sessionStorage.removeItem('pmcard'); } }catch(e){} }
+
+  function openEcoCard(k){
+    var card = ecoCards()[k]; if (!card){ goToIndex(curIdx+1, false); return; }
+    tourSet(true, k);
+    try{ sessionStorage.setItem('pm','1'); sessionStorage.setItem('pm-stop', String(curIdx)); }catch(e){}
+    card.click();   // page-transition navega com a cortina
+  }
+  function goToEcoCard(k){ var i=ecoStopIndexFor(k); if (i>=0) goToIndex(i, false); }
+
+  /* "próximo" central: no ecossistema abre o produto; no produto (tour) o ↓ no fim
+     avança pro próximo card; senão comportamento normal de passo. */
+  function goNext(){
+    stopAuto();
+    if (activeTween) return;
+    if (AUTO){
+      if (tourOn() && curIdx >= activeStops.length - 1){
+        tourSet(true, tourCard() + 1);
+        try{ sessionStorage.setItem('pm','1'); }catch(e){}
+        goBack();
+        return;
+      }
+      goToIndex(curIdx + 1, false); return;
+    }
+    if (curIdx >= 0 && isEcoCardStop(curIdx)){ openEcoCard(activeStops[curIdx].sub); return; }
+    goToIndex(curIdx < 0 ? 0 : curIdx + 1, false);
+  }
+  function goPrev(){ stopAuto(); goToIndex(curIdx <= 0 ? 0 : curIdx - 1, false); }
+
   /* ---- controles ---- */
   dots.forEach(function(d, i){
     d.addEventListener('click', function(){ if (SECTIONS[i].on) manualSection(i); });
   });
-  btnUp.addEventListener('click', function(){ manualIndex(curIdx <= 0 ? 0 : curIdx - 1); });
-  btnDown.addEventListener('click', function(){ manualIndex(curIdx < 0 ? 0 : curIdx + 1); });
+  btnUp.addEventListener('click', function(){ goPrev(); });
+  btnDown.addEventListener('click', function(){ goNext(); });
   btnPlay.addEventListener('click', function(){ autoOn ? stopAuto() : startAuto(); });
   toggle.addEventListener('click', function(){ active ? exit() : enter(); });
   btnExit.addEventListener('click', function(){ AUTO ? goBack() : exit(); });
@@ -622,8 +663,8 @@
     if (!active) return;
     var k = e.key;
     if (k === 'Escape' || e.keyCode === 27){ e.preventDefault(); AUTO ? goBack() : exit(); }
-    else if (k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Spacebar'){ e.preventDefault(); manualIndex(curIdx < 0 ? 0 : curIdx + 1); }
-    else if (k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); manualIndex(curIdx <= 0 ? 0 : curIdx - 1); }
+    else if (k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Spacebar'){ e.preventDefault(); goNext(); }
+    else if (k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); goPrev(); }
     else if (k === 'Home'){ e.preventDefault(); manualIndex(0); }
     else if (k === 'End'){ e.preventDefault(); manualIndex(activeStops.length - 1); }
   }, true);
@@ -635,7 +676,7 @@
     e.preventDefault();                       // bloqueia o scroll livre no modo apresentação
     if (activeTween || wheelLock || Math.abs(e.deltaY) < 4) return;
     wheelLock = true; setTimeout(function(){ wheelLock = false; }, 320);
-    manualIndex(e.deltaY > 0 ? (curIdx < 0 ? 0 : curIdx + 1) : (curIdx <= 0 ? 0 : curIdx - 1));
+    if (e.deltaY > 0) goNext(); else goPrev();
   }, { passive:false, capture:true });
 
   /* ---- handoff index <-> páginas de produto (Opção B do backlog) ---- */
@@ -652,13 +693,32 @@
   function autoEnterIfNeeded(){
     var pm = null, ps = null;
     try{ pm = sessionStorage.getItem('pm'); ps = sessionStorage.getItem('pm-stop'); }catch(e){}
-    if (pm !== '1') return;
+    var tour = tourOn();
+    if (pm !== '1' && !tour) return;
     if (AUTO){
       enter();                                    // produto entra em apresentação sozinho
-      // sempre começa no topo (hero), à prova de restore/layout não assentado
-      curIdx = 0; setY(0); renderDotsState();
+      curIdx = 0; setY(0); renderDotsState();     // sempre no topo (tour segue via pmtour)
+      try{ sessionStorage.removeItem('pm'); }catch(e){}
+      return;
+    }
+    // INDEX
+    enter();
+    if (tour){
+      var c = tourCard(), N = ecoCards().length;
+      if (c >= 0 && c < N){
+        setTimeout(function(){ goToEcoCard(c); }, 90);         // foca o próximo card (não abre)
+      } else {
+        tourSet(false);                                        // acabaram os cards → segue pra órbita
+        var tryOrbita = function(n){                            // espera os triggers construírem
+          var orbSi = -1; for (var i=0;i<SECTIONS.length;i++){ if (SECTIONS[i].sel==='#orbita'){ orbSi=i; break; } }
+          var oi = orbSi>=0 ? firstStopIndexOf(orbSi) : -1;
+          if (oi>=0) goToIndex(oi, false);
+          else if (n>0) setTimeout(function(){ tryOrbita(n-1); }, 200);
+        };
+        setTimeout(function(){ tryOrbita(10); }, 150);
+      }
+      try{ sessionStorage.removeItem('pm'); }catch(e){}
     } else {
-      enter();                                    // index re-entra e volta ao card salvo
       var idx = parseInt(ps, 10); if (isNaN(idx)) idx = 0;
       setTimeout(function(){ goToIndex(idx, true); }, 80);
       try{ sessionStorage.removeItem('pm'); sessionStorage.removeItem('pm-stop'); }catch(e){}
