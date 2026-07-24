@@ -88,17 +88,33 @@
         }
         return out;
       } },
-    { label:'Órbita',       sel:'#orbita',       subs:[0.19, 0.58, 0.93], on:true,
-      /* 3 views compostas = SNAPS[1..3] (celular/app, tela do clube, download);
-         o 0 é só a entrada crua. Ao ir pela seta (varredura contínua) a ponte
-         eco2→órbita dispara o igStartOrbita; ao ir pelo dot (teleporte) a ponte
-         é pulada, então disparamos o intro na mão e garantimos smoother ativo. */
+    { label:'Órbita',       sel:'#orbita',       on:true,
+      /* 3 views: (1) app + cards flutuantes, (2) tela do clube, (3) download.
+         Ao ir pela seta a ponte eco2→órbita dispara o igStartOrbita; ao ir pelo dot
+         disparamos o intro na mão e garantimos o smoother ativo. */
       /* entrada pela seta é LENTA: cobre o colapso dos cards no núcleo + a descida
          até o celular (era rápido demais pra ver). Não afeta os passos internos. */
       enterDur:6,
       onEnter:function(){
         try{ var s=(window.ScrollSmoother&&ScrollSmoother.get)?ScrollSmoother.get():null; if(s) s.paused(false); }catch(e){}
         if (window.igStartOrbita) window.igStartOrbita();
+      },
+      /* o 1º stop era 0.19, mas os cards flutuantes só ficam 100% visíveis ~0.26
+         (antes disso o celular sobe mas os cards ainda estão zerados); e a varredura
+         às vezes era atropelada pelo intro (lock/seat), parando no início do pin.
+         Cada stop REAFIRMA a posição exata ao chegar — apply() é 100% scroll-driven e
+         força o celular no p>.16, então o estado final fica garantido (celular + cards). */
+      buildStops:function(st, node){
+        if (!st) return null;
+        var span = st.end - st.start;
+        function mk(p){ var y = st.start + span * p;
+          return { y:y, action:function(){
+            var s=(window.ScrollSmoother&&ScrollSmoother.get)?ScrollSmoother.get():null;
+            try{ if(s) s.paused(false); }catch(e){}
+            if(s) s.scrollTop(y); else window.scrollTo(0,y);
+            if(window.ScrollTrigger) ScrollTrigger.update();
+          } }; }
+        return [ mk(0.26), mk(0.58), mk(0.93) ];
       } },
     { label:'Recorrência',  sel:'#recorrencia',  subs:[], on:true,
       /* transições mais suaves (entrada e beat1↔beat2) */
@@ -511,7 +527,10 @@
         if (sc && typeof sc.onEnter === 'function') sc.onEnter();
         requestAnimationFrame(function(){ sweepTo(stop.y, durOv, easeOv).then(done); });
       } else {
-        // scroll suave direto — sem teleporte (voltar/continuar com as setas)
+        // scroll suave direto — sem teleporte (voltar/continuar com as setas).
+        // entrando numa seção NOVA por aqui (ex.: setas) → dispara onEnter também
+        // (antes só o teleporte por dot chamava; a sede não tocava o vídeo pelas setas).
+        if (stop.first && stop.si !== prevSi && sc && typeof sc.onEnter === 'function') sc.onEnter();
         sweepTo(stop.y, durOv, easeOv).then(done);
       }
     });

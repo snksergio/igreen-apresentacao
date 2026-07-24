@@ -4092,10 +4092,13 @@
 
 
   /* snap manual: ao parar o scroll dentro do pin, assenta na visao composta mais proxima */
-  var SNAPS=[0,.19,.58,.93];
+  var SNAPS=[0,.26,.58,.93];   /* 1a view (app + cards) em .26: antes .19 os cards ainda nao apareciam */
   var snapTw=null;
   function trySnap(){
     if(!pinRef||!pinRef.isActive||scrollLocked) return;
+    /* no modo apresentacao a posicao e controlada pela apresentacao — o snap nativo
+       brigava com a varredura (puxava de volta pro SNAP mais proximo). */
+    if(document.documentElement.classList.contains('pmode-active')) return;
     var p=pinRef.progress;
     if(p<=.002||p>=.998) return;
     var best=SNAPS[0];
