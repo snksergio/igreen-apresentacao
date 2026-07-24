@@ -943,7 +943,7 @@
       radial-gradient(920px 640px at 50% 58%,rgba(24,255,0,.11),transparent 66%),
       radial-gradient(1500px 950px at 50% 46%,rgba(24,255,0,.05),transparent 68%),
       radial-gradient(640px 420px at 50% 88%,rgba(24,255,0,.06),transparent 64%)}
-  .orb-head{position:absolute;left:0;right:0;top:160px;z-index:6;text-align:center;padding:0 28px;
+  .orb-head{position:absolute;left:0;right:0;top:142px;z-index:6;text-align:center;padding:0 28px;
     pointer-events:none}
   .orb-badge{display:inline-flex;align-items:center;gap:9px;padding:10px 20px;border-radius:999px;
     font-size:13px;font-weight:500;color:var(--ink);pointer-events:auto;
@@ -3911,22 +3911,25 @@
      escala o palco INTEIRO por um unico fator que cabe na LARGURA e na
      ALTURA, ancorado na base (transform-origin 50% 100%). Assim a base do
      celular fica fixa e o topo dele sempre pousa com folga abaixo do texto.
-       s = min(1, (H-320)/760, W/1240)
-       - 320 : reserva p/ badge+titulo+descricao no topo. Calibrado p/ o topo
-               do celular pousar em y=420 (H+100-760*s) em qualquer altura —
-               exatamente a mesma folga do design em 1080. Em 1080 => s=1.0
-               (idêntico ao original, zero regressão).
-       - 760 : altura do canvas (ancorado na base)
-       - 1240: largura do conteudo (cards laterais)
-     Telas menores encolhem junto, proporcional, sem distorcer. */
+       Em vez de uma reserva FIXA (frágil se o texto/fonte mudar), MEDE o espaço
+     que realmente sobra pro celular:
+       espaço p/ o celular = (base do palco: H+100) − (base do texto) − GAP
+       base do texto = top(css do cabeçalho) + altura MEDIDA (badge+título+desc)
+       s = min(1, espaço/760, W/1240)   [760 = altura do canvas; 1240 = largura]
+     Assim adapta sozinho a qualquer conteúdo/fonte/altura/escala. Ancorado na
+     base (origin 50% 100%): o celular sempre pousa GAP px abaixo da descrição.
+     Em 1080p real => s≈1.0 (sem regressão). */
   appstage.style.transformOrigin='50% 100%';
   /* CTA "Começar agora": fica ~20px abaixo do topo do celular (colide com ele
      já em 1080) e foi pedida p/ sair desta seção — escondida no desktop. */
   if(orbCta) orbCta.style.display='none';
+  var ORB_GAP=36;   /* folga entre a base da descrição e o topo do celular */
   function fitOrbita(){
     if(!window.matchMedia('(min-width:1025px)').matches) return;   /* desktop only; no mobile o appstage é static */
     var H=window.innerHeight, W=window.innerWidth;
-    var s=Math.min(1,(H-320)/760,W/1240);
+    var headTop=parseFloat(getComputedStyle(orbHead).top)||0;
+    var titleBottom=headTop+orbHead.offsetHeight;                   /* base real do texto */
+    var s=Math.min(1,(H+100-titleBottom-ORB_GAP)/760,W/1240);
     if(s<0.42) s=0.42;                                              /* piso: nunca some de vez */
     appstage.style.transform='scale('+s+')';
   }
