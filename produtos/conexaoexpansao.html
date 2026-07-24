@@ -219,7 +219,7 @@
   .como .steps{ margin-top:clamp(36px,5vw,56px); position:relative; }
   .como .steps::before{ content:''; position:absolute; left:23px; top:14px; bottom:14px; width:2px;
     background:linear-gradient(180deg, rgba(24,255,0,.4), rgba(24,255,0,.1) 90%, transparent); }
-  .cstep{ position:relative; display:grid; grid-template-columns:48px 1fr minmax(180px,300px);
+  .cstep{ position:relative; display:grid; grid-template-columns:48px 1fr minmax(140px,200px);
     gap:0 clamp(20px,3vw,44px); align-items:center; padding:clamp(20px,2.6vw,30px) 0; }
   .cstep + .cstep{ border-top:1px solid rgba(232,255,228,.06); }
   .cstep .dot{ position:relative; z-index:1; width:48px; height:48px; border-radius:50%;
@@ -232,8 +232,9 @@
     color:var(--green); border:1px solid rgba(24,255,0,.32); border-radius:999px; padding:5px 12px;
     background:rgba(24,255,0,.05); white-space:nowrap; }
   .cstep p{ margin-top:8px; font-size:13.5px; line-height:1.62; color:var(--ink-dim); max-width:56ch; }
-  .cstep .im{ border-radius:14px; overflow:hidden; border:1px solid rgba(232,255,228,.08); aspect-ratio:16/9; }
-  .cstep .im img{ width:100%; height:100%; object-fit:cover; opacity:1; }
+  /* frame QUADRADO menor; imagem ~15% maior que o quadrado (crop leve pelo overflow), centralizada */
+  .cstep .im{ border-radius:14px; overflow:hidden; border:1px solid rgba(232,255,228,.08); aspect-ratio:1/1; background:#000; }
+  .cstep .im img{ width:100%; height:100%; object-fit:cover; opacity:1; transform:scale(1.15); }
   .como .law{ margin-top:26px; padding-left:70px; font-size:11.5px; color:rgba(232,255,228,.42); }
   @media (max-width:760px){
     .cstep{ grid-template-columns:48px 1fr; }
@@ -241,7 +242,7 @@
     .cstep{ grid-template-rows:auto auto; }
     .cstep .dot{ grid-row:1 / span 2; }
     .cstep > div{ grid-column:2; grid-row:2; }
-    .cstep .im{ display:block; grid-column:2; grid-row:1; margin:0 0 12px; width:100%; max-width:220px; aspect-ratio:16/9; }
+    .cstep .im{ display:block; grid-column:2; grid-row:1; margin:0 0 12px; width:100%; max-width:170px; aspect-ratio:1/1; }
     .como .law{ padding-left:0; }
   }
   
@@ -528,7 +529,7 @@
         <p>É o caminho para quem quer crescer rápido e construir uma carreira de sucesso na iGreen.</p>
       </div>
       <div class="media rv">
-        <figure><img src="../assets/img/consultores-a.jpg" alt="Licenciados iGreen formando equipe"></figure>
+        <figure><img src="../assets/img/igreen-conexao-expansao.png" alt="Conexão Expansão iGreen"></figure>
         <div class="chip"><b>Em escala</b><span>ganhos que crescem com a rede</span></div>
       </div>
     </div>
