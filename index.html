@@ -5648,6 +5648,18 @@ if(window.gsap&&window.ScrollTrigger){
   }
 })();
 </script>
+<script>
+/* DEBUG TEMPORARIO (remover depois): mostra o viewport CSS real + dpr no canto */
+(function(){
+  var b=document.createElement('div'); b.id='vpdebug';
+  b.style.cssText='position:fixed;left:10px;bottom:10px;z-index:2147483647;padding:6px 10px;'+
+    'background:rgba(0,0,0,.82);color:#18FF00;font:600 12px/1.2 ui-monospace,monospace;'+
+    'border:1px solid #18FF00;border-radius:8px;pointer-events:none;letter-spacing:.02em';
+  function upd(){ b.textContent = innerWidth+' x '+innerHeight+'  @dpr '+(Math.round(devicePixelRatio*100)/100); }
+  upd(); addEventListener('resize',upd);
+  (document.body||document.documentElement).appendChild(b);
+})();
+</script>
 <script src="js/video-inview.js"></script>
 <script src="js/presentation-mode.js"></script>
 <script src="js/page-transition.js"></script>
