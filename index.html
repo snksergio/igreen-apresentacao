@@ -1498,13 +1498,11 @@
     .carshead{top:56px}
     .carbottom{bottom:5vh}
 
-    /* Órbita "Tudo em um": sem CTA, celular menor e mais alto, título acima */
-    .orb-cta{display:none}
-    .orb-appstage{transform:scale(.66);transform-origin:50% 42%}
-    .orb-head{top:64px}
-    .orb-title{font-size:clamp(30px,3vw,42px)}
-    .orb-sub{font-size:14.5px;max-width:50ch;margin-top:10px}
-    /* fase download: mesma altura mínima nos 2 blocos → centralizados, cabeçalhos no mesmo nível */
+    /* Órbita: a escala do palco (celular + cards) e a visibilidade da CTA
+       "Começar agora" agora são controladas por JS (fitOrbita, busca "FIT
+       PROPORCIONAL" abaixo) — escala proporcional que cabe em qualquer
+       viewport/escala, no lugar de breakpoints fixos que sempre deixavam
+       algum device quebrado. Aqui fica só a altura dos painéis de download. */
     .dlL,.dlR{min-height:340px}
   }
 
@@ -1912,14 +1910,11 @@
      Desktop pequeno/curto (notebooks ~1360x700 – 1366x768): ajustes finos
      por ALTURA, acima do mobile (>1024px). Não afeta telas altas nem o mobile.
      =================================================================== */
-  /* ===== TELAS BAIXAS (altura util <= 1000px) =====================
-     Cobre o caso critico dos notebooks/desktops 1920x1080: maximizado o
-     navegador entrega ~946px de altura (1080 - barra tarefas - chrome),
-     com dpr 1. O layout do orbita/carros/ecossistema foi feito p/ ~1080,
-     entao em 946 os elementos colidem. Este bloco compacta por ALTURA
-     (independente da largura). Larguras estreitas sao tratadas a parte,
-     mais abaixo, para nao encolher o que tem espaco de sobra em 1920. */
-  @media (min-width:1025px) and (max-height:1000px){
+  /* ===== TELAS MUITO BAIXAS (altura util <= 900px) =================
+     Compacta ecossistema/carros/recorrência em viewports curtos. NÃO cuida
+     mais da órbita (o palco do app é escalado por JS — fitOrbita, mais
+     robusto que breakpoint de altura). */
+  @media (min-width:1025px) and (max-height:900px){
     /* Ecossistema (deck desktop): compacta o cabeçalho e encolhe os cards p/
        caberem em notebooks (viewport ~630–860) e não cobrirem a descrição */
     #ecossistema2 .ehead{ padding-bottom:12px; }
@@ -1941,17 +1936,9 @@
     #recorrencia .rectitle{ font-size:42px; }
     #recorrencia .recsub{ font-size:14px; margin-top:12px; }
 
-    /* Orbita (app): esconde o CTA "Comecar agora", escala o app p/ caber e
-       sobe/comprime o cabecalho. (o -340 do "sobe na mao" tambem encolhe junto,
-       pois o appstage inteiro esta escalado). */
-    .orb-cta{ display:none; }
-    .orb-appstage{ transform:scale(.66); transform-origin:50% 44%; }
-    .orb-head{ top:88px; }                     /* desce p/ nao ficar atras do menu (o CTA saiu, sobra espaco) */
-    .orb-title{ font-size:clamp(26px,2.7vw,38px); }
-    .orb-sub{ font-size:13.5px; margin-top:8px; }
-    /* fase download: so a altura dos paineis depende da altura da tela.
-       O reposicionamento horizontal (puxar p/ dentro) fica na query de
-       LARGURA estreita mais abaixo, senao em 1920 eles ficariam centrais. */
+    /* fase download da órbita: só a altura dos painéis depende da altura da
+       tela. O reposicionamento horizontal (puxar p/ dentro) fica na query de
+       LARGURA estreita mais abaixo. (A escala do celular é feita por JS.) */
     .dlL,.dlR{ min-height:300px; }
 
     /* Bonificacao (carros): reduz as faixas escuras (carro aparece mais) + header mais alto */
@@ -3914,6 +3901,38 @@
   var dlL=orb.querySelector('.dlL'), dlR=orb.querySelector('.dlR');
   var dlHand=orb.querySelector('.dl-hand');
   var handOk=dlHand&&(dlHand.getAttribute('src')||'').trim().length>0;   /* era >50 (proxy p/ base64 embutido); com asset externo o src é curto — basta existir */
+
+  /* ===== FIT PROPORCIONAL DO PALCO DO APP =============================
+     O palco (.orb-appstage: canvas fixo 1520x760; celular 395x812; cards em
+     px) foi desenhado p/ ~1080 de altura. Em qualquer viewport/escala menor
+     (notebook 1080@175% que reporta 1920x946 dpr1, ou 1129x635, etc.) o
+     canvas nao cabe: o celular sobe e invade o titulo, e os cards cortam.
+     Em vez de cacar breakpoints de altura (sempre sobra device quebrado),
+     escala o palco INTEIRO por um unico fator que cabe na LARGURA e na
+     ALTURA, ancorado na base (transform-origin 50% 100%). Assim a base do
+     celular fica fixa e o topo dele sempre pousa com folga abaixo do texto.
+       s = min(1, (H-320)/760, W/1240)
+       - 320 : reserva p/ badge+titulo+descricao no topo. Calibrado p/ o topo
+               do celular pousar em y=420 (H+100-760*s) em qualquer altura —
+               exatamente a mesma folga do design em 1080. Em 1080 => s=1.0
+               (idêntico ao original, zero regressão).
+       - 760 : altura do canvas (ancorado na base)
+       - 1240: largura do conteudo (cards laterais)
+     Telas menores encolhem junto, proporcional, sem distorcer. */
+  appstage.style.transformOrigin='50% 100%';
+  /* CTA "Começar agora": fica ~20px abaixo do topo do celular (colide com ele
+     já em 1080) e foi pedida p/ sair desta seção — escondida no desktop. */
+  if(orbCta) orbCta.style.display='none';
+  function fitOrbita(){
+    if(!window.matchMedia('(min-width:1025px)').matches) return;   /* desktop only; no mobile o appstage é static */
+    var H=window.innerHeight, W=window.innerWidth;
+    var s=Math.min(1,(H-320)/760,W/1240);
+    if(s<0.42) s=0.42;                                              /* piso: nunca some de vez */
+    appstage.style.transform='scale('+s+')';
+  }
+  fitOrbita();
+  window.addEventListener('resize',fitOrbita);
+  if(window.ScrollTrigger&&ScrollTrigger.addEventListener) ScrollTrigger.addEventListener('refresh',fitOrbita);
 
   /* apagar/digitar do titulo e descricao (fase clube) */
   var TS=[orb.querySelector('.ts1'),orb.querySelector('.ts2'),orb.querySelector('.ts3'),orb.querySelector('.ts4')];
