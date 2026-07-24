@@ -377,21 +377,124 @@
   .eprog i{display:block;height:100%;width:100%;background:var(--green);transform:scaleX(0);
     transform-origin:left;box-shadow:0 0 10px rgba(24,255,0,.6)}
   .jphoto{position:absolute;opacity:0;pointer-events:auto;cursor:grab;z-index:3;
-    border-radius:9px;overflow:hidden;
-    box-shadow:0 26px 54px rgba(0,0,0,.68),0 8px 20px rgba(0,0,0,.5)}
+    border-radius:9px;
+    box-shadow:0 20px 44px rgba(0,0,0,.55)}
+  /* "shadow" = clone borrado da propria imagem, atras e maior — bloom de TV que estende a
+     foto (o box-shadow some no fundo escuro). Vaza pra fora pois o overflow:hidden foi p/ o .jpinner. */
+  .jphoto .jpglow{ position:absolute; inset:-14px; width:calc(100% + 28px); height:calc(100% + 28px);
+    object-fit:cover; z-index:0; border-radius:22px; pointer-events:none; opacity:.5; animation:none;
+    filter:grayscale(1) sepia(.5) hue-rotate(70deg) saturate(2) brightness(.82) blur(22px) }
   .jphoto:active{cursor:grabbing}
-  .jphoto::after{content:'';position:absolute;inset:0;pointer-events:none;
+  .jpinner::after{content:'';position:absolute;inset:0;pointer-events:none;
     background:radial-gradient(115% 115% at 50% 46%,transparent 52%,rgba(0,0,0,.42) 100%),
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
     mix-blend-mode:overlay;opacity:.5}
   .jphoto img{display:block;width:100%;height:100%;object-fit:cover;
     filter:grayscale(1) sepia(.38) hue-rotate(66deg) saturate(.85) contrast(1.06) brightness(.9)}
-  /* trajetoria toda com fotos coloridas/on-brand (2021 origem, 2023, 2024, 2025): sem filtro P&B */
-  .jphoto img{ filter:none }
-  .jp1{width:180px;height:180px;right:-370px;top:-46px}
-  .jp2{width:240px;height:156px;left:-400px;top:64px}
-  .jp3{width:164px;height:214px;right:-395px;top:18px}
-  .jp4{width:206px;height:206px;left:-372px;top:-72px}
+  /* efeito "fosforo verde" (display antigo/CRT) na timeline: tint verde LEVE + CRT 100% CSS
+     (scanlines rolando + "linhas falhando" via flicker + micro-glitch RGB raro). Sem GSAP.
+     A vignette + grao continuam no .jphoto::after. */
+  /* container interno: leva a img + todas as camadas do efeito; e ele que sofre o hard-glitch,
+     assim imagem, scanlines, ruido e vinheta se deslocam JUNTOS (sem "vazar" o fundo). */
+  .jphoto .jpinner{ position:relative; display:block; width:100%; height:100%; z-index:1;
+    border-radius:inherit; overflow:hidden;
+    animation:jpHard 8s steps(1,end) infinite }
+  .jphoto img{ filter:grayscale(.85) sepia(.5) hue-rotate(72deg) saturate(1.85) brightness(1.02) contrast(1.03);
+    animation:jpGlitch 7s steps(1,end) infinite }
+  .jpinner::before{ content:''; position:absolute; inset:0; pointer-events:none; z-index:1;
+    background:
+      repeating-linear-gradient(to bottom, rgba(0,0,0,.14) 0px, rgba(0,0,0,.14) 1px, transparent 1px, transparent 3px),
+      radial-gradient(circle at 50% 46%, rgba(24,255,0,.16), transparent 68%);
+    background-size:100% 3px, cover;
+    mix-blend-mode:overlay;
+    /* jpScan = listras rolando; jpDrift = leve "respiro" vertical (TV ligada); jpFlicker = instabilidade */
+    animation:jpScan 2s linear infinite, jpDrift 5.5s ease-in-out infinite, jpFlicker 5s ease-in-out infinite }
+  /* barras horizontais que "falham": piscam de repente com cor de sinal (magenta/ciano),
+     como perda de sinal de TV antiga. Duas em alturas/tempos diferentes p/ dessincronizar. */
+  .jphoto .jpfx{ position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden }
+  .jphoto .jpfx::before, .jphoto .jpfx::after{ content:''; position:absolute; left:0; width:100%;
+    height:3px; background:rgba(255,255,255,.14); opacity:0 }
+  .jphoto .jpfx::before{ top:34%; animation:jpLine 4.2s infinite }
+  .jphoto .jpfx::after{ top:auto; bottom:1px; height:2px; animation:jpLine 5.6s .9s infinite }
+  /* chuvisco / "snow" de TV antiga: ruido fino que "ferve" (troca de posicao em passos),
+     bem leve, so clareia (screen). z-index:1 (junto das listras), abaixo das barras de glitch. */
+  .jphoto .jpsnow{ position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.2;
+    mix-blend-mode:screen; background-size:110px 110px;
+    /* chuvisco levemente esverdeado (meio-termo: nem branco/cinza, nem verde estourado) */
+    filter:sepia(.75) hue-rotate(68deg) saturate(1.7) brightness(1.02);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23s)'/%3E%3C/svg%3E");
+    animation:jpSnow .5s steps(1,end) infinite }
+  /* "ferve": salta entre posicoes aparentemente aleatorias (~12fps) */
+  @keyframes jpSnow{
+    0%{ background-position:0 0 } 16%{ background-position:-43px 27px } 33%{ background-position:31px -52px }
+    50%{ background-position:-67px 61px } 66%{ background-position:22px 38px } 83%{ background-position:-19px -44px }
+    100%{ background-position:14px -12px } }
+  @keyframes jpScan{ from{ background-position:0 0, center } to{ background-position:0 3px, center } }
+  /* linhas "falhando": quedas rapidas e irregulares de opacidade (TV instavel) */
+  @keyframes jpFlicker{
+    0%,19%,49%,69%,89%,100%{ opacity:1 }
+    3%{ opacity:.72 } 4%{ opacity:1 }
+    20%{ opacity:.55 } 21%{ opacity:1 }
+    50%{ opacity:.8 } 51%{ opacity:1 }
+    70%{ opacity:.45 } 71%{ opacity:1 }
+    90%{ opacity:.72 } 91%{ opacity:1 } }
+  /* micro-glitch RGB raro (~1x a cada 7s), so um "tremidinho" de sinal */
+  @keyframes jpGlitch{
+    0%,92%,96%,100%{ filter:grayscale(.85) sepia(.5) hue-rotate(72deg) saturate(1.85) brightness(1.02) contrast(1.03) }
+    93%{ filter:grayscale(.85) sepia(.5) hue-rotate(72deg) saturate(1.85) brightness(1.08) contrast(1.03) drop-shadow(2px 0 rgba(255,40,90,.45)) drop-shadow(-2px 0 rgba(0,200,255,.4)) }
+    95%{ filter:grayscale(.85) sepia(.5) hue-rotate(72deg) saturate(1.85) brightness(1.05) contrast(1.03) drop-shadow(-2px 0 rgba(255,40,90,.4)) drop-shadow(2px 0 rgba(0,200,255,.35)) } }
+  /* respiro vertical bem leve das listras (imita a tela "viva") */
+  @keyframes jpDrift{ 0%,100%{ transform:translateY(-.6%) } 50%{ transform:translateY(.6%) } }
+  /* hard-glitch raro: a imagem inteira "da uma falha" (skew/desloca); scale p/ nao abrir fresta */
+  @keyframes jpHard{
+    0%,86%,92%,100%{ transform:none }
+    87%{ transform:skewX(-12deg) scale(1.06) }
+    88%{ transform:skewX(9deg) translateX(-6px) scale(1.05) }
+    89.5%{ transform:translate(5px,-2px) skewY(3deg) scale(1.05) }
+    91%{ transform:translate(-3px,2px) scale(1.04) } }
+  /* a barra que surge de repente e desliza, com cor de sinal */
+  @keyframes jpLine{
+    0%,88%,100%{ opacity:0; transform:translateX(0); background:rgba(255,255,255,.14) }
+    89%{ opacity:1; transform:translateX(-6%); background:rgba(255,0,255,.35) }
+    91%{ opacity:1; transform:translateX(4%);  background:rgba(0,255,255,.35) }
+    93%{ opacity:.5; transform:translateX(-2%) }
+    95%{ opacity:0 } }
+  /* cada foto glitcha em momentos diferentes (delays negativos = deslocam a fase) */
+  .jphoto.jp2 img{ animation-delay:-3.2s } .jphoto.jp2 .jpinner{ animation-delay:-5.5s }
+  .jphoto.jp3 img{ animation-delay:-5.6s } .jphoto.jp3 .jpinner{ animation-delay:-2.3s }
+  .jphoto.jp4 img{ animation-delay:-1.9s } .jphoto.jp4 .jpinner{ animation-delay:-6.8s }
+  .jphoto.jp2 .jpfx::before{ animation-delay:-2.0s } .jphoto.jp2 .jpfx::after{ animation-delay:-3.0s }
+  .jphoto.jp3 .jpfx::before{ animation-delay:-3.5s } .jphoto.jp3 .jpfx::after{ animation-delay:-1.2s }
+  .jphoto.jp4 .jpfx::before{ animation-delay:-1.5s } .jphoto.jp4 .jpfx::after{ animation-delay:-4.4s }
+  @media (prefers-reduced-motion: reduce){
+    .jphoto img{ animation:none }
+    .jphoto .jpinner{ animation:none }
+    .jpinner::before{ animation:none }
+    .jphoto .jpsnow{ animation:none }
+    .jphoto .jpfx::before, .jphoto .jpfx::after{ animation:none; opacity:0 } }
+  /* HOVER (desktop): "rejuvenesce" a foto — reduz o efeito antigo, realca as cores originais
+     (menos filtro) e calma as scanlines/snow/glitch. O aumento de tamanho vem do GSAP (scale). */
+  @media (hover:hover) and (min-width:1025px){
+    .jphoto img{ transition:filter .4s ease }
+    .jphoto .jpsnow{ transition:opacity .4s ease }
+    /* filtro intermediario: puxa mais a cor original, mas ainda com um tom de fosforo (nao "novo demais").
+       IMPORTANTE: escopar em .jpinner img — senao pega tambem o .jpglow (que e <img>) e ele perde o blur,
+       virando uma 2a imagem nitida atras. */
+    .jphoto:hover .jpinner img{ animation:none;
+      filter:grayscale(.2) saturate(1.12) brightness(1.05) contrast(1.02) }
+    .jphoto:hover .jpinner{ animation:none }                 /* para so o hard-glitch (skew) */
+    /* scanlines + glow continuam animando, porem mais fracos */
+    .jphoto:hover .jpinner::before{ background:
+      repeating-linear-gradient(to bottom, rgba(0,0,0,.07) 0px, rgba(0,0,0,.07) 1px, transparent 1px, transparent 3px),
+      radial-gradient(circle at 50% 46%, rgba(24,255,0,.08), transparent 68%);
+      background-size:100% 3px, cover }
+    .jphoto:hover .jpsnow{ opacity:.09 }                     /* chuvisco mais fraco, ainda fervendo */
+    .jphoto:hover .jpfx::before, .jphoto:hover .jpfx::after{ animation:none; opacity:0 } /* sem barras de falha */
+  }
+  .jp1{width:202px;height:202px;right:-370px;top:-46px}
+  .jp2{width:269px;height:175px;left:-418px;top:6px}
+  .jp3{width:184px;height:240px;right:-350px;top:-22px}
+  .jp4{width:231px;height:231px;left:-372px;top:-72px}
   /* ===== sede: video imersivo com parallax ===== */
   .hqvideo{position:relative;height:100vh;overflow:hidden;background:linear-gradient(180deg,rgba(24,255,0,.02),rgba(3,6,3,0) 55%)}
   .hqframe{position:absolute;inset:0;overflow:hidden;will-change:transform;transform-origin:50% 0}
@@ -1558,7 +1661,7 @@
     /* dot acima da linha (z-index) p/ o check não ser cortado; top via JS */
     .jitem.jl .jdot,.jitem.jr .jdot{left:-38px;right:auto;z-index:2}
     /* fotos inline (acima do texto), menores */
-    .jphoto{position:static;display:block;width:100%;max-width:152px;height:auto;
+    .jphoto{position:relative;inset:auto;display:block;width:100%;max-width:172px;height:auto;
       margin:0 0 14px;border-radius:12px;cursor:default}
     .jphoto img{width:100%;height:auto;aspect-ratio:16/10}
     .jyear{font-size:clamp(20px,5.4vw,26px)}
@@ -2539,7 +2642,12 @@
   .grad-modal .gm-photo{ position:relative; border-radius:15px; overflow:hidden; border:1.5px solid var(--acc-line); background:linear-gradient(150deg,var(--acc-glow),#060c0a 70%); box-shadow:0 0 26px var(--acc-glow); display:flex; align-items:center; justify-content:center; color:var(--acc); }
   .grad-modal .gm-photo svg{ width:30px; height:30px; opacity:.5; }
   .grad-modal .gm-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .grad-modal .gm-mid{ display:flex; flex-direction:column; align-items:center; justify-content:space-between; text-align:center; padding:22px 4px 8px; }
+  /* tint leve com a cor da qualificacao (via --acc), p/ casar as fotos com a secao sem editar
+     imagem por imagem. color = mantem o brilho/detalhe e caracteriza a cor; glow suave por cima. */
+  .grad-modal .gm-photo::after{ content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(160deg, var(--acc-glow), transparent 62%), var(--acc);
+    mix-blend-mode:color; opacity:.42; }
+  .grad-modal .gm-mid{ display:flex; flex-direction:column; align-items:center; justify-content:space-between; text-align:center; padding:22px 4px 48px; }
   .grad-modal .gm-event{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:60px; }
   .grad-modal .gm-event .ev-sm{ font-size:12.5px; letter-spacing:.26em; color:#f2fff0; font-weight:600; }
   .grad-modal .gm-event .ev-lg{ font-size:clamp(24px,2.5vw,36px); font-weight:800; letter-spacing:.01em; color:var(--acc); line-height:1; }
@@ -2965,7 +3073,7 @@
     document.querySelectorAll(".jphoto").forEach(function(ph){
       ph.addEventListener("mouseenter",function(){
         var d=Draggable.get(ph); if(d&&d.isDragging) return;
-        gsap.to(ph,{scale:1.06,autoAlpha:.95,duration:.25,ease:"power2.out"});
+        gsap.to(ph,{scale:1.22,autoAlpha:1,duration:.3,ease:"power2.out"});
       });
       ph.addEventListener("mouseleave",function(){
         var d=Draggable.get(ph); if(d&&d.isDragging) return;
@@ -4875,6 +4983,19 @@ if(window.gsap&&window.ScrollTrigger){
     b.g.addEventListener("pointerleave",deactivate);
     b.g.addEventListener("focus",function(){ activate(b); });
     b.g.addEventListener("blur",deactivate);
+    /* clique na barra abre o modal de eventos JA na qualificacao certa.
+       NAO dispara no modo apresentacao (la o modal tem controle/tempo proprios).
+       So depois que a barra cresceu (mesma trava do hover). */
+    function openEvents(){
+      if(document.documentElement.classList.contains("pmode-active")) return;
+      if(b.state.h < b.d.H*0.85) return;
+      var dot=document.querySelector('#gradEventsModal .gm-dot[data-i="'+b.i+'"]');
+      if(dot) dot.click();                              // seleciona o slide dessa qualificacao
+      var btn=document.getElementById("gradEventsBtn");
+      if(btn) btn.click();                              // abre o modal (openM)
+    }
+    b.g.addEventListener("click",openEvents);
+    b.g.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openEvents(); } });
   });
 
   if(!reduced){
@@ -5028,7 +5149,10 @@ if(window.gsap&&window.ScrollTrigger){
       { name:"Acionista", color:"#f5c542", rgb:"245,197,66", pin:"assets/pins/ACIONISTA.png",
         logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">VIAGEM</span><span class="ev-tag">Internacional</span>' }
     ];
-    function photos(n){ var s=""; for(var i=0;i<n;i++) s+='<div class="gm-photo">'+PHOTO+'</div>'; return s; }
+    /* preenche os slots com as 4 fotos de eventos, ciclando (duplica nos 2 lados).
+       O filtro/tint da cor de cada qualificacao vem do .gm-photo::after (via --acc). */
+    function photos(n){ var s=""; for(var i=0;i<n;i++){ var f="assets/img/eventos/experience-"+((i%4)+1)+".jpg";
+      s+='<div class="gm-photo"><img src="'+f+'" alt="" loading="lazy"></div>'; } return s; }
     var slides=EVENTS.map(function(ev){
       var v="--acc:"+ev.color+";--acc-line:rgba("+ev.rgb+",.5);--acc-glow:rgba("+ev.rgb+",.14);--acc-glow2:rgba("+ev.rgb+",.45);--acc-tint:rgba("+ev.rgb+",.16)";
       return '<div class="gm-slide" style="'+v+'">'
@@ -5465,6 +5589,28 @@ if(window.gsap&&window.ScrollTrigger){
       }
     }
   })();
+})();
+</script>
+<script>
+/* CRT timeline: embrulha a <img> + as barras de glitch (.jpfx) num .jpinner. So DOM (nada de
+   animacao aqui — tudo roda por CSS). O .jpinner e quem sofre o hard-glitch, entao imagem, ruido,
+   vinheta e scanlines se mexem JUNTOS. Pointer-events:none nas camadas, nao atrapalha o arraste. */
+(function(){
+  var ph=document.querySelectorAll('#trajetoria .jphoto');
+  for(var i=0;i<ph.length;i++){
+    var p=ph[i];
+    if(p.querySelector('.jpinner')) continue;
+    var img=p.querySelector('img'); if(!img) continue;
+    var glow=img.cloneNode(true); glow.className='jpglow'; glow.setAttribute('aria-hidden','true'); glow.removeAttribute('alt');
+    var inner=document.createElement('span'); inner.className='jpinner';
+    var snow=document.createElement('span'); snow.className='jpsnow'; snow.setAttribute('aria-hidden','true');
+    var fx=document.createElement('span'); fx.className='jpfx'; fx.setAttribute('aria-hidden','true');
+    p.insertBefore(inner, img);   // cria o wrapper na posicao da img
+    p.insertBefore(glow, inner);  // o "shadow" (clone borrado) fica ATRAS do inner
+    inner.appendChild(img);       // move a img p/ dentro
+    inner.appendChild(snow);      // o chuvisco (snow) de TV antiga
+    inner.appendChild(fx);        // e as barras de glitch
+  }
 })();
 </script>
 <script src="js/video-inview.js"></script>
