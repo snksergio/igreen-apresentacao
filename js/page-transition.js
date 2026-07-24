@@ -34,6 +34,17 @@
     try { window.scrollTo(0, 0); } catch(e){}
   });
 
+  /* VOLTAR (botao/gesto) via bfcache: o navegador restaura a pagina no MESMO estado
+     em que ela saiu — inclusive com data-pt-state="in", que deixa a .pt-curtain
+     cobrindo a tela (fica preta). Como os scripts NAO re-executam no restore do
+     bfcache, limpamos o estado da cortina aqui, no pageshow persistido. */
+  window.addEventListener('pageshow', function(e){
+    if (!e.persisted) return;
+    html.removeAttribute('data-pt-state');            // some com a cortina (volta pra translateY(100%))
+    try { sessionStorage.removeItem('pt'); } catch(err){}
+    if (window.ScrollTrigger) { try { ScrollTrigger.refresh(); } catch(err){} }
+  });
+
   function smoother(){ return (window.ScrollSmoother && ScrollSmoother.get) ? ScrollSmoother.get() : null; }
   function getScroll(){ var s = smoother(); return s ? s.scrollTop() : (window.pageYOffset || document.documentElement.scrollTop || 0); }
   function setScroll(y){ var s = smoother(); if (s) s.scrollTop(y); else window.scrollTo(0, y); if (window.ScrollTrigger) ScrollTrigger.update(); }
