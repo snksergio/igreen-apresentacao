@@ -250,7 +250,7 @@
   .virada{ background:#060d07; border-top:1px solid rgba(232,255,228,.06); border-bottom:1px solid rgba(232,255,228,.06); overflow:hidden; }
   /* fazenda solar (hero da v3) bem de leve ao fundo */
   .virada::before{ content:''; position:absolute; inset:-110px 0; pointer-events:none;
-    background:url('../assets/img/seguros-socios.jpg') center/cover no-repeat; opacity:.38;
+    background:url('../assets/img/igreen-conexao-seguros.png') center/cover no-repeat;background:image-set(url('../assets/img/igreen-conexao-seguros.avif') type('image/avif'),url('../assets/img/igreen-conexao-seguros.webp') type('image/webp'),url('../assets/img/igreen-conexao-seguros.png') type('image/png')) center/cover no-repeat; opacity:.38;
     transform:translateY(var(--vpar, 0px)); will-change:transform; }
   .virada::after{ content:''; position:absolute; inset:0; pointer-events:none;
     background:linear-gradient(180deg, #060d07 0%, rgba(6,13,7,.3) 32%, rgba(6,13,7,.3) 68%, #060d07 100%); }
@@ -541,7 +541,7 @@
         <p>Uma parceria <b>iGreen + BP Seguradora</b>, apresentada pelo presidente Thiago Alexander ao lado de Gusttavo Lima e de Gleidson Soares, CEO da BP Seguradora.</p>
       </div>
       <div class="media rv">
-        <figure><img src="../assets/img/seguros-socios.jpg" alt="Thiago Alexander, Gusttavo Lima e Gleidson Soares (CEO da BP Seguradora)"></figure>
+        <figure><picture><source srcset="../assets/img/igreen-conexao-seguros.avif" type="image/avif"><source srcset="../assets/img/igreen-conexao-seguros.webp" type="image/webp"><img src="../assets/img/igreen-conexao-seguros.png" alt="Cliente com o carro protegido pela Conexão Seguros iGreen" decoding="async"></picture></figure>
       </div>
     </div>
     <div class="stats">
