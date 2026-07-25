@@ -2094,6 +2094,19 @@ function hide(){if(done)return;done=true;lock(false);var w=Math.max(0,MIN-(Date.
 setTimeout(function(){b.classList.add('boot-hide');setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);},650);},w);}
 if(document.readyState==='complete')hide();else window.addEventListener('load',hide);
 setTimeout(hide,6000);})();</script>
+<script>/* MEDIR UMA VEZ: durante o boot o site chamava ScrollTrigger.refresh() 7x (trajetoria,
+   fonts.ready, orbita, graduacoes, planos, rodape e load) — cada uma remedindo TODOS os
+   triggers (~113ms somados aqui, muito mais em CPU fraca). Como o #boot cobre a tela e o
+   scroll esta travado ate o load, as chamadas do boot sao COALESCIDAS num unico refresh no
+   fim. O estado final e o mesmo: hoje o ultimo passo do boot ja era um refresh completo no
+   load. Depois do boot, chamadas no mesmo frame tambem viram uma so. */
+window.igRefresh=(function(){
+  var pend=false, booted=(document.readyState==='complete');
+  function run(){ pend=false; try{ if(window.ScrollTrigger) ScrollTrigger.refresh(); }catch(e){} }
+  if(!booted) window.addEventListener('load',function(){ booted=true; requestAnimationFrame(run); });
+  return function(){ if(!booted){ pend=true; return; }        /* boot: cai no refresh unico do load */
+    if(pend) return; pend=true; requestAnimationFrame(run); };  /* depois: coalesce por frame */
+})();</script>
 <nav class="nav">
   <div class="nav-shell">
     <a class="logo" href="#" aria-label="iGreen"><img class="mark" src="assets/logos/igreen-logomarca-neon.svg" alt=""></a>
@@ -3397,8 +3410,8 @@ setTimeout(hide,6000);})();</script>
        pins/scrubs — ex.: o título de "Resultados" descia demais. Na versão base64 inline não ocorria
        (tudo disponível no init). Recalcula as posições quando fontes e mídia assentam. Desktop-only:
        no mobile um refresh pula o scroll pro topo da seção. */
-    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ ScrollTrigger.refresh(); });
-    window.addEventListener('load',function(){ ScrollTrigger.refresh(); });
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ igRefresh(); });
+    window.addEventListener('load',function(){ igRefresh(); });
   }
   document.querySelectorAll('a[href^="#"]').forEach(function(a){
     a.addEventListener('click',function(e){
@@ -3469,7 +3482,7 @@ setTimeout(hide,6000);})();</script>
     jitems.forEach(function(it){
       gsap.set(it.querySelector('.jcard'),{autoAlpha:0,x:(it.classList.contains('jl')?-46:46)});
     });
-    requestAnimationFrame(function(){ buildCurve(); ScrollTrigger.refresh(); });
+    requestAnimationFrame(function(){ buildCurve(); igRefresh(); });
     window.addEventListener('resize',buildCurve);
     var jprog={p:0};
     gsap.to(jprog,{p:1,ease:"none",
@@ -4385,7 +4398,7 @@ setTimeout(hide,6000);})();</script>
   })();
 
   ScrollTrigger.sort();
-  ScrollTrigger.refresh();
+  igRefresh();
 })();
 </script>
 <script>
@@ -5349,7 +5362,7 @@ if(window.gsap&&window.ScrollTrigger){
       .from("#graduacoes .grad-sub",{ y:18, autoAlpha:0, duration:.55, ease:"power2.out" }, "-=.4")
       .from("#graduacoes .grad-cta",{ y:18, autoAlpha:0, duration:.55, ease:"power2.out" }, "-=.4");
 
-    ScrollTrigger.refresh();
+    igRefresh();
   }
 
   /* ===== modal "Nossos Eventos": bento paginado por qualificacao
@@ -5440,7 +5453,7 @@ if(window.gsap&&window.ScrollTrigger){
   /* parallax suave das moedas: acompanha o scroll com atraso (scrub alto), movimento bem leve */
   gsap.fromTo("#planos .pl-media img",{ y:-44 },{ y:64, ease:"none",
     scrollTrigger:{ trigger:"#planos", start:"top bottom", end:"bottom top", scrub:1.6 } });
-  ScrollTrigger.refresh();
+  igRefresh();
 })();
 </script>
 
@@ -5600,7 +5613,7 @@ if(window.gsap&&window.ScrollTrigger){
       .from("#rodape .ft-desc",{ y:16, autoAlpha:0, duration:.5, ease:"power2.out" }, "-=.32")
       .from("#rodape .ft-kicker, #rodape .ft-soc li",{ y:14, autoAlpha:0, duration:.45, stagger:.07, ease:"power2.out" }, "-=.3")
       .from("#rodape .ft-bar",{ autoAlpha:0, duration:.6, ease:"power2.out" }, "-=.2");
-    ScrollTrigger.refresh();
+    igRefresh();
   }
 })();
 </script>
