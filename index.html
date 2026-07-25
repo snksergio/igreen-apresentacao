@@ -1506,6 +1506,16 @@
     .dlL,.dlR{min-height:340px}
   }
 
+  /* Ecossistema (deck desktop): a altura da imagem do card é PROPORCIONAL à
+     altura do viewport, não à largura. Antes vinha de aspect-ratio:4/3 (crescia
+     com a largura e ignorava a altura) → em telas largas+baixas (notebook 1920×946
+     do 175%) o card ficava alto e o topo (ancorado no centro ~56%) chegava rente
+     ao título. Com vh, o card encolhe só o necessário quando falta altura, e fica
+     cheio em telas altas. Mesma filosofia da órbita: proporção, não breakpoint. */
+  @media (min-width:1025px){
+    #ecossistema2 .eimg{ aspect-ratio:auto; height:clamp(150px, 18vh, 224px); }
+  }
+
   /* ---- Mobile (≤1024px): coluna única empilhada ---- */
   @media (max-width:1024px){
     /* ambiance contínua: glows verdes suaves distribuídos pela página inteira (no body).
