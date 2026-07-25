@@ -3933,8 +3933,9 @@
   /* CTA "Começar agora": fica ~20px abaixo do topo do celular (colide com ele
      já em 1080) e foi pedida p/ sair desta seção — escondida no desktop. */
   if(orbCta) orbCta.style.display='none';
-  var ORB_GAP=36;        /* folga entre a base da descrição e o topo do celular */
-  var ORB_HEAD_TOP=142;  /* = .orb-head top no CSS (posição de repouso, telas baixas) */
+  var ORB_GAP=36;         /* folga da ESCALA: telas baixas encaixam o app 36px abaixo do texto (notebook) */
+  var ORB_TITLE_GAP=146;  /* folga do TÍTULO em telas altas (mais respiro; = 36 + ~110 pedidos). Ajuste aqui. */
+  var ORB_HEAD_TOP=142;   /* = .orb-head top no CSS (posição de repouso / trava superior) */
   function fitOrbita(){
     if(!window.matchMedia('(min-width:1025px)').matches) return;   /* desktop only; no mobile o appstage é static */
     var H=window.innerHeight, W=window.innerWidth;
@@ -3943,13 +3944,13 @@
     var s=Math.min(1,(H+100-titleBottom-ORB_GAP)/760,W/1240);
     if(s<0.42) s=0.42;                                              /* piso: nunca some de vez */
     appstage.style.transform='scale('+s+')';
-    /* O título ACOMPANHA o app: pousa sempre ORB_GAP acima do topo do celular.
-       Em telas baixas (app escalado p/ caber) isto dá exatamente ORB_HEAD_TOP=142
-       — o notebook não muda. Em telas altas (app cheio, ancorado embaixo, sobra
-       espaço) o título DESCE p/ formar um bloco coeso com o app, fechando o vão
-       que o CTA removido deixava. Nunca sobe acima de 142. */
+    /* O título ACOMPANHA o app: pousa ORB_TITLE_GAP acima do topo do celular.
+       Em telas altas (app cheio, sobra espaço) isso dá um respiro maior, coeso.
+       A trava max(ORB_HEAD_TOP,...) impede subir acima de 142 → em telas baixas
+       (notebook) cai em 142 com a folga de 36 da escala (não muda nada), e em
+       monitores menores o título nunca vai parar atrás do menu. */
     var appTop=H+100-760*s;                                        /* topo do celular (px do topo do viewport) */
-    orbHead.style.top=Math.round(appTop-ORB_GAP-headH)+'px';
+    orbHead.style.top=Math.round(Math.max(ORB_HEAD_TOP, appTop-ORB_TITLE_GAP-headH))+'px';
   }
   fitOrbita();
   window.addEventListener('resize',fitOrbita);
