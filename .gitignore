@@ -10,3 +10,10 @@ desktop.ini
 
 # Node (caso venha a usar build tools)
 node_modules/
+
+# Masters das fotos de eventos (74MB): o site serve AVIF -> WebP -> JPG, que estao
+# versionados. Estes PNG sao os originais e o OneDrive ja os guarda — nao precisam
+# pesar no repo nem em cada deploy. O padrao pega so "nome-N.png" (as 40 fotos),
+# preservando cruzeiro-logo.png, experience-logo.png e os *-qrcode.png, que SAO
+# usados como fallback real desses elementos.
+assets/img/eventos/*-[1-8].png
