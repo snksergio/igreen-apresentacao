@@ -1911,7 +1911,12 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
     #recorrencia .recwrap{ opacity:0; transform:translateY(14px);
       transition:opacity .55s ease, transform .55s ease; }
     #recorrencia .recwrap.inview{ opacity:1; transform:none; }
-    .rfloat{opacity:1}   /* cada card visível; a expansão é feita pelo container */
+    /* cada card entra sozinho com um fade. O fade do .recwrap acima não basta: ele dispara
+       com ~105px dos 874px do bloco na tela, então a transição roda quase toda fora do
+       campo de visão e a colagem já chega em opacidade 1. Só opacity (compositada na GPU,
+       sem layout nem repaint) + 1 IntersectionObserver por card: custo desprezível. */
+    #recorrencia .rfloat{opacity:0;transition:opacity .5s ease}
+    #recorrencia .rfloat.inview{opacity:1}   /* a expansão continua sendo do container */
     /* topo (0-34%) e base (62%+) ocupados, escalonados p/ não sobrepor; centro livre p/ o título */
     .g1{left:-11%;top:9%}
     .g2{left:40%;top:17%}
@@ -1922,13 +1927,14 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
     .g7{right:3%;top:75%}
     /* grade: linha já crescida (JS não zera no mobile), blocos 1 por linha */
     .recgrid{padding:8px 20px 64px}   /* topo 40->8: idem (o vao ate a linha somava 152px) */
-    /* linha conectora: curta e ACIMA do título (sem sobrepor), visível de cara.
-       Bloco de cima reduzido ~50% (era 78/52/52/22 = 100px da ponta da linha até o
-       título): estava afastado demais no mobile. O topo do ponto acompanha a altura
-       da linha, senão ele desgruda da ponta. */
-    .rlink{height:39px}
-    #recorrencia .rl-v{height:26px;transform:scaleY(1)!important;opacity:1!important}
-    #recorrencia .rl-dot{top:26px;opacity:1!important}
+    /* linha conectora: ACIMA do título (sem sobrepor), visível de cara. O bloco de cima
+       foi reduzido ~50% (era 78/52/52/22) porque o vão até o título era grande demais no
+       mobile; depois só o TRAÇO voltou +50% (26->39), mantendo o vão aprovado: os 13px
+       abaixo do ponto e o margin-top:11px do título não mudaram. O topo do ponto
+       acompanha a altura da linha, senão ele desgruda da ponta. */
+    .rlink{height:52px}
+    #recorrencia .rl-v{height:39px;transform:scaleY(1)!important;opacity:1!important}
+    #recorrencia .rl-dot{top:39px;opacity:1!important}
     #recorrencia .rectitle2{margin-top:11px}
     .rectitle2{font-size:clamp(24px,6vw,30px);line-height:1.16;margin-bottom:30px;
       opacity:0;translate:0 20px;transition:opacity .5s ease,translate .6s cubic-bezier(.16,1.1,.3,1)}
@@ -5788,6 +5794,9 @@ if(window.gsap&&window.ScrollTrigger){
     var rwrap=document.querySelector('.rec .recwrap');
     if(rhead&&rwrap&&rhead.parentElement!==recstage) recstage.insertBefore(rhead,rwrap);
     watch(document.querySelectorAll('.rec .rechead, .rec .recwrap, .rectitle2, .rblock'),0.12);
+    /* cards da colagem: um fade por card, disparado quando o card entra de fato (35% dele
+       visível) — o escalonamento sai natural da rolagem, sem timeline nem stagger. */
+    watch(recstage.querySelectorAll('.rfloat'),0.35);
   })();
 
   /* orbita (mobile): montagem estática — palco topo (celular+cards), 2º título, carrossel, download */
