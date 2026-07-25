@@ -3644,10 +3644,13 @@ window.igRefresh=(function(){
     ScrollTrigger.create({trigger:'.carstage',start:carsMobile?'top 90%':'top 72%',once:true,
       onEnter:function(){
         var p=cvid.play();
-        if(p&&p.catch) p.catch(function(){ carsFinish(); });
-        /* mobile (layout em fluxo): mostra abas+infos de imediato — não depende do vídeo terminar */
-        if(carsMobile) carsFinish();
-        else setTimeout(function(){ if(!carDone&&(cvid.paused||cvid.readyState<2)) carsFinish(); },7500);
+        if(p&&p.catch) p.catch(function(){ carsFinish(); });   /* autoplay bloqueado -> libera na hora */
+        /* Espera o vídeo terminar TAMBÉM no mobile (o 'ended' chama carsFinish). Antes o mobile
+           chamava carsFinish() de imediato, e como ele faz setCar(0) a máscara já entrava
+           escurecendo o carro não-selecionado enquanto o vídeo ainda rodava — o efeito aparecia
+           antes da hora. O autoplay bloqueado continua coberto pelo .catch acima, e este timeout
+           é a rede de segurança se o vídeo travar sem disparar erro. */
+        setTimeout(function(){ if(!carDone&&(cvid.paused||cvid.readyState<2)) carsFinish(); },7500);
       }});
     gsap.from('.carshead>*',{autoAlpha:0,y:24,duration:.9,ease:'power3.out',stagger:.1,
       scrollTrigger:{trigger:'.cars',start:'top 72%',once:true}});
