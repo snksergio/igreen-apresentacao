@@ -2014,8 +2014,8 @@ setTimeout(hide,6000);})();</script>
       <div class="nav-links">
         <a href="#ecossistema">O Ecossistema</a>
         <a href="#simulador">Simulador</a>
-        <a href="#planos">Planos</a>
         <a href="#orbita">App</a>
+        <a href="#planos">Planos</a>
       </div>
       <a class="nav-cta" href="#contato">Fale conosco →</a>
     </div>
@@ -3305,6 +3305,17 @@ setTimeout(hide,6000);})();</script>
       var t=document.querySelector(sel);
       if(!t) return;
       e.preventDefault();
+      /* #orbita (App): mira na view COMPOSTA dos cards (0.26 do pin), senao landa no progresso 0
+         com os cards escondidos. Corrige o bug de navegar Planos -> App (orbita ja "played",
+         so rolava pro topo). Funciona vindo de qualquer direcao. */
+      if(sel==='#orbita' && window.ScrollTrigger){
+        var orbST=ScrollTrigger.getAll().filter(function(s){return s.pin&&s.trigger&&s.trigger.id==='orbita';})[0];
+        if(orbST){
+          var tgtO=orbST.start+(orbST.end-orbST.start)*0.26;
+          if(smoother){ smoother.scrollTo(tgtO,true); } else { window.scrollTo({top:tgtO,behavior:'smooth'}); }
+          return;
+        }
+      }
       /* #ecossistema2 landava alto demais (deck pinado): desce um pouco mais o alvo. Ajuste o 160 se quiser. */
       var offEco=(sel==='#ecossistema2')?0:90;   /* eco2: topo encostado no topo da tela (posicao escolhida pelo usuario) */
       if(smoother){ smoother.scrollTo(t,true,'top '+offEco+'px'); }
