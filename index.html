@@ -3933,15 +3933,23 @@
   /* CTA "Começar agora": fica ~20px abaixo do topo do celular (colide com ele
      já em 1080) e foi pedida p/ sair desta seção — escondida no desktop. */
   if(orbCta) orbCta.style.display='none';
-  var ORB_GAP=36;   /* folga entre a base da descrição e o topo do celular */
+  var ORB_GAP=36;        /* folga entre a base da descrição e o topo do celular */
+  var ORB_HEAD_TOP=142;  /* = .orb-head top no CSS (posição de repouso, telas baixas) */
   function fitOrbita(){
     if(!window.matchMedia('(min-width:1025px)').matches) return;   /* desktop only; no mobile o appstage é static */
     var H=window.innerHeight, W=window.innerWidth;
-    var headTop=parseFloat(getComputedStyle(orbHead).top)||0;
-    var titleBottom=headTop+orbHead.offsetHeight;                   /* base real do texto */
+    var headH=orbHead.offsetHeight;                                /* altura real do texto (badge+título+desc) */
+    var titleBottom=ORB_HEAD_TOP+headH;                            /* base do texto na posição de repouso */
     var s=Math.min(1,(H+100-titleBottom-ORB_GAP)/760,W/1240);
     if(s<0.42) s=0.42;                                              /* piso: nunca some de vez */
     appstage.style.transform='scale('+s+')';
+    /* O título ACOMPANHA o app: pousa sempre ORB_GAP acima do topo do celular.
+       Em telas baixas (app escalado p/ caber) isto dá exatamente ORB_HEAD_TOP=142
+       — o notebook não muda. Em telas altas (app cheio, ancorado embaixo, sobra
+       espaço) o título DESCE p/ formar um bloco coeso com o app, fechando o vão
+       que o CTA removido deixava. Nunca sobe acima de 142. */
+    var appTop=H+100-760*s;                                        /* topo do celular (px do topo do viewport) */
+    orbHead.style.top=Math.round(appTop-ORB_GAP-headH)+'px';
   }
   fitOrbita();
   window.addEventListener('resize',fitOrbita);
