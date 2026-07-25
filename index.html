@@ -3306,9 +3306,9 @@ setTimeout(hide,6000);})();</script>
       if(!t) return;
       e.preventDefault();
       /* #ecossistema2 landava alto demais (deck pinado): desce um pouco mais o alvo. Ajuste o 160 se quiser. */
-      var offEco=(sel==='#ecossistema2')?160:90;
+      var offEco=(sel==='#ecossistema2')?0:90;   /* eco2: topo encostado no topo da tela (posicao escolhida pelo usuario) */
       if(smoother){ smoother.scrollTo(t,true,'top '+offEco+'px'); }
-      else { var y=t.getBoundingClientRect().top+(window.pageYOffset||0)-((sel==='#ecossistema2')?160:80); window.scrollTo({top:y,behavior:'smooth'}); }
+      else { var y=t.getBoundingClientRect().top+(window.pageYOffset||0)-((sel==='#ecossistema2')?0:80); window.scrollTo({top:y,behavior:'smooth'}); }
     });
   });
 
