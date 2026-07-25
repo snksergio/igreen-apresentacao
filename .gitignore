@@ -17,3 +17,7 @@ node_modules/
 # preservando cruzeiro-logo.png, experience-logo.png e os *-qrcode.png, que SAO
 # usados como fallback real desses elementos.
 assets/img/eventos/*-[1-8].png
+
+# Referencias de design (screenshots de sites, materiais): 103MB que nao fazem parte
+# do site — nada em index.html/produtos/js/css aponta pra ca. Ficam so no disco/OneDrive.
+referencias/
