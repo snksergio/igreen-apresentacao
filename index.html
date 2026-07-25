@@ -2079,7 +2079,18 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
 (function(){var b=document.getElementById('boot');if(!b)return;
 if(document.documentElement.getAttribute('data-pt-state')==='cover'){if(b.parentNode)b.parentNode.removeChild(b);return;}
 var t0=Date.now(),MIN=350,done=false;
-function hide(){if(done)return;done=true;var w=Math.max(0,MIN-(Date.now()-t0));
+/* TRAVA DE SCROLL durante o loading: bloqueia os EVENTOS (wheel/touch/teclas) e reancora a
+   posicao, em vez de mexer em overflow. Assim a barra de rolagem NAO aparece/desaparece —
+   sem empurrao no layout e sem reflow que desalinhe as medidas dos pins do ScrollTrigger. */
+var lockY=window.pageYOffset||0,OPT={passive:false,capture:true},KEYS={32:1,33:1,34:1,35:1,36:1,38:1,40:1};
+function stop(e){ e.preventDefault(); }
+function stopKeys(e){ if(KEYS[e.keyCode]) e.preventDefault(); }
+function pin(){ if(!done && (window.pageYOffset||0)!==lockY) window.scrollTo(0,lockY); }
+function lock(on){ var m=on?'addEventListener':'removeEventListener';
+  window[m]('wheel',stop,OPT); window[m]('touchmove',stop,OPT);
+  window[m]('keydown',stopKeys,{passive:false}); window[m]('scroll',pin); }
+lock(true);
+function hide(){if(done)return;done=true;lock(false);var w=Math.max(0,MIN-(Date.now()-t0));
 setTimeout(function(){b.classList.add('boot-hide');setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);},650);},w);}
 if(document.readyState==='complete')hide();else window.addEventListener('load',hide);
 setTimeout(hide,6000);})();</script>
@@ -5842,6 +5853,11 @@ if(window.gsap&&window.ScrollTrigger){
     var img=p.querySelector('img'); if(!img) continue;
     var media=img.closest('picture')||img;   // o <picture> e o filho direto de .jphoto; a img fica dentro dele
     var glow=img.cloneNode(true); glow.className='jpglow'; glow.setAttribute('aria-hidden','true'); glow.removeAttribute('alt');
+    /* PERF: o clone e um <img> FORA do <picture>, entao perde os <source> e cairia no PNG
+       (baixava ~1.9MB por foto so p/ o brilho). Aponta pro formato que o browser JA escolheu
+       (currentSrc = avif/webp); fallback no src original se ainda nao resolveu. Sem mudanca
+       de CSS/tamanho/posicao — mesmo elemento, mesma caixa, so a URL muda. */
+    try{ if(img.currentSrc) glow.src=img.currentSrc; }catch(e){}
     var inner=document.createElement('span'); inner.className='jpinner';
     var snow=document.createElement('span'); snow.className='jpsnow'; snow.setAttribute('aria-hidden','true');
     var fx=document.createElement('span'); fx.className='jpfx'; fx.setAttribute('aria-hidden','true');
