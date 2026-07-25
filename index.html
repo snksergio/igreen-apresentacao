@@ -1894,7 +1894,7 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
     .dlR{display:none!important}
 
     /* ---- Recorrência: header no topo, colagem compacta quase aberta, blocos em 1 coluna ---- */
-    .recstage{height:auto;overflow:hidden;padding:96px 0 48px}
+    .recstage{height:auto;overflow:hidden;padding:96px 0 8px}   /* fundo 48->8: fechava o vao ate a linha conectora */
     .recglow{width:130vw;height:420px}
     /* header FORA do zoom (movido via JS): tamanho padrão, centralizado sobre a colagem */
     .rechead{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);z-index:4;
@@ -1921,7 +1921,7 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
     .g6{left:2%;top:86%}
     .g7{right:3%;top:75%}
     /* grade: linha já crescida (JS não zera no mobile), blocos 1 por linha */
-    .recgrid{padding:40px 20px 64px}
+    .recgrid{padding:8px 20px 64px}   /* topo 40->8: idem (o vao ate a linha somava 152px) */
     /* linha conectora: curta e ACIMA do título (sem sobrepor), visível de cara.
        Bloco de cima reduzido ~50% (era 78/52/52/22 = 100px da ponta da linha até o
        título): estava afastado demais no mobile. O topo do ponto acompanha a altura
