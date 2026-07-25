@@ -2831,6 +2831,15 @@ window.igRefresh=(function(){
   .grad-modal .gm-photo{ position:relative; border-radius:15px; overflow:hidden; border:1.5px solid var(--acc-line); background:linear-gradient(150deg,var(--acc-glow),#060c0a 70%); box-shadow:0 0 26px var(--acc-glow); display:flex; align-items:center; justify-content:center; color:var(--acc); }
   .grad-modal .gm-photo svg{ width:30px; height:30px; opacity:.5; }
   .grad-modal .gm-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  /* <picture> como BLOCO (nao display:contents, que quebraria o height:100% da img) */
+  .grad-modal .gm-photo picture{ display:block; width:100%; height:100%; }
+  /* logo em IMAGEM no lugar do titulo em texto:
+     .ev-wide = wordmark largo (experience 415x108, proporcao ~4:1 igual a area do titulo)
+     .ev-tall = emblema retrato (cruzeiro 293x359, precisa de altura) */
+  .grad-modal .gm-event picture{ display:block; line-height:0; }
+  .grad-modal .gm-event .ev-logo{ display:block; object-fit:contain; }
+  .grad-modal .gm-event .ev-logo.ev-wide{ width:100%; max-width:288px; height:auto; }
+  .grad-modal .gm-event .ev-logo.ev-tall{ width:auto; max-width:100%; height:clamp(104px,10vw,146px); }
   /* tint leve com a cor da qualificacao (via --acc), p/ casar as fotos com a secao sem editar
      imagem por imagem. color = mantem o brilho/detalhe e caracteriza a cor; glow suave por cima. */
   .grad-modal .gm-photo::after{ content:''; position:absolute; inset:0; pointer-events:none;
@@ -2845,6 +2854,9 @@ window.igRefresh=(function(){
   .grad-modal .gm-qr{ display:flex; flex-direction:column; align-items:center; gap:9px; }
   .grad-modal .gm-qr-code{ width:98px; height:98px; border-radius:12px; background:#fff; padding:9px; box-sizing:border-box; }
   .grad-modal .gm-qr-code svg{ width:100%; height:100%; display:block; }
+  /* QR real: preenche a moldura branca arredondada existente (98x98, radius 12, padding 9) */
+  .grad-modal .gm-qr-code picture{ display:block; width:100%; height:100%; }
+  .grad-modal .gm-qr-code img{ width:100%; height:100%; display:block; object-fit:contain; }
   .grad-modal .gm-qr p{ font-size:12px; color:#f2fff0; opacity:.82; line-height:1.4; }
   .grad-modal .gm-dots{ position:absolute; bottom:16px; left:50%; transform:translateX(-50%); z-index:6; display:flex; gap:9px; }
   .grad-modal .gm-dot{ width:9px; height:9px; border-radius:50%; border:none; background:rgba(255,255,255,.28); cursor:pointer; transition:.25s; padding:0; }
@@ -2950,6 +2962,9 @@ window.igRefresh=(function(){
       padding:54px 18px 50px; overflow-y:auto; }
     .grad-modal .gm-mid{ order:1; padding:0; justify-content:flex-start; gap:8px; }
     .grad-modal .gm-event{ min-height:0; }
+    /* logos em imagem no mobile: menores, sem empurrar a medalha/fotos */
+    .grad-modal .gm-event .ev-logo.ev-wide{ max-width:196px; }
+    .grad-modal .gm-event .ev-logo.ev-tall{ height:92px; }
     .grad-modal .gm-coin{ width:126px; margin:8px 0 0; }
     .grad-modal .gm-qr{ display:none; }
     .grad-modal .gm-side.gm-right{ display:none; }
@@ -5371,31 +5386,52 @@ if(window.gsap&&window.ScrollTrigger){
     if(document.getElementById("gradEventsModal")) return;
     var PHOTO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.7"/><path d="M21 15l-5-5L5 20"/></svg>';
     var QR='<svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M20 14v.01M14 20h.01M17 17v.01M20 17v3M17 20h3"/></svg>';
+    var EV="assets/img/eventos/";
+    /* logo em IMAGEM no lugar do titulo em texto (so no Experience e no Cruzeiro).
+       AVIF ficou MAIOR que o PNG nesses dois (arte com alpha), entao a cadeia e webp -> png. */
+    function evLogo(base,cls,alt){ var f=EV+base;
+      return '<picture><source srcset="'+f+'.webp" type="image/webp">'
+        +'<img class="ev-logo '+cls+'" src="'+f+'.png" alt="'+alt+'" loading="lazy" decoding="async"></picture>'; }
     var EVENTS=[
-      { name:"Sênior", color:"#22c55e", rgb:"34,197,94", pin:"assets/pins/S%C3%8ANIOR.png",
+      { name:"Sênior", color:"#22c55e", rgb:"34,197,94", pin:"assets/pins/S%C3%8ANIOR.png", gal:"treinamento",
         logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">TREINAMENTOS</span><span class="ev-tag">& Eventos</span>' },
-      { name:"Gestor", color:"#f97316", rgb:"249,115,22", pin:"assets/pins/GESTOR.png",
-        logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">EXPERIENCE</span>' },
-      { name:"Executivo", color:"#38bdf8", rgb:"56,189,248", pin:"assets/pins/EXECUTIVO.png",
-        logo:'<span class="ev-sm">LET’S GO</span><span class="ev-lg">CRUZEIRO</span><span class="ev-tag">iGreen</span>' },
-      { name:"Diretor", color:"#cbd5e1", rgb:"203,213,225", pin:"assets/pins/DIRETOR.png",
+      { name:"Gestor", color:"#f97316", rgb:"249,115,22", pin:"assets/pins/GESTOR.png", gal:"experience",
+        logo:evLogo("experience-logo","ev-wide","iGreen Experience") },
+      { name:"Executivo", color:"#38bdf8", rgb:"56,189,248", pin:"assets/pins/EXECUTIVO.png", gal:"cruzeiro",
+        logo:evLogo("cruzeiro-logo","ev-tall","Let’s Go Cruzeiro iGreen") },
+      { name:"Diretor", color:"#cbd5e1", rgb:"203,213,225", pin:"assets/pins/DIRETOR.png", gal:"america-latina",
         logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">VIAGEM</span><span class="ev-tag">Internacional</span>' },
-      { name:"Acionista", color:"#f5c542", rgb:"245,197,66", pin:"assets/pins/ACIONISTA.png",
+      { name:"Acionista", color:"#f5c542", rgb:"245,197,66", pin:"assets/pins/ACIONISTA.png", gal:"mundo",
         logo:'<span class="ev-sm">iGreen</span><span class="ev-lg">VIAGEM</span><span class="ev-tag">Internacional</span>' }
     ];
     /* preenche os slots com as 4 fotos de eventos, ciclando (duplica nos 2 lados).
        O filtro/tint da cor de cada qualificacao vem do .gm-photo::after (via --acc). */
-    function photos(n){ var s=""; for(var i=0;i<n;i++){ var f="assets/img/eventos/experience-"+((i%4)+1)+".jpg";
-      s+='<div class="gm-photo"><img src="'+f+'" alt="" loading="lazy"></div>'; } return s; }
+    /* cada evento tem 8 fotos proprias: 1-4 no lado esquerdo, 5-8 no direito (no mobile o
+       lado direito e escondido por CSS). Cadeia: AVIF (2.2MB, ~95% dos browsers) -> WebP ->
+       JPG (fallback universal, 4.3MB). Os PNG originais (74MB) ficam FORA do git: sao os
+       masters e o OneDrive ja os guarda — ver .gitignore. */
+    function photos(gal,de,ate){ var s="";
+      for(var i=de;i<=ate;i++){ var f=EV+gal+"-"+i;
+        s+='<div class="gm-photo"><picture>'
+          +'<source srcset="'+f+'.avif" type="image/avif">'
+          +'<source srcset="'+f+'.webp" type="image/webp">'
+          +'<img src="'+f+'.jpg" alt="" loading="lazy" decoding="async">'
+          +'</picture></div>'; }
+      return s; }
+    /* QR real por evento (mantem a moldura branca arredondada do .gm-qr-code).
+       Sem AVIF: em QR o lossless AVIF ficou 3x maior que o PNG; webp lossless e menor e nitido. */
+    function evQr(gal){ var f=EV+gal+"-qrcode";
+      return '<picture><source srcset="'+f+'.webp" type="image/webp">'
+        +'<img src="'+f+'.png" alt="QR code do canal do YouTube" loading="lazy" decoding="async"></picture>'; }
     var slides=EVENTS.map(function(ev){
       var v="--acc:"+ev.color+";--acc-line:rgba("+ev.rgb+",.5);--acc-glow:rgba("+ev.rgb+",.14);--acc-glow2:rgba("+ev.rgb+",.45);--acc-tint:rgba("+ev.rgb+",.16)";
       return '<div class="gm-slide" style="'+v+'">'
         +'<div class="gm-badge">'+ev.name+'</div>'
-        +'<div class="gm-side gm-left">'+photos(4)+'</div>'
+        +'<div class="gm-side gm-left">'+photos(ev.gal,1,4)+'</div>'
         +'<div class="gm-mid"><div class="gm-event">'+ev.logo+'</div>'
         +'<img class="gm-coin" src="'+ev.pin+'" alt="'+ev.name+'">'
-        +'<div class="gm-qr"><div class="gm-qr-code">'+QR+'</div><p>Veja em nosso<br>Canal do YouTube</p></div></div>'
-        +'<div class="gm-side gm-right">'+photos(4)+'</div></div>';
+        +'<div class="gm-qr"><div class="gm-qr-code">'+evQr(ev.gal)+'</div><p>Veja em nosso<br>Canal do YouTube</p></div></div>'
+        +'<div class="gm-side gm-right">'+photos(ev.gal,5,8)+'</div></div>';
     }).join("");
     var dots=EVENTS.map(function(e,i){ return '<button class="gm-dot'+(i===0?' active':'')+'" data-i="'+i+'" aria-label="'+e.name+'"></button>'; }).join("");
     var modal=document.createElement("div");
