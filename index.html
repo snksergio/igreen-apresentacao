@@ -3305,8 +3305,10 @@ setTimeout(hide,6000);})();</script>
       var t=document.querySelector(sel);
       if(!t) return;
       e.preventDefault();
-      if(smoother){ smoother.scrollTo(t,true,'top 90px'); }
-      else { var y=t.getBoundingClientRect().top+(window.pageYOffset||0)-80; window.scrollTo({top:y,behavior:'smooth'}); }
+      /* #ecossistema2 landava alto demais (deck pinado): desce um pouco mais o alvo. Ajuste o 160 se quiser. */
+      var offEco=(sel==='#ecossistema2')?160:90;
+      if(smoother){ smoother.scrollTo(t,true,'top '+offEco+'px'); }
+      else { var y=t.getBoundingClientRect().top+(window.pageYOffset||0)-((sel==='#ecossistema2')?160:80); window.scrollTo({top:y,behavior:'smooth'}); }
     });
   });
 
