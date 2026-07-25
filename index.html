@@ -3684,8 +3684,11 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
   function stair(p){
     var vw=window.innerWidth;
     var g=Math.max(0,1-p*1.5), fim=1-Math.pow(p,5);
-    cards.forEach(function(c){
-      var r=c.getBoundingClientRect();
+    /* PERF: le TODOS os rects antes de escrever (evita flush layout/transform intercalado por card).
+       Seguro: translate e vertical e so usamos r.left/r.width, que nao mudam com translate vertical. */
+    var rs=cards.map(function(c){ return c.getBoundingClientRect(); });
+    cards.forEach(function(c,i){
+      var r=rs[i];
       var xn=(r.left+r.width*.3)/vw;
       var t=Math.max(0,Math.min(1,(xn-.18)/.72));
       var e=t*t*(3-2*t);
