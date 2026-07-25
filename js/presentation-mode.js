@@ -189,7 +189,14 @@
         var footer = document.getElementById('rodape');
         var vh = window.innerHeight, base = curY(), out = [];
         var ref1 = head || plans[0];
-        var off1 = (window.innerHeight < 900) ? 60 : 240;                          // telas baixas: menos offset (sem vazio)
+        /* off1 ADAPTATIVO: rola o quanto precisar p/ o plano 1 caber inteiro (antes era fixo
+           60/240 e em monitor de ~900-940px o salto p/ 240 cortava o plano 1). H = do topo do
+           titulo ate a base do plano 1; teto 240 (telas altas seguem folgadas), piso 56. */
+        var off1 = 240;
+        if (ref1 && plans[0]){
+          var H1 = plans[0].getBoundingClientRect().bottom - ref1.getBoundingClientRect().top;
+          off1 = clamp(56, 240, vh - 26 - H1);
+        }
         if (ref1) out.push(base + ref1.getBoundingClientRect().top - off1);         // título + plano 1
         if (plans[1]){
           var r2 = plans[1].getBoundingClientRect();
@@ -222,7 +229,32 @@
       var lbl = s.getAttribute('data-pm-label');
       if (!lbl){ var h = s.querySelector('h1, h2, .kicker'); lbl = h ? h.textContent : (s.id || ('Seção ' + (i + 1))); }
       lbl = (lbl || '').replace(/\s+/g, ' ').trim().slice(0, 22) || ('Seção ' + (i + 1));
-      return { label: lbl, el: s, subs: [], on: true, frame: true, frameOff: (PM.frameOff != null ? PM.frameOff : 80) };
+      var cfg = { label: lbl, el: s, subs: [], on: true, frame: true, frameOff: (PM.frameOff != null ? PM.frameOff : 80) };
+      /* PASSO A PASSO (.cstep empilhados, normalmente 4): nao cabe numa tela — antes so dava
+         p/ ver o passo 1 e metade do 2. Vira 2 stops: (1) titulo + primeira metade,
+         (2) segunda metade centralizada. Offsets adaptativos p/ nao cortar em tela baixa. */
+      if (s.querySelectorAll('.cstep').length >= 3){
+        cfg.buildStops = function(st, node){
+          var all = node.querySelectorAll('.cstep');
+          var n = all.length, half = Math.ceil(n / 2);
+          var vh = window.innerHeight, base = curY(), out = [];
+          var headEl = node.querySelector('.sec-head') || all[0];
+          /* 1o stop: enquadra pelo TITULO (nao pelo topo da section, que tem padding e
+             desperdicava ~120px) e rola o quanto precisar p/ a 1a metade caber. */
+          var hTop = base + headEl.getBoundingClientRect().top;
+          var H1 = (base + all[half - 1].getBoundingClientRect().bottom) - hTop;
+          out.push(hTop - clamp(24, 120, vh - 26 - H1));
+          /* 2o stop: 2a metade centralizada na tela */
+          var g0 = all[half], gl = all[n - 1];
+          if (g0 && gl){
+            var t0 = base + g0.getBoundingClientRect().top;
+            var gh = (base + gl.getBoundingClientRect().bottom) - t0;
+            out.push(t0 - clamp(40, 220, (vh - gh) / 2));
+          }
+          return out;
+        };
+      }
+      return cfg;
     });
   }
   var SECTIONS = AUTO ? buildAutoSections() : INDEX_SECTIONS;
