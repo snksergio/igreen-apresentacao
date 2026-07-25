@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../assets/logos/igreen-isotipo-neon.svg">
 <link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/page-transition.css">
-<link rel="stylesheet" href="../css/presentation-mode.css">
+<link rel="stylesheet" href="../css/presentation-mode.css" media="(min-width:1025px)">
 <script>try{if(sessionStorage.getItem('pt')){sessionStorage.removeItem('pt');document.documentElement.setAttribute('data-pt-state','cover');}}catch(e){}</script>
 <style>
   /* ============================================================
@@ -249,7 +249,7 @@
   .virada{ background:#060d07; border-top:1px solid rgba(232,255,228,.06); border-bottom:1px solid rgba(232,255,228,.06); overflow:hidden; }
   /* fazenda solar (hero da v3) bem de leve ao fundo */
   .virada::before{ content:''; position:absolute; inset:-110px 0; pointer-events:none;
-    background:url('../assets/img/igreen-conexao-telecom.png') center/cover no-repeat; opacity:.38;
+    background:url('../assets/img/igreen-conexao-telecom.png') center/cover no-repeat;background:image-set(url('../assets/img/igreen-conexao-telecom.avif') type('image/avif'),url('../assets/img/igreen-conexao-telecom.webp') type('image/webp'),url('../assets/img/igreen-conexao-telecom.png') type('image/png')) center/cover no-repeat; opacity:.38;
     transform:translateY(var(--vpar, 0px)); will-change:transform; }
   .virada::after{ content:''; position:absolute; inset:0; pointer-events:none;
     background:linear-gradient(180deg, #060d07 0%, rgba(6,13,7,.3) 32%, rgba(6,13,7,.3) 68%, #060d07 100%); }
@@ -515,6 +515,7 @@
   .plancard .price .v .per{ font-size:15px; color:var(--ink-dim); font-weight:500; }
   .plancard .price .note{ margin-top:10px; font-size:11.5px; line-height:1.5; color:rgba(232,255,228,.5); }
   @media (max-width:860px){ .planos .grid{ grid-template-columns:1fr; } .plancard{ order:-1; } }
+  .im picture,.media picture{display:block;width:100%;height:100%}
 </style>
 </head>
 <body>
@@ -583,7 +584,7 @@
         <p>Sem fidelidade, transparente e sem burocracia — um plano fácil de vender e que o cliente não larga.</p>
       </div>
       <div class="media rv">
-        <figure><img src="../assets/img/igreen-conexao-telecom.png" alt="Conexão Telecom iGreen"></figure>
+        <figure><picture><source srcset="../assets/img/igreen-conexao-telecom.avif" type="image/avif"><source srcset="../assets/img/igreen-conexao-telecom.webp" type="image/webp"><img src="../assets/img/igreen-conexao-telecom.png" alt="Conexão Telecom iGreen" decoding="async"></picture></figure>
         <div class="chip"><b data-cnum="600" data-prefix="+" data-suffix=" mil">0</b><span>ofertas no iGreen Club</span></div>
       </div>
     </div>
@@ -710,7 +711,7 @@
           <div class="tt"><h3>O cliente escolhe o plano iGreen Telecom</h3><span class="chip">a partir de R$ 54,90</span></div>
           <p>Ligações e WhatsApp ilimitados, internet que acumula e iGreen Club grátis — planos justos e fáceis de vender.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/shamrtphone.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/shamrtphone.avif" type="image/avif"><source srcset="../assets/img/illustracoes/shamrtphone.webp" type="image/webp"><img src="../assets/img/illustracoes/shamrtphone.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">02</span>
@@ -718,7 +719,7 @@
           <div class="tt"><h3>Portabilidade ou linha nova em minutos</h3><span class="chip">sem fidelidade</span></div>
           <p>O cliente traz o número ou ativa uma linha nova pela plataforma digital — sem burocracia e sem multa.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/chip.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/chip.avif" type="image/avif"><source srcset="../assets/img/illustracoes/chip.webp" type="image/webp"><img src="../assets/img/illustracoes/chip.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">03</span>
@@ -726,7 +727,7 @@
           <div class="tt"><h3>5G da maior cobertura do Brasil</h3><span class="chip">internet acumulada</span></div>
           <p>Alta velocidade e dados que acumulam para o mês seguinte — o cliente não perde nada e acompanha tudo em tempo real.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/torre-5g.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/torre-5g.avif" type="image/avif"><source srcset="../assets/img/illustracoes/torre-5g.webp" type="image/webp"><img src="../assets/img/illustracoes/torre-5g.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">04</span>
@@ -734,7 +735,7 @@
           <div class="tt"><h3>Você recebe, <em class="hl">todo mês</em></h3><span class="chip">R$ 7 a R$ 14 / linha</span></div>
           <p>Comissão recorrente por linha ativa, mais R$ 10 na ativação de chip físico e bônus conforme a campanha do mês.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/chip-moeda.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/chip-moeda.avif" type="image/avif"><source srcset="../assets/img/illustracoes/chip-moeda.webp" type="image/webp"><img src="../assets/img/illustracoes/chip-moeda.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
     </div>
     <p class="law rv">iGreen Telecom · rede móvel com cobertura nacional</p>
@@ -982,7 +983,8 @@
 
 <script>window.PMODE={auto:true,backHref:'../index.html'};</script>
 <script src="../js/video-inview.js"></script>
-<script src="../js/presentation-mode.js"></script>
+<script>/* PERF: modo apresentacao desktop-only (JS ja faz early-return no mobile) */
+if(window.matchMedia&&matchMedia("(min-width:1025px)").matches){var pm=document.createElement("script");pm.src="../js/presentation-mode.js";document.body.appendChild(pm);}</script>
 <script src="../js/page-transition.js"></script>
 <script>
 /* parallax de atraso no fundo da seção "Venda uma vez" (fazenda solar) */

@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../assets/logos/igreen-isotipo-neon.svg">
 <link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/page-transition.css">
-<link rel="stylesheet" href="../css/presentation-mode.css">
+<link rel="stylesheet" href="../css/presentation-mode.css" media="(min-width:1025px)">
 <script>try{if(sessionStorage.getItem('pt')){sessionStorage.removeItem('pt');document.documentElement.setAttribute('data-pt-state','cover');}}catch(e){}</script>
 <style>
   /* ============================================================
@@ -249,7 +249,7 @@
   .virada{ background:#060d07; border-top:1px solid rgba(232,255,228,.06); border-bottom:1px solid rgba(232,255,228,.06); overflow:hidden; }
   /* fazenda solar (hero da v3) bem de leve ao fundo */
   .virada::before{ content:''; position:absolute; inset:-110px 0; pointer-events:none;
-    background:url('../assets/img/igreen-conexao-igreen.png') center/cover no-repeat; opacity:.38;
+    background:url('../assets/img/igreen-conexao-igreen.png') center/cover no-repeat;background:image-set(url('../assets/img/igreen-conexao-igreen.avif') type('image/avif'),url('../assets/img/igreen-conexao-igreen.webp') type('image/webp'),url('../assets/img/igreen-conexao-igreen.png') type('image/png')) center/cover no-repeat; opacity:.38;
     transform:translateY(var(--vpar, 0px)); will-change:transform; }
   .virada::after{ content:''; position:absolute; inset:0; pointer-events:none;
     background:linear-gradient(180deg, #060d07 0%, rgba(6,13,7,.3) 32%, rgba(6,13,7,.3) 68%, #060d07 100%); }
@@ -460,6 +460,7 @@
     padding:20px 0 26px; font-size:11.5px; color:rgba(232,255,228,.45); display:flex;
     justify-content:space-between; gap:10px 24px; flex-wrap:wrap; }
   @media (max-width:900px){ .foot .cols{ grid-template-columns:1fr 1fr; } .foot .brand{ grid-column:span 2; } }
+  .im picture,.media picture{display:block;width:100%;height:100%}
 </style>
 </head>
 <body>
@@ -528,7 +529,7 @@
         <p>O desconto é garantido todos os meses, e você recebe comissão recorrente enquanto o cliente estiver ativo.</p>
       </div>
       <div class="media rv">
-        <figure><img src="../assets/img/igreen-conexao-igreen.png" alt="Conexão Green iGreen"></figure>
+        <figure><picture><source srcset="../assets/img/igreen-conexao-igreen.avif" type="image/avif"><source srcset="../assets/img/igreen-conexao-igreen.webp" type="image/webp"><img src="../assets/img/igreen-conexao-igreen.png" alt="Conexão Green iGreen" decoding="async"></picture></figure>
         <div class="chip"><b data-cnum="10" data-suffix="%">0</b><span>de economia garantida</span></div>
       </div>
     </div>
@@ -575,7 +576,7 @@
           <div class="tt"><h3>O cliente se conecta a uma usina solar</h3><span class="chip">sem investimento</span></div>
           <p>Sem obras, sem placas e sem burocracia — a adesão leva minutos e nada muda no imóvel do cliente.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/usina.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/usina.avif" type="image/avif"><source srcset="../assets/img/illustracoes/usina.webp" type="image/webp"><img src="../assets/img/illustracoes/usina.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">02</span>
@@ -583,7 +584,7 @@
           <div class="tt"><h3>A usina injeta energia na rede</h3><span class="chip">+1000 usinas solares</span></div>
           <p>A geração solar entra na rede da distribuidora e se transforma em créditos de energia para o cliente.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/torre-energia.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/torre-energia.avif" type="image/avif"><source srcset="../assets/img/illustracoes/torre-energia.webp" type="image/webp"><img src="../assets/img/illustracoes/torre-energia.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">03</span>
@@ -591,7 +592,7 @@
           <div class="tt"><h3>A conta chega com desconto todo mês</h3><span class="chip">desconto garantido</span></div>
           <p>Os créditos abatem o consumo e a fatura cai 10% — um desconto garantido que o cliente vê todos os meses.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/desconto.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/desconto.avif" type="image/avif"><source srcset="../assets/img/illustracoes/desconto.webp" type="image/webp"><img src="../assets/img/illustracoes/desconto.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">04</span>
@@ -599,7 +600,7 @@
           <div class="tt"><h3>Você recebe, <em class="hl">todo mês</em></h3><span class="chip">até 6% recorrente</span></div>
           <p>Sua comissão de até 6% sobre a fatura da iGreen cai todo mês, enquanto o cliente for ativo — mais bônus conforme a campanha vigente.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/carteira.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/carteira.avif" type="image/avif"><source srcset="../assets/img/illustracoes/carteira.webp" type="image/webp"><img src="../assets/img/illustracoes/carteira.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
     </div>
     <p class="law rv">Amparado pela Lei 14.300/2022 · ANEEL</p>
@@ -871,7 +872,8 @@
 
 <script>window.PMODE={auto:true,backHref:'../index.html'};</script>
 <script src="../js/video-inview.js"></script>
-<script src="../js/presentation-mode.js"></script>
+<script>/* PERF: modo apresentacao desktop-only (JS ja faz early-return no mobile) */
+if(window.matchMedia&&matchMedia("(min-width:1025px)").matches){var pm=document.createElement("script");pm.src="../js/presentation-mode.js";document.body.appendChild(pm);}</script>
 <script src="../js/page-transition.js"></script>
 <script>
 /* parallax de atraso no fundo da seção "Venda uma vez" (fazenda solar) */
