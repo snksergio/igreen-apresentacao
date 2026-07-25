@@ -3714,47 +3714,19 @@ setTimeout(hide,6000);})();</script>
          ficam no script independente, robusto ao erro global). Sem scroll horizontal/deck. */
       ecards.forEach(function(c){ var v=c.querySelector('.evid'); if(v){ v.loop=true; v.muted=true; v.setAttribute('playsinline',''); } });
     } else {
-      /* DESKTOP: coreografia original (scroll horizontal + escada) */
-      var eprogI=document.querySelector('.eprog i');
-      function ecoStair(p){
-        var vw=window.innerWidth;
-        var g=Math.max(0,1-p*1.5);              /* colapso global rapido da escada */
-        var fim=1-Math.pow(p,5);                /* garante alinhamento total no fim */
-        ecards.forEach(function(c){
-          var r=c.getBoundingClientRect();
-          var xn=(r.left+r.width*.3)/vw;        /* posicao do card na tela */
-          var t=Math.max(0,Math.min(1,(xn-.18)/.72));
-          var e=t*t*(3-2*t);
-          c.style.translate='0 '+(((90+470*g)*e*fim)).toFixed(1)+'px';
-        });
-      }
-      ecoStair(0);
+      /* DESKTOP: aqui montamos APENAS os .evid-glow. O deck (eco2, mais abaixo) clona esta
+         secao — e herda os glows do clone — e depois MATA/esconde tudo isto. Logo, montar a
+         coreografia do eco1 no desktop era trabalho 100% descartado: um ScrollTrigger com pin
+         criado e destruido (com pin-spacer entrando e saindo do DOM), a escada medindo rect de
+         7 cards, listeners de hover que o cloneNode nem copia e — o pior — um setFocusIdx(0)
+         que dava play em videos que ficavam decodificando invisiveis pra sempre.
+         O eco2 tem os proprios stair()/focus()/progBar, entao nada aqui faz falta pra ele. */
       ecards.forEach(function(c){
         var v=c.querySelector('.evid'); if(!v) return;
         var g=v.cloneNode(true); g.className='evid-glow';
         g.removeAttribute('data-herovid'); g.muted=true;
         if(!g.getAttribute('src')&&v.getAttribute('src')) g.src=v.getAttribute('src');
         v.parentNode.insertBefore(g,v);
-      });
-      function cardVids(c){ return [].slice.call(c.querySelectorAll('video')); }
-      function setFocusIdx(i){
-        ecards.forEach(function(c,k){
-          var on=(k===i);
-          c.classList.toggle('focus',on);
-          cardVids(c).forEach(function(v){
-            if(on){ try{ v.play(); }catch(e){} }
-            else if(!c.matches(':hover')){ try{ v.pause(); }catch(e){} }
-          });
-        });
-      }
-      gsap.to(etrack,{x:function(){ var last=ecards[ecards.length-1]; return -Math.max(0,last.offsetLeft+last.offsetWidth/2-window.innerWidth/2); },ease:'none',
-        scrollTrigger:{trigger:'#ecossistema',start:'top top',end:'+=190%',scrub:.5,pin:true,invalidateOnRefresh:true,
-          onUpdate:function(self){ setFocusIdx(Math.round(self.progress*(ecards.length-1))); if(eprogI) eprogI.style.transform='scaleX('+self.progress+')';
-            ecoStair(self.progress); }}});
-      setFocusIdx(0);
-      ecards.forEach(function(c){
-        c.addEventListener('mouseenter',function(){ cardVids(c).forEach(function(v){ try{ v.play(); }catch(e){} }); });
-        c.addEventListener('mouseleave',function(){ if(!c.classList.contains('focus')) cardVids(c).forEach(function(v){ try{ v.pause(); }catch(e){} }); });
       });
     }
   }
