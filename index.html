@@ -812,6 +812,76 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
   .fundc b{display:block;margin-top:9px;font-size:13px;font-weight:600;color:rgba(232,255,228,.8)}
   .fundc span{display:block;margin-top:2px;font-size:10.5px;color:var(--ink-dim)}
 
+  /* ---- tela 1 do app: licenciado + reconhecimento + minha geracao ---- */
+  .scr-app{gap:12px}
+  .ap-user{display:flex;align-items:center;gap:11px}
+  .ap-ava{width:38px;height:38px;flex:none;border-radius:50%;border:1px solid rgba(24,255,0,.4);
+    background:radial-gradient(circle at 35% 30%,#2f7a37,#0c2412);
+    display:flex;align-items:center;justify-content:center;color:rgba(232,255,228,.82);overflow:hidden}
+  .ap-ava svg{width:20px;height:20px;margin-top:1px}
+  .ap-uwrap{flex:1;min-width:0}
+  .ap-uname{display:flex;align-items:center;gap:7px;font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+  .ap-uname i{font-style:normal;font-size:11px;font-weight:400;color:var(--ink-dim)}
+  .ap-ubal{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:11.5px;color:var(--ink-dim)}
+  .ap-ubal b{font-weight:600;color:rgba(232,255,228,.85)}
+  .ap-ubal a{color:var(--green);text-decoration:none;font-weight:600}
+  .ap-ubal svg{width:12px;height:12px;opacity:.75}
+  .ap-bell{position:relative;width:36px;height:36px;flex:none;border-radius:50%;display:flex;
+    align-items:center;justify-content:center;color:rgba(232,255,228,.8);
+    background:rgba(232,255,228,.07);border:1px solid rgba(232,255,228,.1)}
+  .ap-bell svg{width:17px;height:17px}
+  .ap-bell i{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;
+    background:var(--green);box-shadow:0 0 8px rgba(24,255,0,.85)}
+  .ap-sec{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+  .ap-sec b{font-size:16px;font-weight:600;letter-spacing:-.01em}
+  .ap-sec a{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;
+    color:var(--green);text-decoration:none}
+  .ap-sec a svg{width:11px;height:11px}
+  .ap-bal{padding:17px 18px}
+  .ap-balrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .ap-bal .val{margin-top:4px;font-size:31px}
+  .ap-go{width:30px;height:30px;flex:none;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;color:rgba(232,255,228,.85);
+    background:rgba(232,255,228,.09);border:1px solid rgba(232,255,228,.14)}
+  .ap-go svg{width:12px;height:12px}
+  .ap-bonus{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 12px;border-radius:999px;
+    background:rgba(232,255,228,.05);border:1px solid rgba(232,255,228,.08);
+    font-size:11.5px;color:var(--ink-dim)}
+  .ap-bonus b{margin-left:auto;font-size:12.5px;font-weight:600;color:var(--green)}
+  .ap-bico{width:20px;height:20px;flex:none;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;background:rgba(24,255,0,.12);border:1px solid rgba(24,255,0,.28)}
+  .ap-bico svg{width:11px;height:11px}
+  .ap-btns{display:flex;gap:10px;margin-top:14px}
+  .ap-btns .dep{height:46px;font-size:14px;
+    box-shadow:0 8px 22px rgba(24,255,0,.26),inset 0 1px 0 rgba(255,255,255,.35)}
+  .ap-btns .dep svg{width:15px;height:15px}
+  .ap-ghost{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:46px;
+    border-radius:999px;font-size:14px;font-weight:600;color:rgba(232,255,228,.88);
+    background:rgba(232,255,228,.06);border:1px solid rgba(232,255,228,.13)}
+  .ap-ghost svg{width:14px;height:14px}
+  .ap-card{border-radius:18px;padding:6px;border:1px solid rgba(232,255,228,.09);
+    background:rgba(232,255,228,.035)}
+  .ap-tabs{display:flex;gap:5px;padding:4px;border-radius:14px;background:rgba(3,8,4,.5)}
+  .ap-tabs span{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;
+    border-radius:11px;font-size:12.5px;font-weight:600;color:var(--ink-dim)}
+  .ap-tabs span svg{width:12px;height:12px}
+  /* aba ativa: pilula verde discreta (o branco destoava do dark). inset no lugar de border p/ nao mudar a altura */
+  .ap-tabs span.on{color:var(--green);background:rgba(24,255,0,.12);
+    box-shadow:inset 0 0 0 1px rgba(24,255,0,.32),0 2px 10px rgba(0,0,0,.22)}
+  .ap-row{display:flex;align-items:center;gap:10px;padding:12px 10px;
+    border-top:1px solid rgba(232,255,228,.07)}
+  .ap-tabs + .ap-row{border-top:0}   /* divider so ENTRE os itens, nao abaixo das abas */
+  .ap-ico{width:26px;height:26px;flex:none;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;background:rgba(24,255,0,.13);border:1px solid rgba(24,255,0,.3)}
+  .ap-ico svg{width:13px;height:13px}
+  .ap-ico.gi{background:rgba(232,255,228,.05);border-color:rgba(232,255,228,.16)}
+  .ap-ico.gi svg{stroke:rgba(232,255,228,.55)}
+  .ap-rl{flex:1;display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;
+    color:rgba(232,255,228,.86)}
+  .ap-rl i{font-style:normal;font-size:10.5px;font-weight:400;color:var(--ink-dim)}
+  .ap-rv{display:flex;align-items:baseline;gap:4px;font-size:14px;font-weight:600;letter-spacing:-.01em}
+  .ap-rv em{font-style:normal;font-size:9.5px;font-weight:400;color:var(--ink-dim)}
+
   /* ---- tela 2: clube de descontos (aparece no scroll) ---- */
   .scr2{position:absolute;inset:0;padding:72px 24px 0;display:flex;flex-direction:column;gap:13px;
     z-index:3;opacity:0;visibility:hidden;
@@ -893,6 +963,12 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
   .ccard.cs2 .mc i+i{background:rgba(24,255,0,.2)}
   .fc-card .r1{display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:#052008}
   .fc-card .r1 span{opacity:.75}
+  /* badge de plano (PREMIUM) no lugar do numero do cartao */
+  .fc-card .r1{align-items:center}
+  .fc-card .r1 .cbadge{opacity:1;padding:3px 9px;border-radius:999px;font-size:9px;font-weight:700;
+    letter-spacing:.11em;line-height:1.45;
+    background:rgba(3,39,10,.17);border:1px solid rgba(3,39,10,.3);color:#03270a}
+  .ccard.cs2 .r1 .cbadge{background:rgba(24,255,0,.14);border-color:rgba(24,255,0,.36);color:var(--green)}
   .fc-card .money{margin-top:26px;display:flex;align-items:flex-end;justify-content:space-between}
   .fc-card .money b{font-size:30px;font-weight:700;color:#03270a;letter-spacing:-.01em}
   .fc-card .mc{display:flex}
@@ -2338,12 +2414,12 @@ setTimeout(hide,6000);})();</script>
     <!-- 4. cartao saldo gradiente -->
     <div class="fc fc-card">
       <div class="ccard cs1">
-        <div class="r1"><span>Saldo do cartão</span><span>*** 8562</span></div>
-        <div class="money"><b>R$ 18.652,11</b><span class="mc"><i></i><i></i></span></div>
+        <div class="r1"><span>Saldo Atual</span><span class="cbadge">PREMIUM</span></div>
+        <div class="money"><b>R$ 2.146,30</b><span class="mc"><i></i><i></i></span></div>
       </div>
       <div class="ccard cs2">
-        <div class="r1"><span>Cartão virtual</span><span>*** 1179</span></div>
-        <div class="money"><b>R$ 2.146,30</b><span class="mc"><i></i><i></i></span></div>
+        <div class="r1"><span>Total Acumulado</span><span class="cbadge">PREMIUM</span></div>
+        <div class="money"><b>R$ 18.652,11</b><span class="mc"><i></i><i></i></span></div>
       </div>
     </div>
     <div class="fc fc-dots"><i class="on"></i><i></i></div>
@@ -2369,42 +2445,56 @@ setTimeout(hide,6000);})();</script>
       <span class="ph-fade" aria-hidden="true"></span>
       <span class="ph-notch"></span>
       <div class="ph-status"><span>9:41</span><span class="sig">●●● ▲ ▮</span></div>
-      <div class="scr">
-        <div class="scr-top">
-          <span class="acct"><span class="coins"><i></i><i></i><i></i></span>Todas as contas
-            <svg viewBox="0 0 24 24" fill="none" stroke="#e8ffe4" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      <div class="scr scr-app">
+        <!-- topo: licenciado -->
+        <div class="ap-user">
+          <span class="ap-ava"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20.4a7.4 7.4 0 0 1 14.4 0"/></svg></span>
+          <div class="ap-uwrap">
+            <div class="ap-uname">Leandro Freire<i>ID: 30393820</i></div>
+            <div class="ap-ubal">Saldo: <b>R$ 7.600,00</b><a href="#">Ver extrato</a>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+          </div>
+          <span class="ap-bell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <i></i>
           </span>
-          <span class="rt">
-            <span class="spark"><svg viewBox="0 0 24 24" fill="#052008"><path d="M12 2l2.1 6.1L20 10l-5.9 1.9L12 18l-2.1-6.1L4 10l5.9-1.9L12 2Z"/></svg></span>
-            <span class="ava"></span>
-          </span>
         </div>
-        <div>
-          <div class="scr-name">Minhas Conexões… !</div>
-          <div class="scr-addr">(licenciado-igreen-0042-mg)
-            <svg viewBox="0 0 24 24" fill="none" stroke="#e8ffe4" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+
+        <!-- reconhecimento -->
+        <div class="ap-sec"><b>Reconhecimento</b><a href="#">Ver toda jornada<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></a></div>
+        <div class="opcard ap-bal">
+          <div class="ap-balrow">
+            <div>
+              <div class="lbl">Saldo disponível</div>
+              <div class="val">R$ 28.840,00</div>
+            </div>
+            <span class="ap-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+          <div class="ap-bonus">
+            <span class="ap-bico"><svg viewBox="0 0 24 24" fill="none" stroke="#18FF00" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3 3 9.5 12 21l9-11.5L12 3Z"/><path d="M3 9.5h18"/></svg></span>
+            <span>Bônus Acumulado</span><b>R$ 4.500,00</b>
+          </div>
+          <div class="ap-btns">
+            <span class="ap-ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/></svg>Extrato</span>
+            <span class="dep">Resgatar<svg viewBox="0 0 24 24" fill="none" stroke="#052008" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></span>
           </div>
         </div>
-        <div class="opcard">
-          <div class="lbl">Receita do portfólio</div>
-          <div class="val">R$ 20.988,00</div>
-          <div class="var">↑3,5% (+R$ 45,90) <span>no último mês</span></div>
-          <div class="pay-row">
-            <span class="dep"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#052008" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Depositar</span>
-            <span class="circ"><i><svg viewBox="0 0 24 24" fill="none" stroke="#e8ffe4" stroke-width="2" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i><span>Retirar</span></span>
-            <span class="circ"><i><svg viewBox="0 0 24 24" fill="none" stroke="#e8ffe4" stroke-width="2" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></i><span>Enviar</span></span>
-          </div>
+
+        <!-- minha geracao -->
+        <div class="ap-sec"><b>Minha geração</b><a href="#">Ver detalhes<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></a></div>
+        <div class="ap-card">
+          <div class="ap-tabs"><span class="on">Total</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>Mês atual</span></div>
+          <div class="ap-row"><span class="ap-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#18FF00" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span><span class="ap-rl">Bonificável<i>(GP)</i></span><span class="ap-rv">12.842.495<em>kWh</em></span></div>
+          <div class="ap-row"><span class="ap-ico gi"><svg viewBox="0 0 24 24" fill="none" stroke="#18FF00" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span><span class="ap-rl">Bonificável<i>(GI)</i></span><span class="ap-rv">294.199<em>kWh</em></span></div>
+          <div class="ap-row"><span class="ap-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#18FF00" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span><span class="ap-rl">Pendente<i>(GP)</i></span><span class="ap-rv">1.000.000<em>kWh</em></span></div>
+          <div class="ap-row"><span class="ap-ico gi"><svg viewBox="0 0 24 24" fill="none" stroke="#18FF00" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span><span class="ap-rl">Pendente<i>(GI)</i></span><span class="ap-rv">578.908<em>kWh</em></span></div>
         </div>
-        <div class="funds"><b>Minhas verticais</b><a href="#">Ver tudo</a></div>
-        <div class="fund-grid">
-          <div class="fundc">
-            <span class="fico"><svg viewBox="0 0 24 24" fill="none" stroke="#18FF00" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span>
-            <b>Green</b><span>(energia)</span>
-          </div>
-          <div class="fundc">
-            <span class="fico"><svg viewBox="0 0 24 24" fill="none" stroke="#18FF00" stroke-width="2" stroke-linecap="round"><path d="M5 19v-4M10 19v-7M15 19v-10M20 19V5"/></svg></span>
-            <b>Telecom</b><span>(planos)</span>
-          </div>
+
+        <!-- bonus de campanhas -->
+        <div class="ap-sec"><b>Bônus de campanhas</b><a href="#">Ver detalhes<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></a></div>
+        <div class="ap-card">
+          <div class="ap-tabs"><span class="on">Total</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>Setembro</span></div>
         </div>
       </div>
       <!-- tela 2: clube de descontos (surge no scroll) -->
