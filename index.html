@@ -562,10 +562,14 @@
   .carshead{position:absolute;top:calc(9vh + 120px);left:50%;transform:translateX(-50%);z-index:4;
     width:min(940px,92vw);text-align:center}
   .cartitle{margin-top:18px;font-weight:400;letter-spacing:-.02em;line-height:1.08;
-    font-size:clamp(38px,3.8vw,60px)}
+    font-size:clamp(38px,3.8vw,60px);text-shadow:0 2px 22px rgba(3,6,3,.85),0 0 10px rgba(3,6,3,.7)}
   .cartitle .hl2{font-style:normal;color:var(--green);text-shadow:0 0 46px rgba(24,255,0,.45)}
+  /* halo escuro em camadas: mantém a descrição legível mesmo sobre a parte clara
+     do carro (em telas largas+baixas o texto passa da faixa escura) — sem precisar
+     escurecer o carro. */
   .carsub{margin-top:16px;font-size:14.5px;color:var(--ink-dim);line-height:1.62;
-    max-width:74ch;margin-left:auto;margin-right:auto;text-shadow:0 2px 18px rgba(3,6,3,.9)}
+    max-width:74ch;margin-left:auto;margin-right:auto;
+    text-shadow:0 2px 16px rgba(3,6,3,.96),0 0 6px rgba(3,6,3,.92),0 0 24px rgba(3,6,3,.75)}
   .carsub b{color:var(--ink);font-weight:500}
   .carbottom{position:absolute;left:50%;bottom:4.5vh;transform:translateX(-50%);z-index:4;
     width:min(880px,94vw);display:flex;flex-direction:column;align-items:center;gap:16px;
