@@ -4063,7 +4063,11 @@
       lockScroll(false); openTl.play();
       var s=(window.ScrollSmoother&&ScrollSmoother.get)?ScrollSmoother.get():null;
       var st=orbTween&&orbTween.scrollTrigger;
-      if(s&&st){ var tgt=st.start+(st.end-st.start)*0.15;
+      /* mira no SNAP da view composta (0.26), nao em 0.15: em 0.15 o trySnap
+         (scrollEnd) achava o SNAP 0 mais perto e puxava de volta p/ p=0 — os
+         cards apareciam e SUMIAM (flick ao navegar pelo menu, onde nao ha wheel
+         p/ matar o snap). Mirando em 0.26 a pagina ja para num snap: sem tranco. */
+      if(s&&st){ var tgt=st.start+(st.end-st.start)*0.26;
         if(s.scrollTop()<st.start+(st.end-st.start)*0.06) s.scrollTo(tgt,true); }
     });
   };
