@@ -4,7 +4,13 @@
 <meta charset="utf-8">
 <link rel="icon" type="image/svg+xml" href="assets/logos/igreen-isotipo-neon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>/* PERF: detecta hardware fraco p/ desligar efeitos decorativos caros. Aditivo: hardware bom nao muda.
+   Teste manual: ?perf=low forca modo leve, ?perf=high forca completo. Ajuste os limiares abaixo se precisar. */
+(function(){try{var n=navigator,dm=n.deviceMemory,hc=n.hardwareConcurrency,sd=n.connection&&n.connection.saveData,
+q=location.search,forceLow=/[?&]perf=low/.test(q),forceHigh=/[?&]perf=high/.test(q);
+if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement.setAttribute('data-perf','low');}catch(e){}})();</script>
 <title>iGreen Energy — Hero</title>
+<link rel="preload" href="assets/fonts/InterDisplay-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
   @font-face{
     font-family:'Inter Display';
@@ -1973,9 +1979,11 @@
     .dlL{ left:calc(50% - 500px); max-width:360px; }
     .dlR{ right:calc(50% - 480px); width:290px; }
   }
+  .tile.timg picture,.jphoto picture{display:block;width:100%;height:100%}
+  .ft-globe picture{display:contents}
 </style>
 <link rel="stylesheet" href="css/page-transition.css">
-<link rel="stylesheet" href="css/presentation-mode.css">
+<link rel="stylesheet" href="css/presentation-mode.css" media="(min-width:1025px)">
 <script>try{if(sessionStorage.getItem('pt')){sessionStorage.removeItem('pt');document.documentElement.setAttribute('data-pt-state','cover');}}catch(e){}</script>
 </head>
 <body>
@@ -2016,9 +2024,9 @@
       <span class="ptxt"><b>+ R$ 4,2 milhões</b><span>em recorrência já distribuídos aos licenciados da rede</span></span>
     </div>
     <div class="bolt" aria-hidden="true">
-    <video class="segv is-on" autoplay muted loop playsinline preload="auto">
+    <video class="segv is-on" autoplay muted loop playsinline preload="metadata" poster="assets/img/poster-green.jpg">
       <source src="assets/video/conexao-green.mp4" type="video/mp4">
-    </video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/conexao-telecom.mp4" type="video/mp4"></video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/conexao-seguros.mp4" type="video/mp4"></video><video class="segv" autoplay muted loop playsinline preload="auto"><source src="assets/video/conexao-expansao.mp4" type="video/mp4"></video>
+    </video><video class="segv" autoplay muted loop playsinline preload="none" poster="assets/img/poster-telecom.jpg"><source src="assets/video/conexao-telecom.mp4" type="video/mp4"></video><video class="segv" autoplay muted loop playsinline preload="none" poster="assets/img/poster-seguros.jpg"><source src="assets/video/conexao-seguros.mp4" type="video/mp4"></video><video class="segv" autoplay muted loop playsinline preload="none" poster="assets/img/poster-expansao.jpg"><source src="assets/video/conexao-expansao.mp4" type="video/mp4"></video>
 </div>
     <div class="kpis" id="kpis" role="tablist">
       <button class="kpi active" type="button" data-i="0" aria-label="Energia">
@@ -2042,7 +2050,7 @@
 </section>
 <section class="stats" id="resultados">
   <div class="spin">
-    <img class="sbg" src="assets/img/grafico-3d.jpg" alt="" aria-hidden="true">
+    <img class="sbg" src="assets/img/grafico-3d.jpg" alt="" aria-hidden="true" decoding="async">
     <div class="shead">
       <span class="skicker">Os números não mentem</span>
       <h2 class="stitle"><span class="line"><span>Resultados que</span></span><span class="line"><span>falam <em class="hl2">por si</em></span></span></h2>
@@ -2068,19 +2076,19 @@
     <div class="jwrap">
       <svg class="jsvg" aria-hidden="true"><path class="jtrackp"/><path class="jfillp" pathLength="1"/></svg><div class="jspark"></div>
       <ol class="jitems">
-        <li class="jitem jl"><span class="jdot"></span><span class="jphoto jp1" data-rot="-7" data-dx="90" data-dy="-150" data-off="-140"><img src="assets/img/timeline-origem.png" alt=""></span><div class="jcard">
+        <li class="jitem jl"><span class="jdot"></span><span class="jphoto jp1" data-rot="-7" data-dx="90" data-dy="-150" data-off="-140"><picture><source srcset="assets/img/timeline-origem.avif" type="image/avif"><source srcset="assets/img/timeline-origem.webp" type="image/webp"><img src="assets/img/timeline-origem.png" alt="" decoding="async"></picture></span><div class="jcard">
           <span class="jyear">2021</span><span class="jname">Origem</span>
           <span class="jdesc">Fundada por Thiago Alexander e Amanda Durante, em Minas Gerais. Nascia a iGreen — uma visão, um propósito: “Enriquecer vidas e impactar o mundo com soluções sustentáveis e inovadoras.”</span>
         </div></li>
-        <li class="jitem jr"><span class="jdot"></span><span class="jphoto jp2" data-rot="6" data-dx="-170" data-dy="-40" data-off="160"><img src="assets/img/timeline-comerc.png" alt=""></span><div class="jcard">
+        <li class="jitem jr"><span class="jdot"></span><span class="jphoto jp2" data-rot="6" data-dx="-170" data-dy="-40" data-off="160"><picture><source srcset="assets/img/timeline-comerc.avif" type="image/avif"><source srcset="assets/img/timeline-comerc.webp" type="image/webp"><img src="assets/img/timeline-comerc.png" alt="" decoding="async"></picture></span><div class="jcard">
           <span class="jyear">2023</span><span class="jname">Marco Histórico</span>
           <span class="jdesc">Aquisição de 50% da iGreen. Os gigantes do setor apostam na nossa missão: bilhões de reais investidos em capacidade energética, nos tornando a empresa mais preparada para liderar a transição energética.</span>
         </div></li>
-        <li class="jitem jl"><span class="jdot"></span><span class="jphoto jp3" data-rot="-5" data-dx="50" data-dy="160" data-off="-60"><img src="assets/img/timeline-telecom.png" alt=""></span><div class="jcard">
+        <li class="jitem jl"><span class="jdot"></span><span class="jphoto jp3" data-rot="-5" data-dx="50" data-dy="160" data-off="-60"><picture><source srcset="assets/img/timeline-telecom.avif" type="image/avif"><source srcset="assets/img/timeline-telecom.webp" type="image/webp"><img src="assets/img/timeline-telecom.png" alt="" decoding="async"></picture></span><div class="jcard">
           <span class="jyear">2024</span><span class="jname">Expansão e Telecom</span>
           <span class="jdesc">Mais de 100 mil clientes em apenas 2 anos. Início da operação iGreen Telecom: energia, tecnologia e conexão para todo o Brasil.</span>
         </div></li>
-        <li class="jitem jr"><span class="jdot"></span><span class="jphoto jp4" data-rot="8" data-dx="-40" data-dy="-170" data-off="90"><img src="assets/img/timeline-forbes.png" alt=""></span><div class="jcard">
+        <li class="jitem jr"><span class="jdot"></span><span class="jphoto jp4" data-rot="8" data-dx="-40" data-dy="-170" data-off="90"><picture><source srcset="assets/img/timeline-forbes.avif" type="image/avif"><source srcset="assets/img/timeline-forbes.webp" type="image/webp"><img src="assets/img/timeline-forbes.png" alt="" decoding="async"></picture></span><div class="jcard">
           <span class="jyear">2025</span><span class="jname">A maior do Setor</span>
           <span class="jdesc">Mais de 450 mil clientes. A expansão se torna real — e este é apenas o começo de uma grande jornada.</span>
         </div></li>
@@ -2094,7 +2102,7 @@
 </section>
 <section class="hqvideo" id="sede">
   <div class="hqframe">
-  <video class="hqbg" muted playsinline preload="auto" poster="assets/img/sede2-poster.jpg"><source src="assets/video/sede2.mp4" type="video/mp4"></video>
+  <video class="hqbg" muted playsinline preload="none" poster="assets/img/sede2-poster.jpg"><source src="assets/video/sede2.mp4" type="video/mp4"></video>
   <div class="hqscrim"></div><div class="hqtint"></div><div class="hqgrad"></div>
   <div class="hqcopy">
     <span class="skicker">A nova sede · 2026</span>
@@ -2159,7 +2167,7 @@
     </div>
     <div class="dlR">
       <p class="dl-scan">Escaneie para<br><em class="hl2">baixar o app</em></p>
-      <div class="dl-qr"><img src="assets/img/qr-download.png" alt="QR code para baixar o app iGreen"></div>
+      <div class="dl-qr"><img src="assets/img/qr-download.png" alt="QR code para baixar o app iGreen" loading="lazy" decoding="async"></div>
       <div class="dl-note">Aponte a câmera do celular</div>
     </div>
   </div>
@@ -2214,64 +2222,64 @@
 
   <div class="orb-appstage" aria-hidden="true">
     <div class="orb-burst"></div>
-    <img class="dl-hand" alt="" src="assets/img/dl-hand.jpg">
+    <img class="dl-hand" alt="" src="assets/img/dl-hand.jpg" loading="lazy" decoding="async">
 
     <!-- etapa 2: linhas-carrossel (aparecem quando os cards saem) -->
     <div class="rows" aria-hidden="true">
       <div class="rowline r1">
         <div class="rtrackx">
           <div class="tile tlogo"><img src="assets/img/parceiros/dominos.png" alt="Domino's"></div>
-          <div class="tile timg"><img src="assets/img/club-pizza.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-pizza.avif" type="image/avif"><source srcset="assets/img/club-pizza.webp" type="image/webp"><img src="assets/img/club-pizza.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/burgerking.png" alt="Burger King"></div>
-          <div class="tile timg"><img src="assets/img/club-hamburguer.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-hamburguer.avif" type="image/avif"><source srcset="assets/img/club-hamburguer.webp" type="image/webp"><img src="assets/img/club-hamburguer.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/CocoBambu.png" alt="Coco Bambu"></div>
-          <div class="tile timg"><img src="assets/img/club-restaurante.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-restaurante.avif" type="image/avif"><source srcset="assets/img/club-restaurante.webp" type="image/webp"><img src="assets/img/club-restaurante.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/ze-delivery.png" alt="Zé Delivery"></div>
-          <div class="tile timg"><img src="assets/img/club-bebidas.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-bebidas.avif" type="image/avif"><source srcset="assets/img/club-bebidas.webp" type="image/webp"><img src="assets/img/club-bebidas.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/cinemark.png" alt="Cinemark"></div>
-          <div class="tile timg"><img src="assets/img/club-cinema2.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-cinema2.avif" type="image/avif"><source srcset="assets/img/club-cinema2.webp" type="image/webp"><img src="assets/img/club-cinema2.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/cinepolis.png" alt="Cinépolis"></div>
-          <div class="tile timg"><img src="assets/img/club-cinema.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-cinema.avif" type="image/avif"><source srcset="assets/img/club-cinema.webp" type="image/webp"><img src="assets/img/club-cinema.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/petz.png" alt="Petz"></div>
-          <div class="tile timg"><img src="assets/img/club-pet.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-pet.avif" type="image/avif"><source srcset="assets/img/club-pet.webp" type="image/webp"><img src="assets/img/club-pet.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/drogasil.png" alt="Drogasil"></div>
-          <div class="tile timg"><img src="assets/img/club-farmacia.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-farmacia.avif" type="image/avif"><source srcset="assets/img/club-farmacia.webp" type="image/webp"><img src="assets/img/club-farmacia.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/CasasBahia.png" alt="Casas Bahia"></div>
-          <div class="tile timg"><img src="assets/img/club-varejo.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-varejo.avif" type="image/avif"><source srcset="assets/img/club-varejo.webp" type="image/webp"><img src="assets/img/club-varejo.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/Polishop.png" alt="Polishop"></div>
-          <div class="tile timg"><img src="assets/img/club-varejo2.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-varejo2.avif" type="image/avif"><source srcset="assets/img/club-varejo2.webp" type="image/webp"><img src="assets/img/club-varejo2.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/Riachuelo.png" alt="Riachuelo"></div>
-          <div class="tile timg"><img src="assets/img/club-roupas.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-roupas.avif" type="image/avif"><source srcset="assets/img/club-roupas.webp" type="image/webp"><img src="assets/img/club-roupas.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/Vivara.png" alt="Vivara"></div>
-          <div class="tile timg"><img src="assets/img/club-joias.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-joias.avif" type="image/avif"><source srcset="assets/img/club-joias.webp" type="image/webp"><img src="assets/img/club-joias.png" alt="" loading="lazy" decoding="async"></picture></div>
         </div>
       </div>
       <div class="rowline r2">
         <div class="rtrackx">
           <div class="tile tlogo"><img src="assets/img/parceiros/Vivara.png" alt="Vivara"></div>
-          <div class="tile timg"><img src="assets/img/club-joias.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-joias.avif" type="image/avif"><source srcset="assets/img/club-joias.webp" type="image/webp"><img src="assets/img/club-joias.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/Riachuelo.png" alt="Riachuelo"></div>
-          <div class="tile timg"><img src="assets/img/club-roupas.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-roupas.avif" type="image/avif"><source srcset="assets/img/club-roupas.webp" type="image/webp"><img src="assets/img/club-roupas.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/Polishop.png" alt="Polishop"></div>
-          <div class="tile timg"><img src="assets/img/club-varejo2.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-varejo2.avif" type="image/avif"><source srcset="assets/img/club-varejo2.webp" type="image/webp"><img src="assets/img/club-varejo2.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/CasasBahia.png" alt="Casas Bahia"></div>
-          <div class="tile timg"><img src="assets/img/club-varejo.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-varejo.avif" type="image/avif"><source srcset="assets/img/club-varejo.webp" type="image/webp"><img src="assets/img/club-varejo.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/drogasil.png" alt="Drogasil"></div>
-          <div class="tile timg"><img src="assets/img/club-farmacia.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-farmacia.avif" type="image/avif"><source srcset="assets/img/club-farmacia.webp" type="image/webp"><img src="assets/img/club-farmacia.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/petz.png" alt="Petz"></div>
-          <div class="tile timg"><img src="assets/img/club-pet.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-pet.avif" type="image/avif"><source srcset="assets/img/club-pet.webp" type="image/webp"><img src="assets/img/club-pet.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/cinepolis.png" alt="Cinépolis"></div>
-          <div class="tile timg"><img src="assets/img/club-cinema.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-cinema.avif" type="image/avif"><source srcset="assets/img/club-cinema.webp" type="image/webp"><img src="assets/img/club-cinema.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/cinemark.png" alt="Cinemark"></div>
-          <div class="tile timg"><img src="assets/img/club-cinema2.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-cinema2.avif" type="image/avif"><source srcset="assets/img/club-cinema2.webp" type="image/webp"><img src="assets/img/club-cinema2.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/ze-delivery.png" alt="Zé Delivery"></div>
-          <div class="tile timg"><img src="assets/img/club-bebidas.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-bebidas.avif" type="image/avif"><source srcset="assets/img/club-bebidas.webp" type="image/webp"><img src="assets/img/club-bebidas.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/CocoBambu.png" alt="Coco Bambu"></div>
-          <div class="tile timg"><img src="assets/img/club-restaurante.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-restaurante.avif" type="image/avif"><source srcset="assets/img/club-restaurante.webp" type="image/webp"><img src="assets/img/club-restaurante.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/burgerking.png" alt="Burger King"></div>
-          <div class="tile timg"><img src="assets/img/club-hamburguer.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-hamburguer.avif" type="image/avif"><source srcset="assets/img/club-hamburguer.webp" type="image/webp"><img src="assets/img/club-hamburguer.png" alt="" loading="lazy" decoding="async"></picture></div>
           <div class="tile tlogo"><img src="assets/img/parceiros/dominos.png" alt="Domino's"></div>
-          <div class="tile timg"><img src="assets/img/club-pizza.png" alt=""></div>
+          <div class="tile timg"><picture><source srcset="assets/img/club-pizza.avif" type="image/avif"><source srcset="assets/img/club-pizza.webp" type="image/webp"><img src="assets/img/club-pizza.png" alt="" loading="lazy" decoding="async"></picture></div>
         </div>
       </div>
     </div>
@@ -2419,7 +2427,7 @@
         <p class="recsub">Cada conexão ativa gera comissão recorrente: enquanto o cliente permanece na rede, o resultado se acumula e cresce — mês após mês, sem recomeçar do zero.</p>
       </div>
       <div class="rfloat g1">
-        <img class="rimg-l" alt="Turbina eólica de energia verde" src="assets/img/rec-wind.jpg">
+        <img class="rimg-l" alt="Turbina eólica de energia verde" src="assets/img/rec-wind.jpg" loading="lazy" decoding="async">
         <div class="rpillov"><svg viewBox="0 0 24 24" fill="none" stroke="#052008" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>+ R$ 250,00 <span>recebido · GP</span></div>
       </div>
       <div class="rfloat g2">
@@ -2433,7 +2441,7 @@
         </div>
       </div>
       <div class="rfloat g3">
-        <img class="rimg-l" alt="Fazenda solar" src="assets/img/rec-solar.jpg">
+        <img class="rimg-l" alt="Fazenda solar" src="assets/img/rec-solar.jpg" loading="lazy" decoding="async">
         <div class="rmini rm-bl">
           <span class="rsmono">Repasses · mês</span>
           <b>R$ 8.350</b>
@@ -2441,14 +2449,14 @@
         </div>
       </div>
       <div class="rfloat g4">
-        <img class="rimg-s" alt="Crescimento recorrente" src="assets/img/rec-grow.jpg">
+        <img class="rimg-s" alt="Crescimento recorrente" src="assets/img/rec-grow.jpg" loading="lazy" decoding="async">
         <div class="rmini rm-br">
           <span class="rsmono">Acumulado · ano</span>
           <b>R$ 42,1 mil</b>
         </div>
       </div>
       <div class="rfloat g5">
-        <img class="rimg-s rimg-r" alt="Moedas de energia" src="assets/img/rec-coins.jpg">
+        <img class="rimg-s rimg-r" alt="Moedas de energia" src="assets/img/rec-coins.jpg" loading="lazy" decoding="async">
         <div class="rchartcard">
           <span class="rsmono">Rendimento · 1º semestre</span>
           <div class="rchartwrap">
@@ -2470,7 +2478,7 @@
         <div class="raccent"><span>Recorrência garantida</span><b>+ R$ 12.480<i>/mês</i></b></div>
       </div>
       <div class="rfloat g7">
-        <img class="rimg-s" alt="Recorrência protegida" src="assets/img/rec-lock.jpg">
+        <img class="rimg-s" alt="Recorrência protegida" src="assets/img/rec-lock.jpg" loading="lazy" decoding="async">
         <div class="rmini rm-br">
           <span class="rsmono">iGreen Pay · saldo</span>
           <b>R$ 4.980,00</b>
@@ -2535,8 +2543,8 @@
 </section>
 <section class="cars" id="bonificacao">
   <div class="carstage">
-    <video class="carvid" muted playsinline preload="auto"><source src="assets/video/cars-drivein.mp4" type="video/mp4"></video>
-    <img class="carstill" alt="BYD Seal EV e Porsche Taycan verdes iGreen" src="assets/img/cars-hero.jpg">
+    <video class="carvid" muted playsinline preload="metadata"><source src="assets/video/cars-drivein.mp4" type="video/mp4"></video>
+    <img class="carstill" alt="BYD Seal EV e Porsche Taycan verdes iGreen" src="assets/img/cars-hero.jpg" loading="lazy" decoding="async">
     <div class="carshade sL" aria-hidden="true"></div>
     <div class="carshade sR" aria-hidden="true"></div>
     <div class="carfade ft" aria-hidden="true"></div>
@@ -2960,7 +2968,7 @@
 </style>
 <section id="planos">
   <div class="pl-bg" aria-hidden="true"></div>
-  <div class="pl-media" aria-hidden="true"><img src="assets/img/plans-coins.jpg" alt=""></div>
+  <div class="pl-media" aria-hidden="true"><img src="assets/img/plans-coins.jpg" alt="" loading="lazy" decoding="async"></div>
   <div class="pl-head">
     <span class="pl-kicker">Planos · Licenças</span>
     <h2 class="pl-title">O futuro é de quem <em>empreende</em></h2>
@@ -3139,12 +3147,13 @@
   var fillP=document.querySelector('.jfillp');
   var spark=document.querySelector('.jspark');
   var CX=110, AMP=46, WAVE=780, svgLeft=0, lastProg=0;
+  if(spark){ spark.style.left='0'; spark.style.top='0'; }   /* PERF: base fixa; posicao via transform (evita escrita de layout por frame) */
   function placeSpark(p){
     if(!fillP||!fillP.getAttribute('d')||!spark) return;
     var len=fillP.getTotalLength();
     var pt=fillP.getPointAtLength(Math.max(0,Math.min(1,p))*len);
-    spark.style.left=(svgLeft+pt.x)+'px';
-    spark.style.top=pt.y+'px';
+    /* transform (compositor) em vez de left/top (layout): sem reflow por frame no scrub. Mantem o translate(-50%,-50%) de centralizacao do CSS. */
+    spark.style.transform='translate('+(svgLeft+pt.x)+'px,'+pt.y+'px) translate(-50%,-50%)';
   }
   function buildCurve(){
     if(!jwrap||!jsvg) return;
@@ -3499,6 +3508,10 @@
       var hqDur=0;
       hqbg.addEventListener('loadedmetadata',function(){ hqDur=hqbg.duration||0; });
       if(hqbg.readyState>=1&&hqbg.duration) hqDur=hqbg.duration;
+      /* PERF: preload="none" -> buffera o video da sede so quando a secao se aproxima (~1.5 tela
+         antes do scrub), tirando ~1.5MB do load inicial. O scrub so age quando hqDur ja existe. */
+      ScrollTrigger.create({trigger:'.hqvideo',start:'top bottom+=150%',once:true,
+        onEnter:function(){ try{ if(hqbg.preload!=='auto'){ hqbg.preload='auto'; hqbg.load(); } }catch(e){} }});
       if(hqw){
         var hqwImg=hqw.querySelector('img');
         if(hqwImg&&!hqwImg.getAttribute('src')) hqwImg.src=hqbg.getAttribute('poster');
@@ -4662,6 +4675,7 @@ if(window.gsap&&window.ScrollTrigger){
   if(!window.gsap) return;
   if(!window.matchMedia("(pointer: fine)").matches) return;
   var reduceM=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var lowPerf=document.documentElement.getAttribute('data-perf')==='low';   /* hardware fraco: sem rastro de particulas */
   var OX=-9, OY=-10;
 
   /* bolinha verde */
@@ -4684,7 +4698,7 @@ if(window.gsap&&window.ScrollTrigger){
   rs(); window.addEventListener("resize",rs);
   var zap={v:1}, parts=[], lastHX=null, lastHY=null;
   gsap.ticker.add(function(){
-    ctx.clearRect(0,0,cvs.width,cvs.height);
+    if(!lowPerf) ctx.clearRect(0,0,cvs.width,cvs.height);
     /* alvo defasado no tempo (delay real) */
     var cut=performance.now()-LAG;
     while(trailQ.length>1&&trailQ[1].t<=cut) trailQ.shift();
@@ -4696,7 +4710,7 @@ if(window.gsap&&window.ScrollTrigger){
     hpx+=hvx; hpy+=hvy;
     gsap.set(head,{x:hpx,y:hpy});
     if(typeof bdg!=="undefined") gsap.set(bdg,{x:hpx,y:hpy-34});
-    if(reduceM) return;
+    if(reduceM||lowPerf) return;
     var hx=hpx, hy=hpy;
     if(lastHX===null){ lastHX=hx; lastHY=hy; }
     var vx=hx-lastHX, vy=hy-lastHY, sp=Math.hypot(vx,vy);
@@ -5367,7 +5381,7 @@ if(window.gsap&&window.ScrollTrigger){
   }
 </style>
 <footer id="rodape">
-  <div class="ft-globe" aria-hidden="true"><img src="assets/img/map-2.png" alt=""></div>
+  <div class="ft-globe" aria-hidden="true"><picture><source srcset="assets/img/map-2.avif" type="image/avif"><source srcset="assets/img/map-2.webp" type="image/webp"><img src="assets/img/map-2.png" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="ft-inner">
     <div class="ft-brand">
       <div class="ft-logo" aria-label="iGreen"><img class="ft-mark" src="assets/logos/igreen-logomarca-neon.svg" alt=""></div>
@@ -5432,6 +5446,7 @@ if(window.gsap&&window.ScrollTrigger){
     var spG=sprite("rgba(24,230,60,1)"), spB=sprite("rgba(150,255,140,1)");
     /* VISTA DE HORIZONTE: esfera gigante com o topo do arco dentro do footer (ref KART IQ) */
     var rot=-1.92, last=0, running=false;   /* comeca com Africa/Americas na frente */
+    var lowPerf=document.documentElement.getAttribute('data-perf')==='low';   /* hardware fraco: globo estatico (sem rotacao continua) */
     var tilt=-1.22, stT=Math.sin(tilt), ctT=Math.cos(tilt);
     function frame(t){
       if(!running) return;
@@ -5458,7 +5473,7 @@ if(window.gsap&&window.ScrollTrigger){
         ctx.drawImage(d[4]?spB:spG, px-dia/2, py-dia*0.44, dia, dia*0.88);
       }
       ctx.globalAlpha=1;
-      requestAnimationFrame(frame);
+      if(!lowPerf) requestAnimationFrame(frame);
     }
     if("IntersectionObserver" in window){
       var io=new IntersectionObserver(function(en){
@@ -5700,20 +5715,22 @@ if(window.gsap&&window.ScrollTrigger){
     var p=ph[i];
     if(p.querySelector('.jpinner')) continue;
     var img=p.querySelector('img'); if(!img) continue;
+    var media=img.closest('picture')||img;   // o <picture> e o filho direto de .jphoto; a img fica dentro dele
     var glow=img.cloneNode(true); glow.className='jpglow'; glow.setAttribute('aria-hidden','true'); glow.removeAttribute('alt');
     var inner=document.createElement('span'); inner.className='jpinner';
     var snow=document.createElement('span'); snow.className='jpsnow'; snow.setAttribute('aria-hidden','true');
     var fx=document.createElement('span'); fx.className='jpfx'; fx.setAttribute('aria-hidden','true');
-    p.insertBefore(inner, img);   // cria o wrapper na posicao da img
+    p.insertBefore(inner, media); // cria o wrapper na posicao do <picture>/img
     p.insertBefore(glow, inner);  // o "shadow" (clone borrado) fica ATRAS do inner
-    inner.appendChild(img);       // move a img p/ dentro
+    inner.appendChild(media);     // move o <picture> (com a img) p/ dentro
     inner.appendChild(snow);      // o chuvisco (snow) de TV antiga
     inner.appendChild(fx);        // e as barras de glitch
   }
 })();
 </script>
 <script src="js/video-inview.js"></script>
-<script src="js/presentation-mode.js"></script>
+<script>/* PERF: modo apresentacao e desktop-only (o JS ja faz early-return no mobile). Carrega so no desktop p/ poupar ~41KB no mobile. */
+if(window.matchMedia&&matchMedia('(min-width:1025px)').matches){var pm=document.createElement('script');pm.src='js/presentation-mode.js';document.body.appendChild(pm);}</script>
 <script src="js/page-transition.js"></script>
 </body>
 </html>

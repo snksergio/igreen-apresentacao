@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../assets/logos/igreen-isotipo-neon.svg">
 <link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/page-transition.css">
-<link rel="stylesheet" href="../css/presentation-mode.css">
+<link rel="stylesheet" href="../css/presentation-mode.css" media="(min-width:1025px)">
 <script>try{if(sessionStorage.getItem('pt')){sessionStorage.removeItem('pt');document.documentElement.setAttribute('data-pt-state','cover');}}catch(e){}</script>
 <style>
   /* ============================================================
@@ -250,7 +250,7 @@
   .virada{ background:#060d07; border-top:1px solid rgba(232,255,228,.06); border-bottom:1px solid rgba(232,255,228,.06); overflow:hidden; }
   /* fazenda solar (hero da v3) bem de leve ao fundo */
   .virada::before{ content:''; position:absolute; inset:-110px 0; pointer-events:none;
-    background:url('../assets/img/igreen-conexao-expansao.png') center/cover no-repeat; opacity:.38;
+    background:url('../assets/img/igreen-conexao-expansao.png') center/cover no-repeat;background:image-set(url('../assets/img/igreen-conexao-expansao.avif') type('image/avif'),url('../assets/img/igreen-conexao-expansao.webp') type('image/webp'),url('../assets/img/igreen-conexao-expansao.png') type('image/png')) center/cover no-repeat; opacity:.38;
     transform:translateY(var(--vpar, 0px)); will-change:transform; }
   .virada::after{ content:''; position:absolute; inset:0; pointer-events:none;
     background:linear-gradient(180deg, #060d07 0%, rgba(6,13,7,.3) 32%, rgba(6,13,7,.3) 68%, #060d07 100%); }
@@ -461,6 +461,7 @@
     padding:20px 0 26px; font-size:11.5px; color:rgba(232,255,228,.45); display:flex;
     justify-content:space-between; gap:10px 24px; flex-wrap:wrap; }
   @media (max-width:900px){ .foot .cols{ grid-template-columns:1fr 1fr; } .foot .brand{ grid-column:span 2; } }
+  .im picture,.media picture{display:block;width:100%;height:100%}
 </style>
 </head>
 <body>
@@ -529,7 +530,7 @@
         <p>É o caminho para quem quer crescer rápido e construir uma carreira de sucesso na iGreen.</p>
       </div>
       <div class="media rv">
-        <figure><img src="../assets/img/igreen-conexao-expansao.png" alt="Conexão Expansão iGreen"></figure>
+        <figure><picture><source srcset="../assets/img/igreen-conexao-expansao.avif" type="image/avif"><source srcset="../assets/img/igreen-conexao-expansao.webp" type="image/webp"><img src="../assets/img/igreen-conexao-expansao.png" alt="Conexão Expansão iGreen" decoding="async"></picture></figure>
         <div class="chip"><b>Em escala</b><span>ganhos que crescem com a rede</span></div>
       </div>
     </div>
@@ -576,7 +577,7 @@
           <div class="tt"><h3>Você se torna licenciado iGreen</h3><span class="chip">primeiro passo</span></div>
           <p>Comece vendendo os produtos do ecossistema e conheça o modelo de negócio por dentro.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/cracha.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/cracha.avif" type="image/avif"><source srcset="../assets/img/illustracoes/cracha.webp" type="image/webp"><img src="../assets/img/illustracoes/cracha.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">02</span>
@@ -584,7 +585,7 @@
           <div class="tt"><h3>Indique novos licenciados</h3><span class="chip">multiplique a rede</span></div>
           <p>Traga pessoas para o time e ajude cada uma a dar os primeiros passos nas vendas.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/users-flow.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/users-flow.avif" type="image/avif"><source srcset="../assets/img/illustracoes/users-flow.webp" type="image/webp"><img src="../assets/img/illustracoes/users-flow.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">03</span>
@@ -592,7 +593,7 @@
           <div class="tt"><h3>Forme e desenvolva sua equipe</h3><span class="chip">liderança</span></div>
           <p>Treine, acompanhe e faça a rede crescer — quanto mais forte o time, maior o resultado.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/esquipe.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/esquipe.avif" type="image/avif"><source srcset="../assets/img/illustracoes/esquipe.webp" type="image/webp"><img src="../assets/img/illustracoes/esquipe.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">04</span>
@@ -600,7 +601,7 @@
           <div class="tt"><h3>Ganhe em <em class="hl">escala</em></h3><span class="chip">bônus + comissões</span></div>
           <p>Alcance comissões sobre a produção da rede, bônus por metas batidas, prêmios e viagens.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/foguete.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/foguete.avif" type="image/avif"><source srcset="../assets/img/illustracoes/foguete.webp" type="image/webp"><img src="../assets/img/illustracoes/foguete.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
     </div>
     <p class="law rv">Plano de carreira iGreen · consulte critérios e condições no Manual de Negócio</p>
@@ -793,7 +794,8 @@
 
 <script>window.PMODE={auto:true,backHref:'../index.html'};</script>
 <script src="../js/video-inview.js"></script>
-<script src="../js/presentation-mode.js"></script>
+<script>/* PERF: modo apresentacao desktop-only (JS ja faz early-return no mobile) */
+if(window.matchMedia&&matchMedia("(min-width:1025px)").matches){var pm=document.createElement("script");pm.src="../js/presentation-mode.js";document.body.appendChild(pm);}</script>
 <script src="../js/page-transition.js"></script>
 <script>
 /* parallax de atraso no fundo da seção "Venda uma vez" (fazenda solar) */

@@ -111,4 +111,29 @@
     e.preventDefault();
     go(el.getAttribute('data-pt-href'), el);
   });
+
+  /* PREFETCH: em desktop com mouse, pre-baixa a pagina de destino ao passar o cursor no card
+     (ou ao focar via teclado), deixando a navegacao quase instantanea. NAO roda em touch nem
+     com Save-Data ligado -> nao gasta dados no mobile. Cada destino e pre-baixado uma unica vez. */
+  (function(){
+    try {
+      if (!window.matchMedia || !matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+      if (navigator.connection && navigator.connection.saveData) return;
+    } catch(e){ return; }
+    var done = {};
+    function prefetch(href){
+      if (!href || href.charAt(0) === '#' || done[href]) return;
+      done[href] = 1;
+      var l = document.createElement('link');
+      l.rel = 'prefetch'; l.as = 'document'; l.href = href;
+      document.head.appendChild(l);
+    }
+    function onHint(e){
+      var el = e.target.closest && e.target.closest('a[data-pt], [data-pt-href]');
+      if (!el) return;
+      prefetch(el.getAttribute('data-pt-href') || el.getAttribute('href'));
+    }
+    document.addEventListener('pointerover', onHint, {passive:true});
+    document.addEventListener('focusin', onHint);
+  })();
 })();

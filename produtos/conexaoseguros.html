@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../assets/logos/igreen-isotipo-neon.svg">
 <link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/page-transition.css">
-<link rel="stylesheet" href="../css/presentation-mode.css">
+<link rel="stylesheet" href="../css/presentation-mode.css" media="(min-width:1025px)">
 <script>try{if(sessionStorage.getItem('pt')){sessionStorage.removeItem('pt');document.documentElement.setAttribute('data-pt-state','cover');}}catch(e){}</script>
 <style>
   /* ============================================================
@@ -472,6 +472,7 @@
   .smcard p{ margin-top:12px; font-size:14.5px; line-height:1.6; color:var(--ink-dim); max-width:34ch; }
   .smensal .op{ margin-top:20px; font-size:11.5px; color:rgba(232,255,228,.42); letter-spacing:.02em; }
   @media (max-width:640px){ .smensal .grid4{ grid-template-columns:1fr; } }
+  .im picture,.media picture{display:block;width:100%;height:100%}
 </style>
 </head>
 <body>
@@ -615,7 +616,7 @@
           <div class="tt"><h3>O cliente faz a cotação em segundos</h3><span class="chip">100% digital</span></div>
           <p>Pela plataforma iGreen Seguros, o cliente cota a proteção do veículo de forma simples, sem burocracia.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/prancheta-digital.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/prancheta-digital.avif" type="image/avif"><source srcset="../assets/img/illustracoes/prancheta-digital.webp" type="image/webp"><img src="../assets/img/illustracoes/prancheta-digital.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">02</span>
@@ -623,7 +624,7 @@
           <div class="tt"><h3>Contrata o plano que cabe no bolso</h3><span class="chip">pagamento mensal</span></div>
           <p>Planos flexíveis, moldados à realidade do cliente, com boleto mensal que não compromete o limite do cartão.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/doc-certificado.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/doc-certificado.avif" type="image/avif"><source srcset="../assets/img/illustracoes/doc-certificado.webp" type="image/webp"><img src="../assets/img/illustracoes/doc-certificado.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">03</span>
@@ -631,7 +632,7 @@
           <div class="tt"><h3>Cobertura completa e atendimento ágil</h3><span class="chip">operado pela BP Seguradora</span></div>
           <p>Roubo, furto, colisão e mais — com atendimento em poucos segundos e a segurança de uma seguradora regulada.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/carro-seguro.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/carro-seguro.avif" type="image/avif"><source srcset="../assets/img/illustracoes/carro-seguro.webp" type="image/webp"><img src="../assets/img/illustracoes/carro-seguro.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
       <div class="cstep rv">
         <span class="dot">04</span>
@@ -639,7 +640,7 @@
           <div class="tt"><h3>Você recebe, <em class="hl">todo mês</em></h3><span class="chip">até 10% recorrente</span></div>
           <p>Comissão recorrente sobre a fatura da iGreen, mais um bônus imediato de até 100% sobre o primeiro boleto do cliente.</p>
         </div>
-        <figure class="im"><img src="../assets/img/illustracoes/cartao-credito.png" alt=""></figure>
+        <figure class="im"><picture><source srcset="../assets/img/illustracoes/cartao-credito.avif" type="image/avif"><source srcset="../assets/img/illustracoes/cartao-credito.webp" type="image/webp"><img src="../assets/img/illustracoes/cartao-credito.png" alt="" loading="lazy" decoding="async"></picture></figure>
       </div>
     </div>
     <p class="law rv">Operado por BP Seguradora S.A. · Código Susep 01546 · CNPJ 50.180.527/0001-13</p>
@@ -887,7 +888,8 @@
 
 <script>window.PMODE={auto:true,backHref:'../index.html'};</script>
 <script src="../js/video-inview.js"></script>
-<script src="../js/presentation-mode.js"></script>
+<script>/* PERF: modo apresentacao desktop-only (JS ja faz early-return no mobile) */
+if(window.matchMedia&&matchMedia("(min-width:1025px)").matches){var pm=document.createElement("script");pm.src="../js/presentation-mode.js";document.body.appendChild(pm);}</script>
 <script src="../js/page-transition.js"></script>
 <script>
 /* parallax de atraso no fundo da seção "Venda uma vez" (fazenda solar) */
