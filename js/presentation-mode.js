@@ -542,8 +542,17 @@
 
   /* reposition=true  → salta pro início da seção e anima até o passo (uso do DOT)
      reposition=false → varredura contínua e suave da posição atual até o alvo (SETAS) */
-  function goToIndex(idx, reposition){
-    if (activeTween) return Promise.resolve();   // serializa: 1 varredura por vez
+  /* force=true -> o passo INTERROMPE a varredura em curso e assume. Sem isto o clique era
+     silenciosamente DESCARTADO enquanto a varredura anterior terminava: o usuario apertava para
+     baixo, nada acontecia, e ele precisava apertar de novo (o famoso "duplo clique"). Vinha da
+     serializacao abaixo — 1 varredura por vez — que continua valendo para tudo que NAO e passo
+     manual (tour automatico, cards do ecossistema), onde encavalar de fato bagunçaria.
+     Interromper e seguro: o sweepTo usa overwrite:true e o activeTween expoe kill(). */
+  function goToIndex(idx, reposition, force){
+    if (activeTween){
+      if (!force) return Promise.resolve();      // serializa: 1 varredura por vez
+      activeTween.kill(); activeTween = null;    // passo manual tem prioridade
+    }
     if (!built) rebuildIndex();
     if (!activeStops.length) return Promise.resolve();
     idx = clamp(0, activeStops.length - 1, idx);
@@ -718,11 +727,13 @@
     if (curIdx >= 0 && isEcoCardStop(curIdx)){ openEcoCard(activeStops[curIdx].sub); return; }
     goToIndex(curIdx < 0 ? 0 : curIdx + 1, false);
   }
-  function goPrev(){ stopAuto(); goToIndex(curIdx <= 0 ? 0 : curIdx - 1, false); }
+  function goPrev(){ stopAuto(); goToIndex(curIdx <= 0 ? 0 : curIdx - 1, false, true); }
 
   /* passo "puro" (setas < >): NUNCA abre produto — no ecossistema troca de card e,
      no último, segue pra próxima seção (órbita). Fora do ecossistema = passo normal. */
-  function goStepNext(){ stopAuto(); if (activeTween) return; goToIndex(curIdx < 0 ? 0 : curIdx + 1, false); }
+  /* a guarda "if (activeTween) return" saiu daqui: era ela + a serializacao do goToIndex que
+     descartavam o clique durante a varredura. Agora o passo assume (force=true). */
+  function goStepNext(){ stopAuto(); goToIndex(curIdx < 0 ? 0 : curIdx + 1, false, true); }
 
   /* produto: fechar E PULAR pro próximo card (no tour); fora do tour só volta */
   function skipProduct(){
