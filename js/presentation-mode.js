@@ -63,13 +63,17 @@
         return out.length ? out : null;
       } },
     { label:'Sede',         sel:'#sede',         subs:[], on:true,
-      /* modo apresentacao: a sede toca o video em LOOP sozinho enquanto em foco (nao
-         depende do scroll). window.__sedePMHold suspende o scrub do currentTime no index. */
+      /* A sede toca em LOOP sozinha — hoje isso vale para a pagina inteira, nao so aqui: o scrub
+         do currentTime pelo scroll foi removido do index (era o que mais pesava em notebook).
+         Entao no foco so reinicia do zero; ao sair NAO mexe mais em loop nem pausa — quem manda
+         nisso agora e o ScrollTrigger do index (toca na tela, pausa fora). Antes havia
+         v.loop=false + pause() aqui, o que com o video em loop MATARIA o loop de vez depois de
+         usar o modo apresentacao. */
       dur:function(){ var v=document.querySelector('.hqbg'); var d=(v&&v.duration)?v.duration:9; return clamp(5,16,d); },
       onEnter:function(){ var v=document.querySelector('.hqbg');
-        if(v){ window.__sedePMHold=true; try{ v.loop=true; v.currentTime=0; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} } },
+        if(v){ try{ v.loop=true; v.currentTime=0; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} } },
       onLeave:function(){ var v=document.querySelector('.hqbg');
-        window.__sedePMHold=false; if(v){ try{ v.loop=false; v.pause(); }catch(e){} } } },
+        if(v){ try{ v.loop=true; }catch(e){} } } },
     { label:'Ecossistema',  sel:'#ecossistema2', subs:[], on:true,
       /* baralho: um passo por card em foco (como a trajetória). O card i fica em
          foco quando cp = i/(N-1); e cp = (progress*D)/CARO_DUR, com CARO_DUR=5 e
