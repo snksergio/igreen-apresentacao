@@ -60,9 +60,13 @@ O passo manual tem **prioridade**: interrompe a varredura em curso e assume (`go
 
 Se você reintroduzir uma guarda de `activeTween` no caminho do passo manual, o bug do duplo clique volta.
 
-## Pendência conhecida (não resolvida)
+## Bonificação e Graduações — NÃO mexer
 
-**Bonificação e Graduações não avançam** — nem para baixo nem para cima. Já foi verificado que **não é posição coincidente**: as 11 paradas têm valores distintos e espaçados. Suspeita atual, não testada: chegar por **clique no dot** usa `goToSection` → `goToIndex(i, true)` com reposicionamento, e o `curIdx` interno pode não ficar onde se espera, fazendo o passo seguinte calcular de índice defasado. Indício: no teste, as que falharam foram as alcançadas por dot; as que passaram foram alcançadas por passos. **Teste que decide:** comparar chegada por dot vs por passos e inspecionar `curIdx`/`activeStops` no momento.
+Testes automatizados já relataram que o passo "não move o scroll" nessas duas paradas. **O dono testou à mão e confirmou que estão como ele quer** — é comportamento intencional, não bug. Ele pediu explicitamente para encerrar o assunto.
+
+Se o seu teste acusar isso de novo, trate como **falso positivo** e siga. Não tente consertar: você quebraria algo que está do jeito desejado.
+
+Lembre também que este tipo de medição já errou aqui — detectar avanço pelo rótulo da seção dá falso positivo em seções com paradas internas, e há sub-paradas que legitimamente não movem muito. Antes de chamar qualquer coisa de defeito na apresentação, confirme com o dono.
 
 ## Entregue sempre
 
