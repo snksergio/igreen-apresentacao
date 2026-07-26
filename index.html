@@ -4366,8 +4366,14 @@ window.igRefresh=(function(){
     var smr=(window.ScrollSmoother&&ScrollSmoother.get)?ScrollSmoother.get():null;
     var alvoY=pinRef.start+(pinRef.end-pinRef.start)*best;
     var pr={v:smr?smr.scrollTop():window.pageYOffset};
+    /* Empurra o scroll NATIVO, nao o smoother. Escrever smr.scrollTop() a cada quadro deixava
+       o smoother DESSINCRONIZADO: depois do snap ele ficava surdo — o scrollTo do menu movia a
+       barra nativa e o conteudo nao animava (tela parada na secao do app, e depois um pulo de
+       milhares de px). Isolado em laboratorio: basta este tween escrevendo scrollTop p/ congelar.
+       O nativo e a via que o smoother JA foi feito p/ seguir (e a que a roda usa), entao ele
+       acompanha com o easing dele — o snap fica um tico mais macio, mesma duracao e direcao. */
     snapTw=gsap.to(pr,{v:alvoY,duration:.6,ease:"power2.inOut",overwrite:true,
-      onUpdate:function(){ if(smr) smr.scrollTop(pr.v); else window.scrollTo(0,pr.v); },
+      onUpdate:function(){ window.scrollTo(0,pr.v); },
       onComplete:function(){ snapTw=null; }});
   }
   ScrollTrigger.addEventListener("scrollEnd",trySnap);
