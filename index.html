@@ -4228,8 +4228,11 @@ window.igRefresh=(function(){
          (scrollEnd) achava o SNAP 0 mais perto e puxava de volta p/ p=0 — os
          cards apareciam e SUMIAM (flick ao navegar pelo menu, onde nao ha wheel
          p/ matar o snap). Mirando em 0.26 a pagina ja para num snap: sem tranco. */
-      if(s&&st){ var tgt=st.start+(st.end-st.start)*0.26;
-        if(s.scrollTop()<st.start+(st.end-st.start)*0.06) s.scrollTo(tgt,true); }
+      /* ...mas se o snap JA esta rodando, quem manda e ele: o usuario parou onde quis e os
+         dois escrevendo juntos davam o pingue-pongue. Ao assumir, marca a posse (autoAte)
+         para o snap nao entrar por cima no meio do caminho. */
+      if(s&&st&&!snapTw){ var tgt=st.start+(st.end-st.start)*0.26;
+        if(s.scrollTop()<st.start+(st.end-st.start)*0.06){ autoAte=performance.now()+900; s.scrollTo(tgt,true); } }
     });
   };
   window.igResetOrbita=function(){
@@ -4343,8 +4346,15 @@ window.igRefresh=(function(){
   /* snap manual: ao parar o scroll dentro do pin, assenta na visao composta mais proxima */
   var SNAPS=[0,.26,.58,.93];   /* 1a view (app + cards) em .26: antes .19 os cards ainda nao apareciam */
   var snapTw=null;
+  /* Quem manda na posicao do scroll aqui: o snap OU o auto-scroll da abertura (onComplete
+     da tl, abaixo). Os dois escreviam ao mesmo tempo com destinos opostos — o snap puxando
+     p/ 0 e o auto-scroll p/ 0.26 — e o resultado era um pingue-pongue visivel (cards
+     entravam, sumiam, voltavam e sumiam). autoAte marca ate quando o auto-scroll tem a
+     posse; enquanto durar, o snap nao encosta. */
+  var autoAte=0;
   function trySnap(){
     if(!pinRef||!pinRef.isActive||scrollLocked) return;
+    if(performance.now()<autoAte) return;   /* auto-scroll da abertura esta no comando */
     /* no modo apresentacao a posicao e controlada pela apresentacao — o snap nativo
        brigava com a varredura (puxava de volta pro SNAP mais proximo). */
     if(document.documentElement.classList.contains('pmode-active')) return;
@@ -4364,6 +4374,15 @@ window.igRefresh=(function(){
   ["wheel","touchstart","keydown"].forEach(function(ev){
     window.addEventListener(ev,function(){ if(snapTw){ snapTw.kill(); snapTw=null; } },{passive:true});
   });
+  /* O clique do MENU tambem cancela o snap pendente. Sem isto, o tween do snap continuava
+     escrevendo scrollTop durante o scrollTo do menu: os dois brigavam e o conteudo CONGELAVA
+     — a barra nativa ia pro destino e a tela ficava parada na secao do app, sem voltar nem
+     com a roda (e depois pulava milhares de px de uma vez). Captura (true) p/ rodar antes do
+     handler da ancora. */
+  window.addEventListener("click",function(e){
+    var a=e.target&&e.target.closest?e.target.closest('a[href^="#"]'):null;
+    if(a&&snapTw){ snapTw.kill(); snapTw=null; }
+  },true);
 
   /* carrossel infinito e autonomo das logos, com arrasto para acelerar */
   var W=[0,0];
