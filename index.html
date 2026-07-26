@@ -5981,6 +5981,27 @@ if(window.gsap&&window.ScrollTrigger){
 })();
 </script>
 <script src="js/video-inview.js"></script>
+<script>
+/* Tiles do carrossel de logos do clube (orbita): 12 dos 48 nunca carregavam.
+   Sao duplicatas do carrossel infinito que vivem FORA da viewport na horizontal, e o
+   loading="lazy" nunca dispara para elas — o resultado era um quadrado 142x142 em branco
+   passando enquanto o carrossel gira. (Verificado nas 5 fases da secao: nao passava de 36/48.)
+   Conserto: quando a orbita se aproxima (~1 tela antes), libera o lazy de todos os tiles de
+   uma vez. Custo no carregamento inicial: ZERO — nada baixa antes de a secao chegar perto.
+   Mesmo padrao que o video da sede ja usa com preload="none". */
+(function(){
+  var orb = document.getElementById('orbita');
+  if (!orb || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(es){
+    if (!es[0].isIntersecting) return;
+    io.disconnect();
+    [].forEach.call(orb.querySelectorAll('.tile.timg img[loading="lazy"]'), function(im){
+      im.removeAttribute('loading');
+    });
+  }, { rootMargin: '100% 0px' });
+  io.observe(orb);
+})();
+</script>
 <script>/* PERF: modo apresentacao e desktop-only (o JS ja faz early-return no mobile). Carrega so no desktop p/ poupar ~41KB no mobile. */
 if(window.matchMedia&&matchMedia('(min-width:1025px)').matches){var pm=document.createElement('script');pm.src='js/presentation-mode.js';document.body.appendChild(pm);}</script>
 <script src="js/page-transition.js"></script>
