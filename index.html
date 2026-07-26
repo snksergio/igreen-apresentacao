@@ -511,7 +511,9 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
     transition:width .65s cubic-bezier(.16,1.1,.3,1),opacity .4s}
   .hqframe.charged::before{width:100%;opacity:1;animation:chargepulse 1.7s ease-in-out infinite}
   @keyframes chargepulse{50%{box-shadow:0 0 44px rgba(24,255,0,1)}}
-  .hqbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.06) contrast(1.04)}
+  /* o saturate(1.06)/contrast(1.04) foi assado no sede2.mp4 junto com as camadas de blend: era um
+     passe de shader na tela cheia por quadro para um ajuste de 6%/4% — invisivel, e de graca no arquivo */
+  .hqbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .hqscrim{position:absolute;inset:0;
     background:linear-gradient(90deg,rgba(3,10,5,.82) 0%,rgba(3,10,5,.38) 46%,rgba(3,10,5,.06) 72%),
       linear-gradient(180deg,rgba(3,6,3,.72) 0%,rgba(3,6,3,0) 26%,rgba(3,6,3,0) 74%,rgba(3,6,3,.85) 100%)}
@@ -2231,7 +2233,14 @@ window.igRefresh=(function(){
 <section class="hqvideo" id="sede">
   <div class="hqframe">
   <video class="hqbg" muted playsinline preload="none" poster="assets/img/sede2-poster.jpg"><source src="assets/video/sede2.mp4" type="video/mp4"></video>
-  <div class="hqscrim"></div><div class="hqtint"></div><div class="hqgrad"></div>
+  <!-- .hqtint (soft-light) e .hqgrad (screen) foram ASSADOS no proprio sede2.mp4: eram 2 camadas
+       de tela cheia com mix-blend-mode, e blend obriga a GPU a reler os pixels de baixo, calcular a
+       mistura e reescrever a tela INTEIRA a cada quadro — com o video sendo scrubado pelo scroll,
+       60x por segundo. Sendo gradientes estaticos, o resultado e sempre o mesmo: da para calcular
+       uma vez na conversao. O .hqscrim FICA: blend normal (a GPU so sobrepoe, e barato) e e ele que
+       protege a leitura do texto, que depende do formato da tela — assado no video ele sairia de
+       lugar em telas de proporcao diferente, por causa do recorte do object-fit:cover. -->
+  <div class="hqscrim"></div>
   <div class="hqcopy">
     <span class="skicker">A nova sede · 2026</span>
     <h2 class="hqtitle">A casa da <em class="hl2">energia verde</em> já nasceu gigante</h2>
@@ -3679,6 +3688,7 @@ window.igRefresh=(function(){
     hqMM.add('(min-width:1025px)', function(){
       hqbg.pause();
       var hqDur=0;
+      var hqLastT=-1;   /* ultimo currentTime pedido, p/ nao pedir seek dentro do mesmo quadro */
       hqbg.addEventListener('loadedmetadata',function(){ hqDur=hqbg.duration||0; });
       if(hqbg.readyState>=1&&hqbg.duration) hqDur=hqbg.duration;
       /* PERF: preload="none" -> buffera o video da sede so quando a secao se aproxima (~1.5 tela
@@ -3715,7 +3725,15 @@ window.igRefresh=(function(){
         onUpdate:function(self){
           var hp=self.progress;
           /* modo apresentacao pode segurar a sede tocando em loop: nao scrubar o currentTime */
-          if(hqDur && !window.__sedePMHold){ try{ hqbg.currentTime=hp*(hqDur-.06); }catch(e){} }
+          /* PERF: so pede seek quando o alvo muda de QUADRO. Antes escrevia currentTime a cada
+             quadro de scroll (~60x/s), inclusive quando o avanco era menor que 1/24s — pedido que
+             nao altera nada na tela e ainda interrompe o pipeline do decodificador. */
+          if(hqDur && !window.__sedePMHold){
+            var alvoT=hp*(hqDur-.06);
+            if(hqLastT<0 || Math.abs(alvoT-hqLastT)>=1/24 || hp<=0 || hp>=1){
+              hqLastT=alvoT; try{ hqbg.currentTime=alvoT; }catch(e){}
+            }
+          }
           hqBadges.forEach(function(b,i){
             var on=self.progress>=(.12+i*.11);
             if(on!==b.__on){ b.__on=on;
