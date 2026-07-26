@@ -514,6 +514,24 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
   /* o saturate(1.06)/contrast(1.04) foi assado no sede2.mp4 junto com as camadas de blend: era um
      passe de shader na tela cheia por quadro para um ajuste de 6%/4% — invisivel, e de graca no arquivo */
   .hqbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  /* Reveal em cascata da sede, disparado pela classe .reveal quando a seção entra em foco.
+     Vale em QUALQUER dispositivo (antes só no mobile). Substitui a coreografia que era feita
+     pelo scroll dentro de um pin de 340%: os badges apareciam um a um conforme você rolava.
+     Agora o tempo é do CSS (transition-delay), então não depende de scroll e não custa nada
+     por quadro — nenhum JS roda durante a animação, o compositor faz sozinho. */
+  .hqvideo .skicker,.hqvideo .hqtitle,.hqvideo .hqsub,.hqvideo .hqbadge,.hqvideo .hqwatch{
+    opacity:0;transform:translateY(20px);
+    transition:opacity .6s ease,transform .65s cubic-bezier(.16,1.1,.3,1)}
+  .hqvideo.reveal .skicker{opacity:1;transform:none;transition-delay:.05s}
+  .hqvideo.reveal .hqtitle{opacity:1;transform:none;transition-delay:.12s}
+  .hqvideo.reveal .hqsub{opacity:1;transform:none;transition-delay:.2s}
+  .hqvideo.reveal .hqbadge{opacity:1;transform:none}
+  .hqvideo.reveal .hqbadge:nth-child(1){transition-delay:.28s}
+  .hqvideo.reveal .hqbadge:nth-child(2){transition-delay:.36s}
+  .hqvideo.reveal .hqbadge:nth-child(3){transition-delay:.44s}
+  .hqvideo.reveal .hqbadge:nth-child(4){transition-delay:.52s}
+  .hqvideo.reveal .hqwatch{opacity:1;transform:none;transition-delay:.62s}   /* entra por último */
+
   /* verde escuro no lugar do quase-preto: mesmas opacidades (.82/.38/.06 e .72/0/0/.85), entao a
      forca do escurecimento — e a legibilidade do texto — nao muda. Trocar a COR de um gradiente
      nao custa nada de desempenho: o que pesava eram os mix-blend-mode, ja assados no mp4. */
@@ -1788,18 +1806,7 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
     .hqbadges{margin-top:22px;gap:9px}
     .hqbadge{font-size:12.5px;padding:9px 15px}
     .hqwatch{display:none}            /* vídeo já roda sozinho — card "assistir" redundante */
-    /* reveal em cascata ao chegar na seção (classe .reveal via IntersectionObserver) */
-    .hqvideo .skicker,.hqvideo .hqtitle,.hqvideo .hqsub,.hqvideo .hqbadge{
-      opacity:0;transform:translateY(20px);
-      transition:opacity .6s ease,transform .65s cubic-bezier(.16,1.1,.3,1)}
-    .hqvideo.reveal .skicker{opacity:1;transform:none;transition-delay:.05s}
-    .hqvideo.reveal .hqtitle{opacity:1;transform:none;transition-delay:.12s}
-    .hqvideo.reveal .hqsub{opacity:1;transform:none;transition-delay:.2s}
-    .hqvideo.reveal .hqbadge{opacity:1;transform:none}
-    .hqvideo.reveal .hqbadge:nth-child(1){transition-delay:.28s}
-    .hqvideo.reveal .hqbadge:nth-child(2){transition-delay:.36s}
-    .hqvideo.reveal .hqbadge:nth-child(3){transition-delay:.44s}
-    .hqvideo.reveal .hqbadge:nth-child(4){transition-delay:.52s}
+    /* (o reveal em cascata subiu para a CSS base: agora vale no desktop também) */
 
     /* ---- O Ecossistema: lista vertical (sem scroll horizontal / deck / pin / overlap) ---- */
     .eco{position:relative;z-index:auto;height:auto;overflow:visible;margin-top:0;
@@ -3140,7 +3147,13 @@ window.igRefresh=(function(){
 </style>
 <section id="planos">
   <div class="pl-bg" aria-hidden="true"></div>
-  <div class="pl-media" aria-hidden="true"><img src="assets/img/plans-coins.jpg" alt="" loading="lazy" decoding="async"></div>
+  <!-- width/height sao OBRIGATORIOS aqui, nao decorativos: o .pl-media e absolute sem altura
+       propria e a img usa height:auto, entao a altura vem da imagem. Com loading="lazy" e SEM as
+       dimensoes dava um ciclo vicioso — caixa de altura 0, o navegador nunca a considerava perto
+       da tela, o lazy nunca disparava, a imagem nunca carregava e as moedas simplesmente nao
+       apareciam (mesmo com a secao inteira na tela). Com as dimensoes o navegador ja sabe a
+       proporcao (960x1280), a caixa nasce com altura real e o lazy volta a funcionar. -->
+  <div class="pl-media" aria-hidden="true"><img src="assets/img/plans-coins.jpg" alt="" width="960" height="1280" loading="lazy" decoding="async"></div>
   <div class="pl-head">
     <span class="pl-kicker">Planos · Licenças</span>
     <h2 class="pl-title">O futuro é de quem <em>empreende</em></h2>
@@ -3458,6 +3471,12 @@ window.igRefresh=(function(){
       var t=document.querySelector(sel);
       if(!t) return;
       e.preventDefault();
+      /* Navegar pelo menu passa a MANDAR na posicao do scroll por ~1,8s. Sem isto, viagens que
+         atravessam o pin da orbita eram sequestradas: o scrollEnd disparava em pleno voo, o
+         trySnap via o pin ativo e ancorava a pagina dentro da orbita — o clique em "Simulador"
+         ou "Planos" parava na secao errada. Matar o snap no clique nao bastava: ele e armado
+         DEPOIS, durante a viagem. Um gesto do usuario (wheel/touch/tecla) continua cancelando. */
+      window.igNavAte=performance.now()+1800;
       /* #orbita (App): mira na view COMPOSTA dos cards (0.26 do pin), senao landa no progresso 0
          com os cards escondidos. Corrige o bug de navegar Planos -> App (orbita ja "played",
          so rolava pro topo). Funciona vindo de qualquer direcao. */
@@ -3693,16 +3712,19 @@ window.igRefresh=(function(){
     /* DESKTOP (>1024px): vídeo em LOOP + pin + escala do frame.
        Antes o vídeo era scrubado pelo scroll (currentTime a cada quadro). Trocado por autoplay:
        tocar para frente é o caminho natural do decodificador — zero seek, sem interromper o
-       pipeline — e era a maior economia possível para notebooks fracos. O PIN CONTINUA: ele ainda
-       coreografa a entrada dos badges e do botão, então a seção não perde a narrativa.
+       pipeline — e era a maior economia possível para notebooks fracos. O pin de 340% também saiu
+       (ver mais abaixo): a cascata de título/badges/botão virou tempo de CSS, não scroll.
        Só toca enquanto está na tela; fora dela, pausa (decodificar escondido é desperdício). */
     hqMM.add('(min-width:1025px)', function(){
+      /* play/pause NAO fica aqui: quem cuida e o IntersectionObserver do js/video-inview.js, que
+         mede visibilidade real e por isso nao se confunde com a geometria do pin. */
       var hqPlay=function(){ try{ var p=hqbg.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} };
-      var hqST=ScrollTrigger.create({trigger:'.hqvideo',start:'top bottom',end:'bottom top',
-        onToggle:function(self){ if(self.isActive) hqPlay(); else { try{ hqbg.pause(); }catch(e){} } }});
       /* o preload é "none": se a seção for alcançada ANTES do vídeo ter dados, o play() falha e
-         ninguém tentaria de novo. Aqui ele tenta assim que os dados chegam, se ainda estiver na tela. */
-      hqbg.addEventListener('canplay',function(){ if(hqST.isActive) hqPlay(); });
+         ninguém tentaria de novo. Aqui ele tenta assim que os dados chegam, se ainda estiver visível. */
+      hqbg.addEventListener('canplay',function(){
+        var r=hqbg.getBoundingClientRect();
+        if(r.bottom>0 && r.top<window.innerHeight) hqPlay();
+      });
       /* PERF: preload="none" -> buffera o video da sede so quando a secao se aproxima (~1.5 tela
          antes), tirando ~1.5MB do load inicial. O play em si e disparado pelo ScrollTrigger de
          visibilidade acima (ou pelo 'canplay', se os dados chegarem depois da secao entrar). */
@@ -3711,7 +3733,8 @@ window.igRefresh=(function(){
       if(hqw){
         var hqwImg=hqw.querySelector('img');
         if(hqwImg&&!hqwImg.getAttribute('src')) hqwImg.src=hqbg.getAttribute('poster');
-        gsap.set(hqw,{y:26,autoAlpha:0});
+        /* (o gsap.set de autoAlpha saiu: quem controla a entrada agora e a classe .reveal no CSS.
+           Um estilo inline do GSAP venceria o CSS e o botao nunca apareceria.) */
       }
       function alignWatch(){
         if(!hqw||!hqBadges.length) return;
@@ -3734,21 +3757,23 @@ window.igRefresh=(function(){
       }
       ScrollTrigger.create({trigger:'.hqvideo',start:'top bottom',end:'top top',
         snap:{snapTo:1,duration:.55,delay:.05,ease:'power2.inOut'}});
-      ScrollTrigger.create({trigger:'.hqvideo',start:'top top',end:'+=340%',pin:true,
-        onUpdate:function(self){
-          var hp=self.progress;
-          /* modo apresentacao pode segurar a sede tocando em loop: nao scrubar o currentTime */
-          /* (o scrub de currentTime saiu daqui: o vídeo agora toca em loop — ver o comentário no
-             topo do bloco desktop. O pin segue existindo só para coreografar badges e botão.) */
-          hqBadges.forEach(function(b,i){
-            var on=self.progress>=(.12+i*.11);
-            if(on!==b.__on){ b.__on=on;
-              gsap.to(b,{autoAlpha:on?1:0,y:on?0:18,duration:.45,ease:'power2.out',overwrite:'auto'}); }
-          });
-          if(hqw){ var won=self.progress>=.45;   /* permanece até o fim (nao some no final) */
-            if(won!==hqw.__on){ hqw.__on=won;
-              gsap.to(hqw,{autoAlpha:won?1:0,y:won?0:26,duration:.5,ease:'power2.out',overwrite:'auto'}); } }
-        }});
+      /* O PIN DE 340% FOI REMOVIDO. Ele existia só para coreografar título/badges/botão conforme
+         você rolava: cada badge aparecia num trecho do scroll. Agora a cascata é do CSS (classe
+         .reveal + transition-delay), disparada uma vez quando a seção entra em foco — igual ao
+         mobile. Ganhos: nada roda por quadro (era um onUpdate a cada quadro de scroll), a seção
+         deixou de sequestrar 3216px de rolagem, e o efeito não depende mais de o usuário rolar
+         devagar para ver os badges. Também MATA O BUG do vídeo pausando no meio da seção: o
+         gatilho de visibilidade media a caixa natural do elemento (1892px) enquanto o pin durava
+         3216px, então a partir de ~30% da seção ele desativava e pausava o vídeo. */
+      ScrollTrigger.create({trigger:'.hqvideo',start:'top 75%',once:true,
+        onEnter:function(){ document.querySelector('.hqvideo').classList.add('reveal'); }});
+      /* FOLGA de scroll. Sem isto a seção só ocupava 1 tela: o snap acima encaixava ela, mas um
+         gesto seguinte já a empurrava fora e o usuário tinha que reposicionar na mão para ela
+         encaixar. Este pin não coreografa NADA (a cascata é do CSS) — ele só dá um respiro em que
+         a seção fica encaixada, então um scroll pequeno não a atravessa. É bem menor que o pin
+         antigo de 340%: aqui são 75% de uma tela. Ajuste este número se quiser mais ou menos
+         folga — é o único valor que governa isso. */
+      ScrollTrigger.create({trigger:'.hqvideo',start:'top top',end:'+=75%',pin:true});
       return function(){
         window.removeEventListener('resize',alignWatch);
         window.removeEventListener('load',alignWatch);
@@ -4379,6 +4404,7 @@ window.igRefresh=(function(){
   function trySnap(){
     if(!pinRef||!pinRef.isActive||scrollLocked) return;
     if(performance.now()<autoAte) return;   /* auto-scroll da abertura esta no comando */
+    if(window.igNavAte&&performance.now()<window.igNavAte) return;   /* navegacao do menu em voo */
     /* no modo apresentacao a posicao e controlada pela apresentacao — o snap nativo
        brigava com a varredura (puxava de volta pro SNAP mais proximo). */
     if(document.documentElement.classList.contains('pmode-active')) return;

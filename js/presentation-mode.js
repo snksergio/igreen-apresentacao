@@ -62,14 +62,26 @@
         });
         return out.length ? out : null;
       } },
-    { label:'Sede',         sel:'#sede',         subs:[], on:true,
+    /* frame:true + frameOff:0 -> enquadra o topo da secao no topo da tela, ignorando triggers.
+       Necessario porque o PIN de 340% foi removido do index (a cascata virou tempo de CSS): sem
+       frame, o findTrigger passaria a achar o scrub de escala ou o gatilho de visibilidade do
+       video e a parada pousaria no lugar errado (o de visibilidade termina ~1 tela DEPOIS do topo,
+       deixando a secao metade fora). Como a secao tem 100vh, topo no topo = tela cheia, que e
+       exatamente o enquadramento que o pin dava no seu inicio. */
+    { label:'Sede',         sel:'#sede',         subs:[], on:true, frame:true, frameOff:0,
       /* A sede toca em LOOP sozinha — hoje isso vale para a pagina inteira, nao so aqui: o scrub
          do currentTime pelo scroll foi removido do index (era o que mais pesava em notebook).
          Entao no foco so reinicia do zero; ao sair NAO mexe mais em loop nem pausa — quem manda
          nisso agora e o ScrollTrigger do index (toca na tela, pausa fora). Antes havia
          v.loop=false + pause() aqui, o que com o video em loop MATARIA o loop de vez depois de
          usar o modo apresentacao. */
-      dur:function(){ var v=document.querySelector('.hqbg'); var d=(v&&v.duration)?v.duration:9; return clamp(5,16,d); },
+      /* dur = duracao da VARREDURA ate a parada (vira durOverride no sweepTo), nao o tempo parado.
+         Era clamp(5,16, duracao do video) porque a varredura atravessava o pin de 340% enquanto o
+         video era scrubado por aquele scroll — varredura e video duravam o mesmo de proposito.
+         Sem scrub e sem pin longo, isso virou uma viagem absurda: o video novo tem 21,6s, entao
+         o clamp dava 16 SEGUNDOS so para chegar na secao. Agora usa um tempo normal, como as
+         outras paradas (2.6 / 2.8), e nao depende mais da duracao do video. */
+      dur:2.6,
       onEnter:function(){ var v=document.querySelector('.hqbg');
         if(v){ try{ v.loop=true; v.currentTime=0; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} } },
       onLeave:function(){ var v=document.querySelector('.hqbg');

@@ -14,10 +14,15 @@
     /* decorativos de fundo, seguros em qualquer largura (sem outro controlador):
        (os .segv do hero da index NAO entram aqui — o carrossel ja controla play/pause deles) */
     add(document.querySelectorAll('video[loop][src*="bolt-glass"]')); /* hero das paginas de produto */
+    /* SEDE em qualquer largura: o scrub do desktop foi removido (o video so toca em loop), entao
+       nao existe mais controlador proprio la. E este observador e a forma CERTA de decidir isso:
+       ele mede visibilidade REAL, imune a geometria de pin. Um ScrollTrigger com 'top bottom'/
+       'bottom top' media a caixa NATURAL do elemento e, com a secao pinada, desativava no meio do
+       caminho e pausava o video (bug real que aconteceu). */
+    add(document.querySelectorAll('.hqbg'));                       /* sede */
     if(isMobile){
-      /* no mobile as logicas de foco (cards) / scrub (sede) / orbita nao rodam,
+      /* no mobile as logicas de foco (cards) / orbita nao rodam,
          entao esses tambem podem ser pausados fora da tela (ganho real no celular) */
-      add(document.querySelectorAll('.hqbg'));                     /* sede */
       add(document.querySelectorAll('.evid'));                     /* cards do ecossistema */
       add(document.querySelectorAll('.pbg'));                      /* fundo produtos/orbita */
     }
