@@ -514,9 +514,12 @@ if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement
   /* o saturate(1.06)/contrast(1.04) foi assado no sede2.mp4 junto com as camadas de blend: era um
      passe de shader na tela cheia por quadro para um ajuste de 6%/4% — invisivel, e de graca no arquivo */
   .hqbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  /* verde escuro no lugar do quase-preto: mesmas opacidades (.82/.38/.06 e .72/0/0/.85), entao a
+     forca do escurecimento — e a legibilidade do texto — nao muda. Trocar a COR de um gradiente
+     nao custa nada de desempenho: o que pesava eram os mix-blend-mode, ja assados no mp4. */
   .hqscrim{position:absolute;inset:0;
-    background:linear-gradient(90deg,rgba(3,10,5,.82) 0%,rgba(3,10,5,.38) 46%,rgba(3,10,5,.06) 72%),
-      linear-gradient(180deg,rgba(3,6,3,.72) 0%,rgba(3,6,3,0) 26%,rgba(3,6,3,0) 74%,rgba(3,6,3,.85) 100%)}
+    background:linear-gradient(90deg,rgba(5,26,14,.82) 0%,rgba(5,26,14,.38) 46%,rgba(5,26,14,.06) 72%),
+      linear-gradient(180deg,rgba(4,22,12,.72) 0%,rgba(4,22,12,0) 26%,rgba(4,22,12,0) 74%,rgba(4,22,12,.85) 100%)}
   .hqtint{position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(160deg,rgba(18,48,28,.38),rgba(7,20,12,.42));mix-blend-mode:soft-light}
   .hqgrad{position:absolute;inset:0;pointer-events:none;
@@ -2232,7 +2235,7 @@ window.igRefresh=(function(){
 </section>
 <section class="hqvideo" id="sede">
   <div class="hqframe">
-  <video class="hqbg" muted playsinline preload="none" poster="assets/img/sede2-poster.jpg"><source src="assets/video/sede2.mp4" type="video/mp4"></video>
+  <video class="hqbg" muted playsinline loop preload="none" poster="assets/img/video-igreen-poster.jpg"><source src="assets/video/video-igreen.mp4" type="video/mp4"></video>
   <!-- .hqtint (soft-light) e .hqgrad (screen) foram ASSADOS no proprio sede2.mp4: eram 2 camadas
        de tela cheia com mix-blend-mode, e blend obriga a GPU a reler os pixels de baixo, calcular a
        mistura e reescrever a tela INTEIRA a cada quadro — com o video sendo scrubado pelo scroll,
@@ -2244,7 +2247,10 @@ window.igRefresh=(function(){
   <div class="hqcopy">
     <span class="skicker">A nova sede · 2026</span>
     <h2 class="hqtitle">A casa da <em class="hl2">energia verde</em> já nasceu gigante</h2>
-    <p class="hqsub" data-m="Conheça os 3.000 m² da sede própria — projetada para escalar o maior ecossistema sustentável do Brasil.">Role para percorrer os 3.000 m² da sede própria — projetada para escalar o maior ecossistema sustentável do Brasil.</p>
+    <!-- "Role para percorrer" saiu: o video agora toca em loop e nao responde mais ao scroll, entao
+         a frase mentiria. Passa a usar a mesma copy que o mobile ja usava por este mesmo motivo
+         (ver o data-m e o comentario na media query) — as duas ficam iguais de proposito. -->
+    <p class="hqsub" data-m="Conheça os 3.000 m² da sede própria — projetada para escalar o maior ecossistema sustentável do Brasil.">Conheça os 3.000 m² da sede própria — projetada para escalar o maior ecossistema sustentável do Brasil.</p>
     <div class="hqbadges">
       <span class="hqbadge"><b>3.000 m²</b> de estrutura própria</span>
       <span class="hqbadge"><b>R. Marfim, 265</b> · Jaraguá, Uberlândia/MG</span>
@@ -3684,15 +3690,22 @@ window.igRefresh=(function(){
     var hqframe=document.querySelector('.hqframe');
     var hqMM=gsap.matchMedia();
 
-    /* DESKTOP (>1024px): vídeo scrubado pelo scroll + pin + escala do frame (original) */
+    /* DESKTOP (>1024px): vídeo em LOOP + pin + escala do frame.
+       Antes o vídeo era scrubado pelo scroll (currentTime a cada quadro). Trocado por autoplay:
+       tocar para frente é o caminho natural do decodificador — zero seek, sem interromper o
+       pipeline — e era a maior economia possível para notebooks fracos. O PIN CONTINUA: ele ainda
+       coreografa a entrada dos badges e do botão, então a seção não perde a narrativa.
+       Só toca enquanto está na tela; fora dela, pausa (decodificar escondido é desperdício). */
     hqMM.add('(min-width:1025px)', function(){
-      hqbg.pause();
-      var hqDur=0;
-      var hqLastT=-1;   /* ultimo currentTime pedido, p/ nao pedir seek dentro do mesmo quadro */
-      hqbg.addEventListener('loadedmetadata',function(){ hqDur=hqbg.duration||0; });
-      if(hqbg.readyState>=1&&hqbg.duration) hqDur=hqbg.duration;
+      var hqPlay=function(){ try{ var p=hqbg.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} };
+      var hqST=ScrollTrigger.create({trigger:'.hqvideo',start:'top bottom',end:'bottom top',
+        onToggle:function(self){ if(self.isActive) hqPlay(); else { try{ hqbg.pause(); }catch(e){} } }});
+      /* o preload é "none": se a seção for alcançada ANTES do vídeo ter dados, o play() falha e
+         ninguém tentaria de novo. Aqui ele tenta assim que os dados chegam, se ainda estiver na tela. */
+      hqbg.addEventListener('canplay',function(){ if(hqST.isActive) hqPlay(); });
       /* PERF: preload="none" -> buffera o video da sede so quando a secao se aproxima (~1.5 tela
-         antes do scrub), tirando ~1.5MB do load inicial. O scrub so age quando hqDur ja existe. */
+         antes), tirando ~1.5MB do load inicial. O play em si e disparado pelo ScrollTrigger de
+         visibilidade acima (ou pelo 'canplay', se os dados chegarem depois da secao entrar). */
       ScrollTrigger.create({trigger:'.hqvideo',start:'top bottom+=150%',once:true,
         onEnter:function(){ try{ if(hqbg.preload!=='auto'){ hqbg.preload='auto'; hqbg.load(); } }catch(e){} }});
       if(hqw){
@@ -3725,15 +3738,8 @@ window.igRefresh=(function(){
         onUpdate:function(self){
           var hp=self.progress;
           /* modo apresentacao pode segurar a sede tocando em loop: nao scrubar o currentTime */
-          /* PERF: so pede seek quando o alvo muda de QUADRO. Antes escrevia currentTime a cada
-             quadro de scroll (~60x/s), inclusive quando o avanco era menor que 1/24s — pedido que
-             nao altera nada na tela e ainda interrompe o pipeline do decodificador. */
-          if(hqDur && !window.__sedePMHold){
-            var alvoT=hp*(hqDur-.06);
-            if(hqLastT<0 || Math.abs(alvoT-hqLastT)>=1/24 || hp<=0 || hp>=1){
-              hqLastT=alvoT; try{ hqbg.currentTime=alvoT; }catch(e){}
-            }
-          }
+          /* (o scrub de currentTime saiu daqui: o vídeo agora toca em loop — ver o comentário no
+             topo do bloco desktop. O pin segue existindo só para coreografar badges e botão.) */
           hqBadges.forEach(function(b,i){
             var on=self.progress>=(.12+i*.11);
             if(on!==b.__on){ b.__on=on;

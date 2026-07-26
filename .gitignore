@@ -21,3 +21,8 @@ assets/img/eventos/*-[1-8].png
 # Referencias de design (screenshots de sites, materiais): 103MB que nao fazem parte
 # do site — nada em index.html/produtos/js/css aponta pra ca. Ficam so no disco/OneDrive.
 referencias/
+
+# Master do video da sede (52MB, 1080p 20Mbps com audio). O site serve o tratado
+# (video-igreen.mp4, 5,2MB: camadas de blend assadas, audio removido), que esta
+# versionado. O master fica no disco p/ poder reprocessar se o tratamento mudar.
+assets/video/*-master.mp4
