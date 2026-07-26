@@ -9,7 +9,30 @@
 (function(){try{var n=navigator,dm=n.deviceMemory,hc=n.hardwareConcurrency,sd=n.connection&&n.connection.saveData,
 q=location.search,forceLow=/[?&]perf=low/.test(q),forceHigh=/[?&]perf=high/.test(q);
 if(!forceHigh&&(forceLow||sd||(hc&&hc<=4)||(dm&&dm<=2)))document.documentElement.setAttribute('data-perf','low');}catch(e){}})();</script>
-<title>iGreen Energy — Hero</title>
+<!-- SEO. O titulo era "iGreen Energy — Hero" (nome de rascunho) e era isso que aparecia no
+     Google e na aba do navegador. Boas praticas aplicadas: titulo com ate ~60 caracteres,
+     description entre 120 e 160, Open Graph e Twitter Card para o link ficar apresentavel quando
+     compartilhado no WhatsApp e nas redes, e canonical para nao competir consigo mesmo.
+     Ao trocar a imagem de compartilhamento, mantenha 1200x630 — e o formato que as redes cortam
+     sem estragar. -->
+<title>iGreen Energy — Energia limpa, telecom, seguros e um só app</title>
+<meta name="description" content="Ecossistema iGreen: energia por assinatura com economia, telecom 5G, seguros e renda recorrente. Mais de 750 mil clientes e um app para acompanhar tudo.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#030603">
+<link rel="canonical" href="https://igreen-apresentacao.vercel.app/">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="iGreen Energy">
+<meta property="og:title" content="iGreen Energy — Energia limpa, telecom, seguros e um só app">
+<meta property="og:description" content="Energia por assinatura com economia, telecom 5G, seguros e renda recorrente. Mais de 750 mil clientes no ecossistema iGreen.">
+<meta property="og:url" content="https://igreen-apresentacao.vercel.app/">
+<meta property="og:image" content="https://igreen-apresentacao.vercel.app/assets/img/sede2-poster.jpg">
+<meta property="og:image:alt" content="Sede própria da iGreen Energy, com jardim vertical iluminado em verde">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="iGreen Energy — Energia limpa, telecom, seguros e um só app">
+<meta name="twitter:description" content="Energia por assinatura com economia, telecom 5G, seguros e renda recorrente. Mais de 750 mil clientes no ecossistema iGreen.">
+<meta name="twitter:image" content="https://igreen-apresentacao.vercel.app/assets/img/sede2-poster.jpg">
 <link rel="preload" href="assets/fonts/InterDisplay-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
   @font-face{
@@ -2317,7 +2340,13 @@ window.igRefresh=(function(){
     </div>
     <div class="dlR">
       <p class="dl-scan">Escaneie para<br><em class="hl2">baixar o app</em></p>
-      <div class="dl-qr"><img src="assets/img/qr-download.png" alt="QR code para baixar o app iGreen" loading="lazy" decoding="async"></div>
+      <!-- QR novo do app. Sem AVIF de proposito: em QR code ele ficou 86KB contra 10KB do WebP
+           (borda nitida gera detalhe que o AVIF nao compacta bem). 82KB -> 10KB no total.
+           width/height declarados: obrigatorio no projeto, evita salto de layout. -->
+      <div class="dl-qr"><picture>
+        <source srcset="assets/img/qr-apps-download.webp" type="image/webp">
+        <img src="assets/img/qr-apps-download.png" alt="QR code para baixar o app iGreen" width="400" height="400" loading="lazy" decoding="async">
+      </picture></div>
       <div class="dl-note">Aponte a câmera do celular</div>
     </div>
   </div>
@@ -5634,10 +5663,10 @@ if(window.gsap&&window.ScrollTrigger){
     <div>
       <span class="ft-kicker">Sociais</span>
       <ul class="ft-soc">
-        <li><a href="#" target="_blank" rel="noopener"><span class="n">001.</span>Instagram<span class="ft-h">@igreenenergy</span><span class="arw">↗</span></a></li>
-        <li><a href="#" target="_blank" rel="noopener"><span class="n">002.</span>LinkedIn<span class="ft-h">@igreenenergy</span><span class="arw">↗</span></a></li>
-        <li><a href="#" target="_blank" rel="noopener"><span class="n">003.</span>YouTube<span class="ft-h">@igreenenergy</span><span class="arw">↗</span></a></li>
-        <li><a href="#" target="_blank" rel="noopener"><span class="n">004.</span>Facebook<span class="ft-h">@igreenenergy</span><span class="arw">↗</span></a></li>
+        <li><a href="https://www.instagram.com/igreen.energy/" target="_blank" rel="noopener"><span class="n">001.</span>Instagram<span class="ft-h">@igreen.energy</span><span class="arw">↗</span></a></li>
+        <li><a href="https://www.linkedin.com/company/igreen.energy/" target="_blank" rel="noopener"><span class="n">002.</span>LinkedIn<span class="ft-h">@igreen.energy</span><span class="arw">↗</span></a></li>
+        <li><a href="https://www.youtube.com/@IgreenEnergy" target="_blank" rel="noopener"><span class="n">003.</span>YouTube<span class="ft-h">@IgreenEnergy</span><span class="arw">↗</span></a></li>
+        <li><a href="https://www.facebook.com/igreen.energy.facebook/" target="_blank" rel="noopener"><span class="n">004.</span>Facebook<span class="ft-h">@igreen.energy</span><span class="arw">↗</span></a></li>
       </ul>
     </div>
   </div>
