@@ -67,3 +67,13 @@ Se a lista é uma trilha que desliza (`.etrack`), a largura total e o ponto fina
 | clique no card não vai a lugar nenhum | página interna não existe |
 
 Nunca entregue dizendo "adicionei o card". Diga o que mais foi ajustado por causa dele — é isso que prova que você olhou os seis pontos.
+
+## Ofereça as duas opções ao dono
+
+As contagens fixas são a **causa raiz** de "adicionar um item quebra". Existem dois caminhos, e o dono decide — **os dois dão o mesmo resultado visual**:
+
+**A) Na mão (padrão).** Acrescente o índice novo em cada ponto fixo que o inventário revelou: a posição `.gN` (nos dois blocos, desktop e mobile), a regra `nth-child(N)` da cascata, e o que a apresentação precisar. Mais rápido para um item só, e não mexe no que já funciona.
+
+**B) Eliminar a contagem fixa (melhoria).** Trocar as regras `nth-child(N)` por delay calculado — por exemplo uma variável CSS de índice no elemento (`style="--i:5"`) com `transition-delay: calc(var(--i) * 80ms)`, ou `nth-child(n)` genérico. E derivar as posições em vez de escrevê-las uma a uma. Depois disso, adicionar item passa a mexer **só no HTML**.
+
+O dono já sinalizou que **não quer fazer B agora** — o site é institucional e quase não cresce, então conviver é aceitável. Mas **mencione a opção** quando ele pedir o segundo ou terceiro item da mesma lista: a partir daí B começa a compensar. Se ele escolher B, é refatoração de código existente: capture o ANTES, faça, e prove com o `geometria-guardian` que o resultado visual é idêntico.
