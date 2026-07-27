@@ -26,3 +26,9 @@ referencias/
 # (video-igreen.mp4, 5,2MB: camadas de blend assadas, audio removido), que esta
 # versionado. O master fica no disco p/ poder reprocessar se o tratamento mudar.
 assets/video/*-master.mp4
+
+# Nao sobem para o repo da empresa (seguem no disco local)
+produtos/legados/
+docs/
+BACKLOG.md
+teste-video.html
