@@ -1,69 +1,48 @@
-# iGreen — Apresentação (projeto organizado)
+# iGreen — site institucional
 
-Versão limpa e organizada do site de apresentação da iGreen. Nasceu de um MVP
-single-file (`final-conteudo.html`, ~8 MB com tudo embutido em base64) que foi
-**des-embutido**: os assets viraram arquivos reais e o HTML ficou leve (~0,5 MB).
+Landing institucional da iGreen Energy, com 8 páginas de produto e um **modo apresentação** que substitui PowerPoint em apresentações ao vivo.
+
+## Antes de mexer, leia isto
+
+O projeto é **pequeno em tamanho e alto em acoplamento**: o `index.html` tem cerca de 6.000 linhas com CSS e JavaScript embutidos, e uma mudança visual aparentemente inocente pode quebrar a navegação, o scroll e o modo apresentação ao mesmo tempo.
+
+Por isso existe um pipeline de trabalho em **[`.claude/`](.claude/)**. Se você vai alterar qualquer coisa aqui usando Claude Code, ele é carregado automaticamente e cuida das consequências técnicas por você — inclusive validando que nada saiu de lugar.
+
+- **[`.claude/CLAUDE.md`](.claude/CLAUDE.md)** — as regras, a anatomia do projeto e as armadilhas já descobertas. Comece por aqui.
+- **[`DESIGN.md`](DESIGN.md)** — a identidade visual: cores, tipografia, movimento e o padrão de tratamento de imagens e vídeos. Todo o design é autoral; não há nada de terceiros no projeto e não deve haver.
+
+Peça a alteração em português comum — "adiciona um card no ecossistema", "troca essa foto", "atualiza esse número". O pipeline identifica a natureza do pedido e aciona as verificações necessárias.
+
+## Como abrir para testar
+
+Não há build nem instalação. Abra o `index.html` no navegador.
+
+Servindo por HTTP (recomendado — evita o aviso de fonte que o `file://` gera no console):
+
+```bash
+npx serve .
+```
 
 ## Estrutura
 
 ```
-Organizado/
-├── index.html          # a landing page (era final-conteudo.html)
-├── assets/
-│   ├── img/            # imagens (fotos, eco, rec, cars, qr, hand, map, plans…)
-│   ├── video/          # vídeos .mp4 (bolt, sede2, glass, pay, tech-glass…)
-│   ├── fonts/          # Inter Display (woff2)
-│   └── pins/           # medalhas de graduação (pin-*.webp)
-├── css/
-│   └── tokens.css      # cores, fontes e tipografia base — p/ as telas internas
-├── produtos/           # 5 telas internas de produto (a fazer) — ver README de lá
-└── README.md
+index.html        a landing inteira (CSS e JS embutidos)
+produtos/         8 páginas de produto + template.html (base para páginas novas)
+css/              modo apresentação, transição de página e tokens
+js/               modo apresentação, transição entre páginas, autoplay de vídeo por visibilidade
+assets/           imagens, vídeos e fontes
+.claude/          o pipeline de trabalho (agentes, verificações, comandos)
 ```
 
-## Como o `index.html` funciona
+## Duas regras que valem para todos
 
-- **CSS e JS continuam inline** no HTML — a página é sensível à ordem de execução
-  (ScrollSmoother/GSAP e um script que reposiciona o footer). Mexer nisso é um
-  passo separado e opcional.
-- **GSAP, ScrollSmoother e three.js seguem embutidos** no HTML como `<script>`.
-- **Todo asset visual agora é um arquivo** em `assets/` — nada mais em base64.
+1. **Valide no navegador antes de publicar.** Em três tamanhos: 1920×946, 1536×750 com escala de 125% do Windows, e 390×844 no celular. Neste projeto **altura é o que aperta**, não largura.
+2. **Nada de terceiros.** Sem CDN, fonte externa, imagem de banco ou script de análise. As fontes são locais e as imagens são autorais.
 
-## Trocar um asset real (logo, foto, mockup)
-
-Basta **substituir o arquivo** em `assets/` mantendo o mesmo nome. Ex.: para
-trocar a foto de 2025, sobrescreva `assets/img/foto-2025.jpg`. Não precisa tocar
-no HTML. (Se mudar o nome do arquivo, atualize a referência no `index.html`.)
-
-## Rodar localmente
-
-Por causa dos vídeos e fontes, sirva por HTTP (não abra via `file://`):
+## Verificação rápida
 
 ```bash
-npx serve .        # ou: python -m http.server
+node .claude/scripts/revisar.js
 ```
 
-Depois abra `http://localhost:3000` (ou a porta indicada).
-
-## Próximos passos planejados
-
-1. Conteúdo real: logos, mockups e fotos fiéis (só trocar arquivos em `assets/`).
-2. As 5 telas internas de produto em `produtos/` (ver `produtos/README.md`).
-3. (Opcional) extrair CSS/JS da landing para arquivos externos, se a manutenção pedir.
-
-## Diferença vs. o arquivo inline
-
-`index.html` tem **uma** adição de código que o `final-conteudo.html` inline não tem:
-logo após criar o ScrollSmoother (desktop), um `ScrollTrigger.refresh()` em
-`document.fonts.ready` e no `window load`. Isso corrige um desalinhamento de pin/scrub
-(ex.: o título de "Resultados" descia demais) causado pelo FOUT das fontes agora externas
-(`font-display:swap`) e mídias carregando via HTTP. **Se um dia regenerar esta pasta a
-partir do inline, reaplique essa adição.**
-
-## Notas de origem
-
-- Gerado a partir de `../final-conteudo.html`. O restante da raiz do projeto
-  (variantes, backups, protótipos, modelos 3D) foi **deixado intocado** como
-  histórico.
-- A antiga pasta `../assets/` é um repositório git separado
-  (`github.com/snksergio/igreen-apresentacao`); aqui os arquivos foram copiados
-  **sem** o `.git`. Se quiser versionar, inicie um git novo nesta pasta.
+Confere os padrões do projeto e aponta o que costuma quebrar aqui. Cada regra existe porque o problema aconteceu de verdade.
