@@ -105,6 +105,28 @@ Aumentar ou diminuir a altura de uma seção **desloca tudo abaixo dela**. Isso 
 
 Acione o `scroll-guardian` para mapear esse impacto **antes** de mexer. Se o pedido for adicionar ou remover ITEM de uma lista, comece pelo `colecoes-guardian`.
 
+## Editar em massa com script — leia antes de escrever o primeiro
+
+Mudanças aqui costumam repetir em 8 arquivos (index + 7 páginas de produto), então a tentação é
+escrever um script. Certo — mas estas cinco regras vêm de erros cometidos de verdade:
+
+1. **Conte as ocorrências ANTES de substituir e aborte se não for o esperado.** O ícone de cartão
+   do KPI aparece **4 vezes** no index; uma troca global mudaria 3 lugares errados. O `.ctas` das
+   páginas de produto aparece **2 vezes**, e mirar no primeiro comentou o bloco errado.
+2. **Trabalhe linha a linha, não com regex sobre o arquivo inteiro.** Um `[\s\S]*?` entre uma
+   abertura e um fechamento genérico já engoliu a abertura de uma `<div>` sem o fechamento e
+   desbalanceou o HTML. Localize pelo conteúdo da linha e mexa no intervalo exato.
+3. **Os arquivos usam CRLF.** Um alvo escrito com `\n` **não casa nada** e o script reporta 0/7
+   sem erro. Detecte (`txt.indexOf('\r\n')`) e preserve ao gravar.
+4. **Confira o balanço de tags depois**, ignorando comentários: `<div>`, `<a>`, `<button>` têm de
+   abrir e fechar na mesma contagem. Compare com `git show HEAD:arquivo` — o index tem um
+   desbalanço **pré-existente** de `<div>` (373/374), então o que importa é não *piorar* o saldo.
+5. **Rode `node .claude/scripts/revisar.js` você mesmo** depois de editar por script. O hook cobre
+   Bash agora, mas não confie: verifique.
+
+E o mais importante: **`git add` numa pasta ignorada não falha nem avisa.** Depois de criar arquivo
+em pasta nova, confirme com `git ls-files` que ele entrou.
+
 ## Armadilhas reais deste projeto
 
 Todas foram descobertas errando. Não repita.
@@ -122,6 +144,28 @@ Todas foram descobertas errando. Não repita.
 - `tl.progress(1)` **suprime callbacks** no GSAP. Se um `onComplete` dispara algo importante, forçar o progresso pula esse algo silenciosamente.
 - Dois disparadores para a mesma timeline com `timeScale` diferentes, guardados pela mesma flag, produzem comportamento **intermitente** — o mesmo gesto dá resultados diferentes.
 - Duas mecânicas escrevendo a posição do scroll ao mesmo tempo brigam e a última do quadro ganha. Dê **posse explícita** (ver `autoAte`/`igNavAte` no index).
+
+**Texto, números e links (aprendido em 2026-07-28)**
+- **Número visível tem gêmeo escondido.** Trocar "750 mil" por "800 mil" no texto deixou **5
+  atributos** `data-target="750"` e `data-cnum="750"` intactos — são os contadores que *animam*
+  subindo. O site mostraria 800 e animaria até 750. Ao mudar qualquer número, procure também nos
+  atributos.
+- **Âncora para ID inexistente falha em SILÊNCIO.** Três botões apontavam para `#plano`,
+  `#simulacao` e `#contato`, que não existem (as seções são `#planos`, `#simulador`, e a de contato
+  nunca existiu). O handler faz `querySelector` e retorna sem `preventDefault` e sem erro no
+  console — o botão parece morto sem nenhuma pista. Ao mexer em `href="#..."`, confirme que o ID
+  existe.
+- **`data-pt-href` é só para navegar ENTRE páginas.** Em âncora da mesma página ele faz o clique
+  tentar "navegar" para o próprio documento. Remova ao converter link de página em âncora.
+- **`navigator.share` e a área de transferência exigem HTTPS.** Em `file://` falham caladas — o
+  botão parece quebrado. Teste servindo por http (`npx serve .`), nunca abrindo o arquivo direto.
+- **Só o item ATIVO do carrossel de KPIs tem largura.** Os inativos ficam com `width: 0`, e aí
+  qualquer teste de "texto cortado" (`scrollWidth > clientWidth`) dá falso positivo. Espere o item
+  entrar em foco antes de medir.
+- **`scroll-behavior: smooth` NÃO no index.** Ele usa ScrollSmoother e as duas mecânicas brigariam
+  pela posição. Nas páginas de produto já existe e é o certo — elas não têm smoother.
+- **CTA sem destino: comente, não apague.** Padrão do projeto, com o marcador `CTA-DESATIVADO`.
+  Um `grep` por ele lista todos quando o fluxo existir. Ver `.claude/mapas/ctas-desativados.md`.
 
 **Imagens e vídeo**
 - `loading="lazy"` **sem `width`/`height`** em imagem cujo container tira a altura dela (`position:absolute` + `img{height:auto}`) cria ciclo vicioso: caixa de altura 0 → o navegador nunca considera perto da tela → nunca carrega → **imagem invisível**, sem erro nenhum. Isso apagou o fundo de moedas dos planos. Declare sempre as dimensões.
