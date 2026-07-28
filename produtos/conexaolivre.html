@@ -705,10 +705,14 @@
             <b id="oTotal">R$ 0</b>
           </div>
           <div class="cta-row">
+            <!-- CTA-DESATIVADO (2026-07-28): era "Quero ser licenciado", sem destino. Virou o
+                 compartilhar do simulador (leva os valores calculados). Ver .claude/mapas/ctas-desativados.md
             <a class="btn-dark" href="../index.html" data-pt-href="../index.html">
-              Quero ser licenciado
-              <svg class="arrow-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            Quero ser licenciado
+            <svg class="arrow-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
+            -->
+            <a class="btn-dark" href="#" id="shareProd" role="button"><span class="share-txt">Compartilhar</span></a>
           </div>
         </div>
       </div>
@@ -1030,6 +1034,34 @@ if(window.matchMedia&&matchMedia("(min-width:1025px)").matches){var pm=document.
     }
   }
   fat.addEventListener('input',calc); qtd.addEventListener('input',calc); calc();
+})();
+</script>
+<script>
+/* Compartilhar do simulador. Leva os valores calculados NESTA pagina (#oEco, #oRec, #oTotal)
+   + o endereco dela. No celular abre a folha nativa (WhatsApp, redes); no desktop, onde
+   navigator.share em geral nao existe, copia a mensagem e mostra "Copiado!".
+   Sem SDK de terceiro, coerente com o DESIGN.md. Em file:// as duas APIs falham (exigem HTTPS)
+   — testar servindo por http, nunca abrindo o arquivo direto. */
+(function(){
+  var b=document.getElementById("shareProd"); if(!b) return;
+  var rot=b.querySelector(".share-txt"), base=rot?rot.textContent:"";
+  var v=function(id){ var e=document.getElementById(id); return e?e.textContent.trim():""; };
+  b.addEventListener("click",function(ev){
+    ev.preventDefault();
+    var t=(document.title.split("\u2014")[0]||"").trim();
+    var p=[];
+    if(v("oEco")) p.push("Economia estimada: "+v("oEco"));
+    if(v("oRec")) p.push("Recorrencia: "+v("oRec"));
+    if(v("oTotal")) p.push("Total no periodo: "+v("oTotal"));
+    var msg="Simulei na "+t+" da iGreen. "+(p.length?p.join(" | ")+". ":"")+location.href;
+    if(navigator.share){ navigator.share({title:"Minha simulacao iGreen",text:msg,url:location.href}).catch(function(){}); return; }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(msg).then(function(){
+        if(rot) rot.textContent="Copiado!"; b.classList.add("copied");
+        setTimeout(function(){ if(rot) rot.textContent=base; b.classList.remove("copied"); },1600);
+      }).catch(function(){});
+    }
+  });
 })();
 </script>
 </body>
