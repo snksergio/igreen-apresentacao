@@ -1,0 +1,11 @@
+#!/bin/sh
+# Hook de commit do git — vale para o terminal comum, o VS Code e qualquer
+# ferramenta, nao so o Claude Code. Ligue uma vez por clone:
+#
+#     git config core.hooksPath .githooks
+#
+# NAO BLOQUEIA de proposito (sempre sai 0): o dono do projeto nao e
+# desenvolvedor e um commit barrado sem explicacao clara atrapalha mais do que
+# ajuda. O papel aqui e mostrar o que costuma ser esquecido.
+node .claude/scripts/antes-de-commitar.js
+exit 0
