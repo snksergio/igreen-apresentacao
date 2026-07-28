@@ -45,10 +45,9 @@ compartilhar.
 
 Oito ocorrências, e **não são todas iguais** — separar importa:
 
-**Precisam de destino real (o dono ainda não definiu):**
-- `Baixar para iPhone` e `Disponível no Android` (seção do app) — deveriam apontar para App Store e
-  Play Store. **São os mais relevantes da lista:** o visitante clica esperando baixar o app.
-- `Começar agora`
+**LIGADOS em 2026-07-28:** `Baixar para iPhone` -> App Store (`apps.apple.com/br/app/igreen-connect/id6744383784`) e `Disponível no Android` -> Play Store (`play.google.com/store/apps/details?id=com.br.iGreenEnergy`). Ambos em nova aba com `noopener`.
+
+**Ainda precisa de destino:** `Começar agora`.
 
 **Decorativos, `href="#"` é correto:** `Ver extrato`, `Ver toda jornada` e `Ver detalhes` (×2) ficam
 **dentro do mockup do celular** — são parte da tela simulada do app, não botões do site. Não ligue.
