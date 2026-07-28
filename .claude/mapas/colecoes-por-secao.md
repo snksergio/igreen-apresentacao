@@ -92,7 +92,7 @@ São **muito mais simples**: sem pin, sem scrub, sem coreografia pesada. O que i
 **O que realmente pesa aqui:**
 
 1. **O desenho não pode sair do padrão.** Siga `DESIGN.md`: tokens do `:root`, Inter Display local, verde `#18FF00` com parcimônia, cartões com fundo quase transparente e borda `--line`, cantos generosos, brilho por `box-shadow` de raio grande. Nada de terceiros — nenhuma fonte externa, imagem de banco, CDN ou link de fora.
-2. **Seção nova segue o layout existente.** Derive a estrutura das seções que já existem na própria página e dos tokens de acento (`--acc`, `--acc-glow`, `--acc-tint`, `--acc-line`) que dão identidade a cada conexão. Base sempre `produtos/template.html`; **nunca** copie de `produtos/legados/` (arquivos mortos).
+2. **Seção nova segue o layout existente.** Derive a estrutura das seções que já existem na própria página e dos tokens de acento (`--acc`, `--acc-glow`, `--acc-tint`, `--acc-line`) que dão identidade a cada conexão. Base sempre `produtos/template.html`.
 3. **Responsividade e escala do monitor** — o ponto mais crítico que já ajustamos. Teste obrigatoriamente nas três: `1920x946x1`, `1536x750x1.25` (o mesmo 1920 com escala 125% do Windows) e `390x844x3`. **Altura é o que aperta**, não largura: algo perfeito em 946 de altura pode estourar em 750. Se não couber, **escale em runtime — não crie breakpoint** (ver `responsividade-guardian`).
 
 **Apresentação nas páginas internas:** o passo a passo é dividido em 2 paradas quando tem 3 ou mais `.cstep` (`buildStops` divide `.cstep` enquadrando pelo `.sec-head`). Passar de 2 para 3 passos **muda o número de paradas**. Valide.

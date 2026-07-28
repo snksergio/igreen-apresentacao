@@ -17,7 +17,6 @@ O dono do projeto **não é desenvolvedor**. Ele descreve o que quer em linguage
 ```
 index.html            ~6000 linhas — CSS e JS inline. É a landing inteira.
 produtos/*.html       8 páginas de produto (conexao*.html) + template.html
-produtos/legados/     10 arquivos MORTOS. Nada aponta pra lá. Não use como referência.
 js/presentation-mode.js   modo apresentação (paradas, varredura, dots)
 js/page-transition.js     transição entre páginas + prefetch
 js/video-inview.js        toca vídeos só quando visíveis (IntersectionObserver)

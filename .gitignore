@@ -35,7 +35,9 @@ assets/img/faixada.png
 # versionado. O master fica no disco p/ poder reprocessar se o tratamento mudar.
 assets/video/*-master.mp4
 
-# Nao sobem para o repo da empresa (seguem no disco local)
+# Material de trabalho que nao e o site nem manutencao dele: paginas antigas ja
+# substituidas, anotacoes e um arquivo de teste de video. Ficam no disco de quem
+# tem, e nao existem em nenhum commit — foram removidos do historico tambem.
 produtos/legados/
 docs/
 BACKLOG.md
