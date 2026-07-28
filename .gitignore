@@ -25,6 +25,13 @@ assets/img/eventos/*-[1-8].png
 # fora do git por vários commits sem ninguém notar.
 /referencias/
 
+# Masters dos pins de graduacao (5,7MB em 5 PNG de 1080x1080). Eram SERVIDOS assim,
+# e como o #boot so sai no window.load, esses 5 arquivos seguravam a tela de loading
+# por ~6,4s em toda primeira visita. O site agora serve grad-*.webp lossless a 420px
+# (676kB no total, SSIM 0,994 = imperceptivel a 203px, que e o tamanho exibido).
+# Os PNG ficam no disco p/ reprocessar se o tamanho de exibicao mudar.
+assets/pins/*.png
+
 # Master da foto da fachada (1,8MB). Dela sai o og-igreen.jpg (134kB), que e a
 # imagem de previa do WhatsApp/redes e ESTA versionada. Mesmo padrao dos outros
 # masters: fica no disco p/ reenquadrar se a previa mudar.
