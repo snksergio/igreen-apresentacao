@@ -17,6 +17,28 @@ O último é o mais importante: mostra se a seção usa `subs`, `buildStops` ou 
 
 ---
 
+## Hero — 4 KPIs no carrossel (`.kpi` / `.ktx`)
+
+Estado em 2026-07-28: `+800 mil` · `5G Ultra Veloz` · `0 burocracia` · `Expansão`.
+Cada KPI é `<button class="kpi" data-i="N" aria-label="...">` com um `<span class="kic">` (ícone SVG
+inline) e um `<span class="ktx"><b>título</b><span data-m="copy curta do mobile">descrição</span>`.
+
+Quatro coisas que só se descobrem mexendo:
+
+1. **Só o KPI ATIVO tem largura.** Os inativos ficam com `width: 0`, então medir "texto cortado"
+   (`scrollWidth > clientWidth`) num inativo dá **falso positivo**. Espere o carrossel colocá-lo em
+   foco — ele gira a cada ~5,6s. Container tem ~533px; um KPI ativo ocupa 240–280px.
+2. **O `aria-label` do botão descreve o conteúdo** e é o que o leitor de tela anuncia. Ao trocar o
+   texto, troque o rótulo junto — um deles dizia "Tecnologia" muito depois do conteúdo ter mudado.
+3. **O `data-m` é a copy curta do mobile**, que substitui a descrição em tela pequena. Trocar só a
+   descrição deixa o celular mostrando a frase antiga.
+4. **Os ícones SVG são compartilhados.** O ícone de cartão do 4º KPI aparecia **4 vezes** no
+   `index.html`. Nunca substitua um `<path>`/`<rect>` de ícone por busca global — restrinja ao bloco
+   daquele botão (localize por `data-i`).
+
+O carrossel do hero também é o motivo pelo qual `.kpi` e `.kpis` ficam **excluídos** do comparador de
+geometria: o KPI ativo expande de 72 para ~300px sozinho, gerando diferença sem mudança de código.
+
 ## Trajetória — 6 `.jitem`
 Cada item tem `.jcard`, `.jphoto` e `.jspark`. As fotos têm efeito CRT aplicado por JS que envolve a `<img>` (usa `img.closest('picture') || img` — se você trocar por `<picture>`, o efeito precisa continuar achando o elemento certo).
 

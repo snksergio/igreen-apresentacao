@@ -9,6 +9,52 @@ temporário está separado do que virou outra coisa em definitivo.
 > **Ao religar:** procure no código pelo marcador `CTA-DESATIVADO` — é a etiqueta única deixada
 > em cada bloco comentado.
 
+## ESTADO ATUAL (executado em 2026-07-28)
+
+O trabalho abaixo **já foi feito**. As seções seguintes descrevem onde cada coisa está, para o dia
+de religar — não são tarefas pendentes.
+
+**Comentados, esperando o fluxo de conversão:**
+
+| onde | botão |
+|---|---|
+| header da home | `Fale conosco` |
+| planos da home | `Escolher Connect Plus` e `Escolher Connect Full` |
+| rodapé das 7 páginas | `Quero ser licenciado` e `Falar com um consultor` |
+| meio da Conexão Expansão | `Quero ser licenciado` |
+
+**Ativos, com destino real:**
+
+| botão | onde | vai para |
+|---|---|---|
+| `Iniciar jornada` | hero da home | `#resultados` |
+| `Simular minha recorrência` | hero da home | `#simulador` |
+| `Conhecer o produto` | hero das 7 páginas | `#produto` (âncora, sem `data-pt-href`) |
+| `Compartilhar` | simulador de 6 páginas | valores calculados + URL |
+| `Voltar para o início` | rodapé das 7 páginas | `../index.html` |
+| `Chamar no WhatsApp` | 7 páginas | `wa.me/5534996775654` com mensagem pronta |
+| `Fale conosco` | *removido do header* | — |
+
+Os três primeiros do hero **apontavam para IDs inexistentes** (`#plano`, `#simulacao`, `#contato`) e
+por isso pareciam mortos sem dar erro. Ver a armadilha no `CLAUDE.md`.
+
+`conexaoexpansao.html` **não tem simulador** — nenhum id de resultado — então não recebeu botão de
+compartilhar.
+
+## Ainda com `href="#"` na index (levantado em 2026-07-28)
+
+Oito ocorrências, e **não são todas iguais** — separar importa:
+
+**Precisam de destino real (o dono ainda não definiu):**
+- `Baixar para iPhone` e `Disponível no Android` (seção do app) — deveriam apontar para App Store e
+  Play Store. **São os mais relevantes da lista:** o visitante clica esperando baixar o app.
+- `Começar agora`
+
+**Decorativos, `href="#"` é correto:** `Ver extrato`, `Ver toda jornada` e `Ver detalhes` (×2) ficam
+**dentro do mockup do celular** — são parte da tela simulada do app, não botões do site. Não ligue.
+
+Há também um `href="#"` sem texto na linha ~2156. Verificar o que é antes de mexer.
+
 ## 1. Index — planos (COMENTAR, religar depois)
 
 | onde | botão |
