@@ -2181,8 +2181,12 @@ window.igRefresh=(function(){
       <h1>Empreenda com um ecossistema de <br class="seg-br"><span class="hl seg" id="segWord">energia</span><span class="caret" id="segCaret"></span></h1>
       <p class="sub">Enriquecemos vidas conectando energia, telefonia, seguros e tecnologia em uma única plataforma — sustentabilidade que vira recorrência para quem empreende.</p>
       <div class="ctas">
-        <a class="btn btn-primary" href="#plano">Iniciar jornada <svg class="bic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a class="btn btn-ghost" href="#simulacao">Simular minha recorrência</a>
+        <!-- href corrigido: apontava para #plano e #simulacao, IDs que NAO EXISTEM (as secoes sao
+             #resultados e #simulador). O handler de ancora faz querySelector e desiste em silencio
+             quando nao acha, entao o clique nao fazia nada — nao era falta de acao, era alvo errado.
+             "Iniciar jornada" leva a proxima secao (#resultados); o outro, ao simulador. -->
+        <a class="btn btn-primary" href="#resultados">Iniciar jornada <svg class="bic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost" href="#simulador">Simular minha recorrência</a>
       </div>
     </div>
     <div class="proof">
