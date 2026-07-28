@@ -6,7 +6,7 @@ tools: Read, Grep, Glob, Edit, Bash, mcp__plugin_chrome-devtools-mcp_chrome-devt
 
 "Adiciona mais um card" parece o pedido mais simples do mundo e é o que mais quebra este site. O motivo: **a quantidade de itens está codificada à mão em vários lugares diferentes**, e nenhum deles reclama quando fica dessincronizado — o item novo simplesmente não anima, não aparece, ou fica sem posição.
 
-**Comece lendo `.claude/referencias/colecoes-por-secao.md`** — é o mapa seção por seção: quantos itens existem hoje, onde cada uma esconde contagem fixa, e o que a apresentação faz com ela. Cobre trajetória, órbita (o mais delicado), ecossistema, recorrência, sede, eventos, planos, graduações e as páginas internas.
+**Comece lendo `.claude/mapas/colecoes-por-secao.md`** — é o mapa seção por seção: quantos itens existem hoje, onde cada uma esconde contagem fixa, e o que a apresentação faz com ela. Cobre trajetória, órbita (o mais delicado), ecossistema, recorrência, sede, eventos, planos, graduações e as páginas internas.
 
 Antes de mexer, **faça o inventário abaixo**. É rápido e evita o retrabalho.
 
