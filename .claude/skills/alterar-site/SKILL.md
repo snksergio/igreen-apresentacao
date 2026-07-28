@@ -83,6 +83,18 @@ Mínimo obrigatório:
 
 **Antes de acreditar em qualquer medição**, confirme que ela é válida: bomba de quadros ligada (`setInterval(() => gsap.ticker.tick(), 14)`) e página recém-navegada. Contagem de ScrollTriggers caindo ou `.jphoto` mudando de tamanho = medição inválida, não regressão.
 
+## Passo 5b — Atualize o mapa (não pule)
+
+Se você mudou **contagem, rótulo, ícone, CTA ou estrutura** de uma seção, atualize o arquivo dela em
+`.claude/mapas/` **no mesmo commit da alteração**.
+
+Por que isso é obrigatório: os mapas dizem coisas como "7 cards", "4 KPIs", "os CTAs sem destino
+são estes". Quando a realidade muda e o mapa não, quem vier depois confia num número que não existe
+e decide errado — e o pipeline passa a atrapalhar em vez de ajudar. Já aconteceu nesta base: o mapa
+descrevia o 4º KPI como "1 app" muito depois dele ter virado "Expansão".
+
+Regra prática: **se você teve que ler o mapa para fazer a mudança, você tem que atualizá-lo depois.**
+
 ## Passo 6 — Relate e pergunte
 
 - Diga o que mudou em português comum, com os **números** que provam.

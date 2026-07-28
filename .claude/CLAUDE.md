@@ -36,7 +36,11 @@ Para qualquer pedido de alteração, siga esta ordem. Existe um agente para cada
 2. **Se mexe em tamanho, posição ou estrutura de seção:** capture a referência ANTES (geometria + enquadramento das âncoras + paradas da apresentação). Sem o "antes", não há como provar o "depois".
 3. **Faça a alteração.**
 4. **Valide** nas três configurações mínimas: 1920×946 dpr1, 1536×750 dpr1.25, mobile 390×844 dpr3.
-5. **Relate** o que mudou, o que foi medido, e o que ficou em aberto. Pergunte antes de commitar.
+5. **Atualize o mapa da seção que você mexeu.** Se mudou item de lista, contagem, rótulo, ícone ou
+   CTA, o arquivo correspondente em `.claude/mapas/` precisa refletir isso **no mesmo commit**.
+   Mapa velho é pior que mapa nenhum: quem vier depois confia num número que não existe mais e
+   toma decisão errada. Isto não é burocracia — é o que mantém o pipeline útil na segunda vez.
+6. **Relate** o que mudou, o que foi medido, e o que ficou em aberto. Pergunte antes de commitar.
 
 Comandos: `/validar-tudo` (smoke test completo) e `/desfazer` (voltar atrás com segurança).
 Skill principal: **`alterar-site`** — é o ponto de entrada de qualquer pedido.
