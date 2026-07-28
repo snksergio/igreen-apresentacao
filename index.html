@@ -2155,6 +2155,32 @@ window.igRefresh=(function(){
   if(!booted) window.addEventListener('load',function(){ booted=true; requestAnimationFrame(run); });
   return function(){ if(!booted){ pend=true; return; }        /* boot: cai no refresh unico do load */
     if(pend) return; pend=true; requestAnimationFrame(run); };  /* depois: coalesce por frame */
+})();
+/* REDE DE SEGURANCA (2026-07-28) — sintoma relatado pelo dono: "as vezes o texto com
+   parallax (.shead) desce 300px em vez de ~46px, dou F5 e volta ao normal". Mecanicamente
+   .shead recebe y:46 FIXO na timeline: ele nao tem como andar 300px sozinho. O que produz
+   isso e o PIN da secao nao valer naquela carga -- preso, o texto desliza 46px; sem pin, vai
+   embora junto com a pagina.
+   Por que acontece "as vezes": a medicao dos triggers da trajetoria depende de um
+   requestAnimationFrame (ver buildCurve/igRefresh no matchMedia da trajetoria), e o rAF roda
+   a 1 fps -- ou nao roda -- com a aba em SEGUNDO PLANO. Abrir o site com Ctrl+clique e olhar
+   depois cai exatamente nesse caso: o refresh unico do boot acontece com o layout ainda nao
+   final, e as distancias ficam erradas ate um F5.
+   Conserto sem depender do rAF: se a aba esteve oculta em algum momento, remede quando ela
+   voltar a ficar visivel. Custo no caso normal (aba sempre visivel): ZERO -- nao adiciona
+   refresh nenhum, o orcamento de 1 refresh no boot fica intacto.
+   NAO foi possivel reproduzir em laboratorio: para medir qualquer coisa na janela automatizada
+   e obrigatorio bombear gsap.ticker.tick(), e esse bombeamento MASCARA justamente a falta de
+   rAF que se investiga. Entao isto e uma rede de seguranca fundamentada no mecanismo, nao um
+   conserto com causa observada -- se o dono relatar de novo, o proximo passo e instrumentar. */
+(function(){
+  var ficouOculta = (document.visibilityState === 'hidden'), jaRemediu = false;
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'hidden'){ ficouOculta = true; return; }
+    if(jaRemediu || !ficouOculta) return;
+    jaRemediu = true;
+    try{ if(window.ScrollTrigger) ScrollTrigger.refresh(); }catch(e){}
+  });
 })();</script>
 <nav class="nav">
   <div class="nav-shell">
