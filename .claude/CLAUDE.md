@@ -47,7 +47,7 @@ Comandos: `/validar-tudo` (smoke test completo), `/desfazer` (voltar atrás com 
 
 | remoto | papel |
 |---|---|
-| `empresa` | `igreenlab/ui-apn-institucional`. O **oficial**: histórico limpo, é dele que a próxima pessoa trabalha, e vai ganhar URL própria. |
+| `empresa` | `igreenlab/ui-apn-institucional`. O **oficial**, e um push na `main` dele **publica em produção na hora**: o `.github/workflows/deploy-prod.yml` entra por SSH no servidor `162.141.111.97` e roda o `deploy.sh` do `igreen-vault`. Aqui não existe "subir para guardar". **Outras pessoas commitam neste repo** — um push recusado com "fetch first" significa trabalho de alguém que você não tem; traga com `git pull --rebase empresa main` e **nunca** use `--force`. |
 | `origin` | Repo pessoal do dono, e o que a **Vercel** constrói hoje — o repo da organização tem restrição que impede conectar a Vercel nele. É onde as pessoas testam o visual; ter arquivo a mais lá não faz mal. |
 
 Publicar são **dois passos**: `git push empresa main` e depois `node .claude/scripts/espelhar-visual.js`. Um `git push origin main` direto é **recusado**: o histórico do pessoal é o antigo, de antes da limpeza que tirou 452MB e o material privado, e os dois divergiram. O script resolve gravando lá um commit com o mesmo *conteúdo* em cima do topo que ele já tem — avanço normal, sem forçar, preservando aquele histórico como backup. Ver `/publicar`. **Nunca** use `--force` para contornar isso.

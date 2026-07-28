@@ -8,12 +8,20 @@ Este projeto tem **dois remotos com papéis diferentes**. Publicar significa atu
 
 | remoto | papel |
 |---|---|
-| `empresa` | `igreenlab/ui-apn-institucional`. É o **oficial**: histórico limpo, é dele que a próxima pessoa trabalha, e vai ganhar URL própria. |
-| `origin` | Repo pessoal do dono. É o que a **Vercel** constrói hoje, porque o repo da organização tem restrição que impede conectar a Vercel nele. Serve para as pessoas testarem o visual. |
+| `empresa` | `igreenlab/ui-apn-institucional`. É o **oficial** e vai **direto para produção** — ver o aviso abaixo. |
+| `origin` | Repo pessoal do dono. É o que a **Vercel** constrói, porque o repo da organização tem restrição que impede conectar a Vercel nele. Serve para as pessoas testarem o visual. |
+
+## ⚠ Push na `main` da empresa PUBLICA EM PRODUÇÃO
+
+Não é só guardar código. O repo tem `.github/workflows/deploy-prod.yml` (posto pelo Antonio Marcos em 2026-07-28), que a cada push na `main` entra por SSH no servidor `162.141.111.97` e roda o `deploy.sh` do `igreen-vault`. **O site sai no ar na hora.**
+
+Consequência prática: aqui não existe "subir para guardar". Se o trabalho não está validado nas três configurações de tela e no modo apresentação, ele não deve ir para a `main`. Em dúvida, abra PR em vez de empurrar direto — o template de PR carrega o checklist.
 
 ## Antes de qualquer coisa
 
-**O dono pediu para publicar explicitamente?** Se não, pare: relate o que fez e pergunte. Ele valida no navegador antes, e já estranhou site sem mudança por causa de push que não aconteceu.
+**O dono pediu para publicar explicitamente?** Se não, pare: relate o que fez e pergunte. Ele valida no navegador antes, e já estranhou site sem mudança por causa de push que não aconteceu. Agora que push publica em produção, essa confirmação vale ainda mais.
+
+**Alguém mais commita neste repo.** Um `git push` recusado com "fetch first" quer dizer que a empresa tem trabalho que você não tem — foi assim que quase perdemos o workflow do Antonio. Traga com `git pull --rebase empresa main`, confira que os arquivos dos dois lados sobreviveram, e só então publique. **Nunca** resolva com `--force`.
 
 ## Os dois passos
 
