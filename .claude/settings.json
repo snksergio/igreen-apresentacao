@@ -1,13 +1,17 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node .claude/scripts/hook.js sessao" }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
         "hooks": [
-          {
-            "type": "command",
-            "command": "sh -c 'p=$(cat); case \"$p\" in *\"git push\"*) echo \"PARE E CONFIRME: o dono pediu o push EXPLICITAMENTE nesta conversa? Se nao, cancele e pergunte — ele valida no navegador antes e ja estranhou site sem mudanca por push que nao aconteceu. Se pediu, siga.\" >&2;; *\"git commit\"*) echo \"PARE E CONFIRME: o dono pediu para commitar? Se nao, relate o que fez e pergunte primeiro.\" >&2;; esac; exit 0'"
-          }
+          { "type": "command", "command": "node .claude/scripts/hook.js antes-bash" }
         ]
       }
     ],
@@ -15,10 +19,7 @@
       {
         "matcher": "Edit|Write|Bash",
         "hooks": [
-          {
-            "type": "command",
-            "command": "sh -c 'p=$(cat); case \"$p\" in *.html*|*.js*) node .claude/scripts/revisar.js 2>&1 | tail -40 >&2;; esac; exit 0'"
-          }
+          { "type": "command", "command": "node .claude/scripts/hook.js depois-edicao" }
         ]
       }
     ]

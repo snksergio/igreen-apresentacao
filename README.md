@@ -13,6 +13,16 @@ Por isso existe um pipeline de trabalho em **[`.claude/`](.claude/)**. Se você 
 
 Peça a alteração em português comum — "adiciona um card no ecossistema", "troca essa foto", "atualiza esse número". O pipeline identifica a natureza do pedido e aciona as verificações necessárias.
 
+### Rode isto uma vez, neste clone
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Com o Claude Code, as verificações já rodam sozinhas (terminal ou VS Code, tanto faz). Essa linha estende a verificação de commit para **quando você commita pela mão** — pelo terminal comum ou pelo painel de Source Control do VS Code. Sem ela, um commit feito fora do Claude Code passa sem conferência.
+
+Hooks do git não vêm no clone (eles moram em `.git/`, que não é versionado), por isso o comando é manual. É a única configuração do projeto. Se esquecer, o Claude Code avisa no início da sessão.
+
 ## Como abrir para testar
 
 Não há build nem instalação. Abra o `index.html` no navegador.

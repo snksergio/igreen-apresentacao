@@ -41,7 +41,7 @@ Há também uma constante de duração acoplada ao deck (`CARO = 5` em `js/prese
 Item novo geralmente muda a altura da seção, o que desloca todas as seções seguintes e altera start/end de pins. Chame o `scroll-guardian` **antes** de mexer e o `geometria-guardian` depois.
 
 ### 5. Link para página interna
-Cards do ecossistema apontam para `produtos/conexao*.html`. Card novo precisa de página — use `produtos/template.html`, nunca copie de `produtos/legados/` (arquivos mortos). E a transição de página (`js/page-transition.js`) faz prefetch: confirme que o link novo funciona na ida **e** na volta.
+Cards do ecossistema apontam para `produtos/conexao*.html`. Card novo precisa de página — a base é **sempre** `produtos/template.html`; nunca copie de outra página de produto já pronta, porque cada uma tem tokens de acento próprios que viriam junto errados. E a transição de página (`js/page-transition.js`) faz prefetch: confirme que o link novo funciona na ida **e** na volta.
 
 ### 6. Carrossel / trilha horizontal
 Se a lista é uma trilha que desliza (`.etrack`), a largura total e o ponto final do deslocamento normalmente derivam da contagem. Confira se é calculado ou fixo — se for fixo, o item novo fica fora da área visível.

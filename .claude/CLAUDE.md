@@ -17,7 +17,6 @@ O dono do projeto **não é desenvolvedor**. Ele descreve o que quer em linguage
 ```
 index.html            ~6000 linhas — CSS e JS inline. É a landing inteira.
 produtos/*.html       8 páginas de produto (conexao*.html) + template.html
-produtos/legados/     10 arquivos MORTOS. Nada aponta pra lá. Não use como referência.
 js/presentation-mode.js   modo apresentação (paradas, varredura, dots)
 js/page-transition.js     transição entre páginas + prefetch
 js/video-inview.js        toca vídeos só quando visíveis (IntersectionObserver)
@@ -42,7 +41,16 @@ Para qualquer pedido de alteração, siga esta ordem. Existe um agente para cada
    toma decisão errada. Isto não é burocracia — é o que mantém o pipeline útil na segunda vez.
 6. **Relate** o que mudou, o que foi medido, e o que ficou em aberto. Pergunte antes de commitar.
 
-Comandos: `/validar-tudo` (smoke test completo) e `/desfazer` (voltar atrás com segurança).
+Comandos: `/validar-tudo` (smoke test completo), `/desfazer` (voltar atrás com segurança) e `/publicar` (subir nos dois remotos, na ordem certa).
+
+## Os dois remotos — leia antes de publicar
+
+| remoto | papel |
+|---|---|
+| `empresa` | `igreenlab/ui-apn-institucional`. O **oficial**, e um push na `main` dele **publica em produção na hora**: o `.github/workflows/deploy-prod.yml` entra por SSH no servidor `162.141.111.97` e roda o `deploy.sh` do `igreen-vault`. Aqui não existe "subir para guardar". **Outras pessoas commitam neste repo** — um push recusado com "fetch first" significa trabalho de alguém que você não tem; traga com `git pull --rebase empresa main` e **nunca** use `--force`. |
+| `origin` | Repo pessoal do dono, e o que a **Vercel** constrói hoje — o repo da organização tem restrição que impede conectar a Vercel nele. É onde as pessoas testam o visual; ter arquivo a mais lá não faz mal. |
+
+Publicar são **dois passos**: `git push empresa main` e depois `node .claude/scripts/espelhar-visual.js`. Um `git push origin main` direto é **recusado**: o histórico do pessoal é o antigo, de antes da limpeza que tirou 452MB e o material privado, e os dois divergiram. O script resolve gravando lá um commit com o mesmo *conteúdo* em cima do topo que ele já tem — avanço normal, sem forçar, preservando aquele histórico como backup. Ver `/publicar`. **Nunca** use `--force` para contornar isso.
 Skill principal: **`alterar-site`** — é o ponto de entrada de qualquer pedido.
 
 Guardiões (acione só os necessários, para não gastar contexto):
@@ -62,6 +70,12 @@ Guardiões (acione só os necessários, para não gastar contexto):
 `node .claude/scripts/revisar.js [arquivo]` checa os padrões deste projeto — animação de layout, imagem sem dimensões, referência a terceiros, blend de tela cheia, `progress(1)`, e mais. Cada regra existe porque o problema **realmente aconteceu aqui**.
 
 Um hook roda isso sozinho depois de cada edição em `.html`/`.js` e mostra o resultado. Ele **não bloqueia** — informa. Leia o que aparecer: `ERRO` corrija antes de entregar, `AVISO` confirme se é intencional.
+
+Todos os hooks entram por um único arquivo: `node .claude/scripts/hook.js <sessao|antes-bash|depois-edicao>`. Ele é escrito em **node, não em `sh`**, de propósito: `sh` não existe no Windows fora do Git Bash, e quem abrisse o projeto no terminal do VS Code sem ele tinha os hooks **falhando calados** — o pipeline parecia ativo e não estava. Node já é requisito, então não há o que instalar.
+
+Há ainda um hook do **git** em `.githooks/pre-commit`, que cobre o commit feito fora do Claude Code (terminal comum, painel do VS Code). Ele precisa ser ligado uma vez por clone com `git config core.hooksPath .githooks` — hooks do git não são versionados. O hook de sessão confere isso e avisa se estiver desligado.
+
+Na hora do commit roda um segundo verificador, `node .claude/scripts/antes-de-commitar.js`, disparado pelo mesmo hook que pede confirmação de `git commit`. Ele olha o que está no commit e aponta os quatro esquecimentos clássicos desta base: **(1)** alterou o site e não atualizou nenhum mapa em `.claude/mapas/`; **(2)** trocou um número em texto ("N mil") sem tocar no `data-target`/`data-cnum` que anima o mesmo número; **(3)** criou `href="#id"` para um ID que não existe — falha em silêncio; **(4)** o `revisar.js` está com erro. Também **não bloqueia**: se o aviso não se aplica, siga.
 
 Estado atual da base: **0 erros, 111 avisos** (76 imagens com lazy sem dimensões, 24 blends, entre outros). São dívidas conhecidas, não regressões. Não as conserte em massa sem o dono pedir — mas **não crie novas**.
 

@@ -1,0 +1,18 @@
+name: Deploy to production
+on:
+  push:
+    branches: [main]
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to server (FRONTENDS)
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: 162.141.111.97
+          username: root
+          password: ${{ secrets.SSH_FRONTENDS_PASSWORD }}
+          script: |
+            cd /root/projects/igreen-vault && git pull origin main
+            /bin/bash /root/projects/igreen-vault/ui-apn-institucional/prod/deploy.sh

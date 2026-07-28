@@ -25,12 +25,19 @@ assets/img/eventos/*-[1-8].png
 # fora do git por vários commits sem ninguém notar.
 /referencias/
 
+# Master da foto da fachada (1,8MB). Dela sai o og-igreen.jpg (134kB), que e a
+# imagem de previa do WhatsApp/redes e ESTA versionada. Mesmo padrao dos outros
+# masters: fica no disco p/ reenquadrar se a previa mudar.
+assets/img/faixada.png
+
 # Master do video da sede (52MB, 1080p 20Mbps com audio). O site serve o tratado
 # (video-igreen.mp4, 5,2MB: camadas de blend assadas, audio removido), que esta
 # versionado. O master fica no disco p/ poder reprocessar se o tratamento mudar.
 assets/video/*-master.mp4
 
-# Nao sobem para o repo da empresa (seguem no disco local)
+# Material de trabalho que nao e o site nem manutencao dele: paginas antigas ja
+# substituidas, anotacoes e um arquivo de teste de video. Ficam no disco de quem
+# tem, e nao existem em nenhum commit — foram removidos do historico tambem.
 produtos/legados/
 docs/
 BACKLOG.md
