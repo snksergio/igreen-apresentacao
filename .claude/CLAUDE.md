@@ -41,7 +41,16 @@ Para qualquer pedido de alteração, siga esta ordem. Existe um agente para cada
    toma decisão errada. Isto não é burocracia — é o que mantém o pipeline útil na segunda vez.
 6. **Relate** o que mudou, o que foi medido, e o que ficou em aberto. Pergunte antes de commitar.
 
-Comandos: `/validar-tudo` (smoke test completo) e `/desfazer` (voltar atrás com segurança).
+Comandos: `/validar-tudo` (smoke test completo), `/desfazer` (voltar atrás com segurança) e `/publicar` (subir nos dois remotos, na ordem certa).
+
+## Os dois remotos — leia antes de publicar
+
+| remoto | papel |
+|---|---|
+| `empresa` | `igreenlab/ui-apn-institucional`. O **oficial**: histórico limpo, é dele que a próxima pessoa trabalha, e vai ganhar URL própria. |
+| `origin` | Repo pessoal do dono, e o que a **Vercel** constrói hoje — o repo da organização tem restrição que impede conectar a Vercel nele. É onde as pessoas testam o visual; ter arquivo a mais lá não faz mal. |
+
+Publicar são **dois passos**: `git push empresa main` e depois `node .claude/scripts/espelhar-visual.js`. Um `git push origin main` direto é **recusado**: o histórico do pessoal é o antigo, de antes da limpeza que tirou 452MB e o material privado, e os dois divergiram. O script resolve gravando lá um commit com o mesmo *conteúdo* em cima do topo que ele já tem — avanço normal, sem forçar, preservando aquele histórico como backup. Ver `/publicar`. **Nunca** use `--force` para contornar isso.
 Skill principal: **`alterar-site`** — é o ponto de entrada de qualquer pedido.
 
 Guardiões (acione só os necessários, para não gastar contexto):
