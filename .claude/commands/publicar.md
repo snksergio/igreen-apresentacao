@@ -34,6 +34,10 @@ node .claude/scripts/espelhar-visual.js
 
 **Passo 2** espelha o conteúdo no pessoal. Ele **não** faz `git push origin main` — isso seria recusado, porque o histórico do pessoal é o antigo (anterior à limpeza que tirou 452 MB e o material privado) e os dois divergiram. O script grava lá um commit cujo *conteúdo* é idêntico ao daqui, em cima do topo que o pessoal já tem: avanço normal, nada forçado, histórico dele preservado como backup.
 
+**Passo 2 também mantém o backup de história.** Além do conteúdo, ele empurra o histórico completo para o ramo `espelho-empresa` no pessoal, com todas as mensagens de commit. Motivo: o commit de espelho carrega os arquivos, mas a mensagem dele tem 8 linhas — o raciocínio de cada mudança vive só no repo da empresa, onde **outras pessoas commitam**. Se aquele repo tiver problema, sem esse ramo o dono recuperaria o código e perderia a documentação de por que ele é assim. Os marcos vão como `emp-<nome>`, sem sobrescrever as tags antigas do pessoal.
+
+Se aparecer `AVISO: nao consegui atualizar o ramo espelho-empresa`, o site foi publicado mas o backup ficou atrás — rode `git push origin main:refs/heads/espelho-empresa` e confira.
+
 O script **se recusa a rodar** se o seu `HEAD` não for igual ao `empresa/main`. Isso é de propósito: o que está no ar nunca deve conter algo que o repo oficial não tem.
 
 Para só conferir se estão alinhados, sem escrever nada:

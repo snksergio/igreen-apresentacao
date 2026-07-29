@@ -51,7 +51,11 @@ console.error('  conteudo aqui:   ' + arvore);
 console.error('  conteudo origin: ' + arvoreOrigin);
 
 if (arvore === arvoreOrigin) {
-  console.error('  -> IGUAIS. O pessoal ja esta visualmente alinhado; nada a fazer.');
+  console.error('  -> IGUAIS. O pessoal ja esta visualmente alinhado.');
+  /* Conteudo igual NAO garante backup em dia: o ramo espelho-empresa pode estar atras (ex.:
+     publicacao anterior falhou so nessa parte). Confere sempre, senao o backup apodrece
+     calado -- que e o pior modo de falhar para um backup. */
+  if (!conferirApenas) backupHistoria();
   process.exit(0);
 }
 if (conferirApenas) {
@@ -73,8 +77,44 @@ g(['push', 'origin', novo + ':refs/heads/main']);
 g(['fetch', '-q', 'origin', 'main']);
 const depois = g(['rev-parse', 'refs/remotes/origin/main^{tree}']);
 
+/* BACKUP DE HISTORIA (2026-07-28) — o commit de espelho acima leva o CONTEUDO, mas a
+   mensagem dele tem 8 linhas: o raciocinio de cada mudanca (60 linhas no exemplo do dia)
+   fica so no repo da empresa. E outras pessoas commitam lá. Se aquele repo tiver problema,
+   sem isto o dono recuperaria o codigo e perderia a documentacao de POR QUE ele e assim --
+   e neste projeto o `git log` e a melhor documentacao que existe.
+   Entao o ramo `espelho-empresa` no pessoal recebe o historico COMPLETO, com todas as
+   mensagens. Nao encosta na `main` do pessoal (que e a que a Vercel constroi) e nao força
+   nada: e o mesmo historico limpo avançando, sempre fast-forward.
+   Roda junto do espelhamento de proposito: backup que precisa ser lembrado fica velho, e
+   backup velho e pior que backup nenhum. */
+function backupHistoria() {
+  try {
+    g(['push', 'origin', local + ':refs/heads/espelho-empresa']);
+    console.error('  backup de historia: ramo espelho-empresa em ' + local.slice(0, 7));
+  } catch (e) {
+    console.error('  AVISO: nao consegui atualizar o ramo espelho-empresa no pessoal.');
+    console.error('  O conteudo foi espelhado, mas o backup do HISTORICO ficou atras.');
+    console.error('  Rode a mao: git push origin main:refs/heads/espelho-empresa');
+    return;
+  }
+  /* Tags: as do pessoal apontam para o historico ANTIGO (de antes da limpeza) e o dono quer
+     manter aquelas. Por isso as do historico limpo vao com prefixo `emp-`, sem sobrescrever
+     nada. Cria so o que falta. */
+  let remotas = '';
+  try { remotas = g(['ls-remote', '--tags', 'origin']); } catch (e) { return; }
+  const locais = g(['tag']).split('\n').map(s => s.trim()).filter(t => t && !t.startsWith('emp-'));
+  const faltando = locais.filter(t => !remotas.includes('refs/tags/emp-' + t));
+  if (!faltando.length) return;
+  for (const t of faltando) {
+    try { g(['tag', '-f', 'emp-' + t, t]); g(['push', 'origin', 'emp-' + t]); }
+    catch (e) { console.error('  AVISO: tag emp-' + t + ' nao subiu.'); }
+  }
+  console.error('  marcos novos no backup: ' + faltando.map(t => 'emp-' + t).join(', '));
+}
+
 if (depois === arvore) {
   console.error('  -> OK: origin agora tem o mesmo conteudo. A Vercel vai reconstruir.');
+  backupHistoria();
   process.exit(0);
 }
 console.error('  -> FALHOU: origin ficou com ' + depois + '. Confira antes de confiar.');
